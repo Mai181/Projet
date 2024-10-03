@@ -55,7 +55,7 @@ void loop() {
   }
 
   /*Calcul des obstacle à la droite du robot*/
-  if(capteurDroit = 1 || (colonne == 125 && direction == 0) || (ligneDepart == 1 && direction == 90) || ruban == 1){
+  if(capteurDroit == 1 || (colonne == 125 && direction == 0) || (ligneDepart == 1 && direction == 90) || ruban == 1){
     obstacleDroit = 1;
   }
   else {

@@ -1,7 +1,12 @@
-void avance(float vd, float vg);
-//fonction uniquement pour faire tourner les roues
+/********
+    Fichier: avancement.h
+    Auteurs: Florent Blanchard
+    Date: 26 septembre 2024
+    Description: déclaration des fonctions d'avancement
+********/
 
+// Fonction pour déclarer les vitesses
+void avance(float vd, float vg);
+
+// Fonction pour ajuster les roues
 void deplacement(float vd,float vg);
-/*verifie que les deux rous tourne a la meme vitesse
-si ce n'est pas le cas, modifie la vitesse d'une seul roue
-une roue a une vitesse costante l'autre reduit ou augmente sa vitesse pour ajuster le deplacement*/
