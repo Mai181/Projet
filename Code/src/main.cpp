@@ -1,6 +1,19 @@
+/********
+    Fichier: main.cpp
+    Auteurs: P-19
+    Date: 26 septembre 2024
+    Description: code principal des robots
+********/
+
 #include <Arduino.h>
 #include <librobus.h>
 #include <Rotations.h>
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+#include <avancement.h>
+=======
+>>>>>>> Stashed changes
 #include <math.h>
 bool obstacleAvant, obstacleDroit, obstacleGauche; //Indique qu'il y a un obstacle dans la direction
 bool capteurAvant, capteurDroit; //État des capteurs
@@ -10,6 +23,10 @@ int direction = 0; //orientation du robot dans l'espace
 int range = 25; //postion en Y (au départ à 25cm)
 int colonne =75; //positon en X (au départ à 75cm)
 bool depart = 0; //signal du siflet detecté
+<<<<<<< Updated upstream
+=======
+>>>>>>> 55438a1f281b09a1f72b2aec32292050d20df822
+>>>>>>> Stashed changes
 
 void setup() {
 	BoardInit();
