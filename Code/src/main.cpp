@@ -7,9 +7,5 @@ void setup() {
 }
 
 void loop() {
-  rotationDroite(90);
-  delay(5);
-  rotationGauche(90);
-  delay(5);
-  exit;
+
 }
