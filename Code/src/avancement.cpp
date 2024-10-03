@@ -1,3 +1,10 @@
+/********
+    Fichier: avancement.cpp
+    Auteurs: Florent Blanchard
+    Date: 26 septembre 2024
+    Description: avancement des robots
+********/
+
 #include <Arduino.h>
 #include <librobus.h>
 #include <stdio.h>
