@@ -11,5 +11,4 @@ void loop() {
   delay(5);
   rotationGauche(90);
   delay(5);
-  exit;
 }
