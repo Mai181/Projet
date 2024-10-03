@@ -7,5 +7,6 @@
 
 // Fonction pour tourner à gauche
 void rotationGauche(int a);
+
 // Fonction pour tourner a droite
 void rotationDroite(int a);
