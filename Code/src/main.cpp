@@ -34,18 +34,21 @@ void loop() {
   if(direction == 360){ //si la direction est de 360 degrés c'est equivalent à 0
     direction = 0;
   }
-  else{}
 
   if(direction < 0){  //si la direction es négatif on la remet sur 360
   direction = direction + 360;
   }
-  else{}
 
   //Calcul de la position des rubans
-  ruban = range % 2;
+  if((range % 100) >= 40){
+    ruban = 1;
+  }
+  else {
+    ruban = 0;
+  }
 
   //Calcul du depart du parcours
-  if(range == 0.25){
+  if(range == 25){
     ligneDepart = 1;
   }
   else{
@@ -53,7 +56,7 @@ void loop() {
   }
 
   //Calcul de la Fin du parcours
-  if(range == 5.25){
+  if(range == 525){
     ligneFin = 1;
   }
   else {
@@ -78,8 +81,8 @@ void loop() {
   }
 
   //Calcul des obstacle à l'avant du robot
-  if(capteurAvant == 1 || (ligneDepart == 1 && direction == 270) || (colonne == 1.25 && direction == 90) 
-    || (colonne == 0.25 && direction == 270) || (ruban == 1 &&(direction == 90 || direction == 270))){
+  if(capteurAvant == 1 || (ligneDepart == 1 && direction == 180) || (colonne == 125 && direction == 90) 
+    || (colonne == 25 && direction == 270) || (ruban == 1 &&(direction == 90 || direction == 270))){
     obstacleAvant = 1;
   }
   else{
