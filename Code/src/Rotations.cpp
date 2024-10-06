@@ -24,6 +24,10 @@ void rotationGauche(int a) {
         MOTOR_SetSpeed(LEFT, vn);
         MOTOR_SetSpeed(RIGHT, vp); 
     }
+    //manque quelle que chose pour arreter de tourner ( vitesse = 0 )
+    //idealement faudrait des rampe d'acceleration et deceleration pour combatre l'inertie du robot en rotation
+    /*si manque de pression apres les tests il pourrait avoir un reajustement de la position selon les valeur attendu 
+    des encodeur avec le deplacement*/
 }
 
 // Fonction qui fait tourner le robot a droite
@@ -34,4 +38,5 @@ void rotationDroite(int a) {
         MOTOR_SetSpeed(LEFT, vp);
         MOTOR_SetSpeed(RIGHT, vn); 
     }
+    //meme chose qu'en haut
 }
