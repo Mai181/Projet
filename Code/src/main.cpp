@@ -31,17 +31,15 @@ void setup() {
 }
 
 void loop() {
-rotationDroite(1);
-
-  //Recherche du sufflet
+  
+  /*              ça ne marche pas et je sais pas pourquoi...
+  //Recherche du sifflet
   bool siffletActive = false;
-  do
+  while (siffletActive == false)
   {
     siffletActive = detectionSifflet;
-  } while (siffletActive = false);
-
-  avance(0.5,0.5);
-  rotationDroite(3842);
+  }
+  */
   
 
   //Ajustement de la variable de direction
