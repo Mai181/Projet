@@ -38,14 +38,14 @@ void loop() {
     test = 0;
   }
 
-
+/*
   //Recherche du sufflet
   bool siffletActive = false;
   while (siffletActive == false)
   {
     siffletActive = detectionSifflet;
   }
-  
+  */
   deplacement(0.7,0.7,dist,);
 
   //Ajustement de la variable de direction
