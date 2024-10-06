@@ -19,7 +19,8 @@ float vp = 0.25;  // vitesse positive du moteur
 // Fonction qui fait tourner le robot a gauche
 // a = angle de rotation en degré
 void rotationGauche(int a) {
-    a = a + ((a/360)*13);
+    float b;
+    b = a + ((a*13/360));
     float pulse = (cirCerRot)/((tour*2/a)*cirRoue)*pulseTourRoue;
     while(ENCODER_Read(RIGHT) < pulse) {
         MOTOR_SetSpeed(LEFT, vn);
@@ -37,7 +38,8 @@ void rotationGauche(int a) {
 // Fonction qui fait tourner le robot a droite
 // a = angle de rotation
 void rotationDroite(int a) {
-    a = a + ((a/360)*13);
+    float b;
+    b = a + ((a/360)*13);
     float pulse = cirCerRot/((tour*2/a)*cirRoue)*pulseTourRoue;
     while(ENCODER_Read(LEFT) < pulse) {
         MOTOR_SetSpeed(LEFT, vp);
