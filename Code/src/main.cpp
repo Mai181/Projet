@@ -41,6 +41,9 @@ if (test ==1) {
   {
     siffletActive = detectionSifflet;
   } while (siffletActive = false);
+
+  avance(0.5,0.5);
+  rotationDroite(3842);
   
 
   //Ajustement de la variable de direction
