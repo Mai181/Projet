@@ -9,9 +9,9 @@
 #include <librobus.h>
 #include <stdio.h>
 #include <avancement.h>
-#include <rotation.cpp>
+#include <rotation.h>
 float dist=50.0;  //la distance entre deux centre de carre
-
+int pulseTourRoue=3200;
 float pulseDistance(float dist,int pulseTourRoue, float cirRoue) //dis= distance a parcourire en cm (du centre d'un carre a un autre est de 50cm)
 {
   int pulse=(pulseTourRoue/cirRoue)*dist;
