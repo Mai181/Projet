@@ -9,15 +9,39 @@
 #include <librobus.h>
 #include <stdio.h>
 #include <avancement.h>
+float dist=50.0   //la distance entre deux centre de carre
 
-void avance(float vd, float vg)
+void pulseDistance(float dist,int pulseTourRoue, float cirRoue) //dis= distance a parcourire en cm (du centre d'un carre a un autre est de 50cm)
+{
+  int pulse=(pulseTourRoue/cirRoue)*dist);
+  return pulse;   //le nombre de pulse pour parcourire la distance voulue.
+}
+
+void accel(float vd, float vg)
+{
+  MOTOR_SetSpeed(LEFT,vg/2);
+  MOTOR_SetSpeed(RIGHT,vd/2);
+  delay(500);
+  MOTOR_SetSpeed(LEFT,vg);
+  MOTOR_SetSpeed(RIGHT,vd); 
+}
+void avance(float vd,float vg)
 {
   MOTOR_SetSpeed(LEFT,vg);
   MOTOR_SetSpeed(RIGHT,vd);
 }
-void deplacement(float vd,float vg)
+void stop(float vd, float vg)
 {
-  for (int i=0; i<10; i++)
+  MOTOR_SetSpeed(LEFT,vg/2);
+  MOTOR_SetSpeed(RIGHT,vd/2);
+  delay(500);
+  MOTOR_SetSpeed(LEFT,0);
+  MOTOR_SetSpeed(RIGHT,0);
+}
+
+void correction(float vd,float vg)
+{
+  while int i==1
   {
     if (ENCODER_Read(LEFT)<ENCODER_Read(RIGHT))
     {
@@ -39,6 +63,17 @@ void deplacement(float vd,float vg)
     }
     delay(1000);
   }
+}
 
-
+void deplacement(float vd, float vg)
+{
+  while ENCODER_Read(RIGHT)!=pulseDistance(float dist,int pulseTourRoue, float cirRoue)  //tant que les pulses du moteur != la distance il avance et corrige la vitesse moteur gauche
+  {
+   while ENCODER_Read(RIGHT)!= 10
+   {
+    avance(float vd,float vg);
+    correction(float vd,float vg);
+   }
+  }
+  stop(float vd, float vg);
 }
