@@ -32,7 +32,8 @@ void setup() {
 
 void loop() {
 if (test ==1) {
-  rotationGauche(360);
+  rotationDroite(180);
+  rotationGauche(180);
   test = 0;
 }
 /*

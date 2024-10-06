@@ -20,8 +20,10 @@ float vp = 0.25;  // vitesse positive du moteur
 // a = angle de rotation en degré
 void rotationGauche(int a) {
     float b;
-    b = a + ((a*13/360));
-    float pulse = (cirCerRot)/((tour*2/a)*cirRoue)*pulseTourRoue;
+    ENCODER_Reset(RIGHT);
+    ENCODER_Reset(LEFT);
+    b = a + ((a*10/360));
+    float pulse = (cirCerRot)/((tour*2/b)*cirRoue)*pulseTourRoue;
     while(ENCODER_Read(RIGHT) < pulse) {
         MOTOR_SetSpeed(LEFT, vn);
         MOTOR_SetSpeed(RIGHT, vp); 
@@ -39,8 +41,10 @@ void rotationGauche(int a) {
 // a = angle de rotation
 void rotationDroite(int a) {
     float b;
-    b = a + ((a/360)*13);
-    float pulse = cirCerRot/((tour*2/a)*cirRoue)*pulseTourRoue;
+    ENCODER_Reset(LEFT);
+    ENCODER_Reset(RIGHT);
+    b = a + ((a*10/360));
+    float pulse = cirCerRot/((tour*2/b)*cirRoue)*pulseTourRoue;
     while(ENCODER_Read(LEFT) < pulse) {
         MOTOR_SetSpeed(LEFT, vp);
         MOTOR_SetSpeed(RIGHT, vn); 
