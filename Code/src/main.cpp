@@ -22,7 +22,7 @@ int direction = 0; //orientation du robot dans l'espace
 int range = 25; //postion en Y (au départ à 25cm)
 int colonne =75; //positon en X (au départ à 75cm)
 bool depart = 0; //signal du siflet detecté
-
+int test= 1;
 void setup() {
 	BoardInit();
   Serial.begin(9600); //Communication à 9600 bits/sec
@@ -31,8 +31,10 @@ void setup() {
 }
 
 void loop() {
-rotationDroite(1);
-
+if (test ==1) {
+  rotationGauche(360);
+  test = 0;
+}
   //Recherche du sufflet
   bool siffletActive = false;
   do
