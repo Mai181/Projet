@@ -9,10 +9,10 @@
 #include <librobus.h>
 #include <Rotations.h>
 #include <avancement.h>
-
-
-
+#include <calculPosition.h>
 #include <math.h>
+
+const int dt=50;//différence de temps
 bool obstacleAvant, obstacleDroit, obstacleGauche; //Indique s'il y a un obstacle dans la direction
 bool capteurAvant, capteurDroit; //État des capteurs
 bool ligneDepart, ligneFin; //Indique que le robot est a la ligne départ ou de fin
@@ -25,6 +25,7 @@ bool depart = 0; //signal du siflet detecté
 void setup() {
 	BoardInit();
   Serial.begin(9600); //Communication à 9600 bits/sec
+  setDt(dt);
 }
 
 void loop() {
@@ -121,4 +122,10 @@ void loop() {
     rotationDroite(90);
     direction += 90;
   }
+  delay(dt);
+}
+
+void setPosition(int rangeTemp, int colonneTemp){
+  range=rangeTemp;
+  colonne=colonneTemp;
 }
