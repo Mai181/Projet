@@ -31,6 +31,8 @@ void setup() {
 }
 
 void loop() {
+rotationDroite(1);
+
   //Recherche du sufflet
   bool siffletActive = false;
   do
