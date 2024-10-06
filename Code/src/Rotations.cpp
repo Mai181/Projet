@@ -17,14 +17,14 @@ float vp = 0.5;  // vitesse positive du moteur
 // vitesse a tester avec le robot
 
 // Fonction qui fait tourner le robot a gauche
-// a = angle de rotation
+// a = angle de rotation en degré
 void rotationGauche(int a) {
     float pulse = cirCerRot/((tour/a)*cirRoue)*pulseTourRoue;
     while(ENCODER_Read(LEFT) != pulse) {
         MOTOR_SetSpeed(LEFT, vn);
         MOTOR_SetSpeed(RIGHT, vp); 
     }
-    //manque quelle que chose pour arreter de tourner ( vitesse = 0 )
+    //manque quelque chose pour arreter de tourner ( vitesse = 0 )
     //idealement faudrait des rampe d'acceleration et deceleration pour combatre l'inertie du robot en rotation
     /*si manque de pression apres les tests il pourrait avoir un reajustement de la position selon les valeur attendu 
     des encodeur avec le deplacement*/
