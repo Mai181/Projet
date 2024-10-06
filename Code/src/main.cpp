@@ -43,10 +43,10 @@ void loop() {
   bool siffletActive = false;
   while (siffletActive == false)
   {
-    siffletActive = detectionSifflet;
+    // siffletActive = detectionSifflet;
   }
   
-  deplacement(0.7,0.7,dist,);
+  // deplacement(0.7,0.7,dist,);
 
   //Ajustement de la variable de direction
   if(direction == 360){ //si la direction est de 360 degrés c'est equivalent à 0
