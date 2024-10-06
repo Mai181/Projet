@@ -45,7 +45,7 @@ void loop() {
   {
     // siffletActive = detectionSifflet;
   }
-  */
+*/
   // deplacement(0.7,0.7,dist,);
 
   //Ajustement de la variable de direction
