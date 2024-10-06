@@ -9,6 +9,7 @@
 #include <librobus.h>
 #include <stdio.h>
 #include <avancement.h>
+#include <rotation.cpp>
 float dist=50.0;  //la distance entre deux centre de carre
 
 float pulseDistance(float dist,int pulseTourRoue, float cirRoue) //dis= distance a parcourire en cm (du centre d'un carre a un autre est de 50cm)
@@ -65,8 +66,9 @@ void correction(float vd,float vg)
   
 }
 
-void deplacement(float vd, float vg, float dist, int pulseTourRoue, float cirRoue)
+void deplacement(float vd, float vg, float dist, int pulse, float cirRoue)
 {
+  pulse=pulseDistance(dist, pulseTourRoue, cirRoue);
   while (ENCODER_Read(RIGHT)!=pulseDistance(dist,pulseTourRoue,cirRoue))  //tant que les pulses du moteur != la distance il avance et corrige la vitesse moteur gauche
   {
    while (ENCODER_Read(RIGHT)!= 10)
