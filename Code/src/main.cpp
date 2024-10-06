@@ -23,6 +23,12 @@ int range = 25; //postion en Y (au départ à 25cm)
 int colonne =75; //positon en X (au départ à 75cm)
 bool depart = 0; //signal du siflet detecté
 int test= 1;
+
+void setPosition(int rangeTemp, int colonneTemp){
+    range=rangeTemp;
+    colonne=colonneTemp;
+}
+
 void setup() {
 	BoardInit();
   Serial.begin(9600); //Communication à 9600 bits/sec
@@ -31,25 +37,19 @@ void setup() {
 }
 
 void loop() {
-<<<<<<< HEAD
-if (test ==1) {
-  rotationDroite(180);
-  rotationGauche(180);
-  test = 0;
-}
-/*
+  if (test ==1) {
+    rotationDroite(180);
+    rotationGauche(180);
+    test = 0;
+  }
+
+
   //Recherche du sufflet
-=======
-  
-  /*              ça ne marche pas et je sais pas pourquoi...
-  //Recherche du sifflet
->>>>>>> 54e50a6ddb32e2f43b0985bd082fb3e4933b0233
   bool siffletActive = false;
   while (siffletActive == false)
   {
-    siffletActive = detectionSifflet;
-  }
-  */
+    // siffletActive = detectionSifflet;
+  }  
   
 
   //Ajustement de la variable de direction
@@ -151,10 +151,5 @@ if (test ==1) {
   ENCODER_Reset(LEFT);
   ENCODER_Reset(RIGHT);
   delay(dt);
-  */
-}
-
-void setPosition(int rangeTemp, int colonneTemp){
-  range=rangeTemp;
-  colonne=colonneTemp;
+  
 }
