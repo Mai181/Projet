@@ -35,6 +35,7 @@ if (test ==1) {
   rotationGauche(360);
   test = 0;
 }
+/*
   //Recherche du sufflet
   bool siffletActive = false;
   do
@@ -145,6 +146,7 @@ if (test ==1) {
   ENCODER_Reset(LEFT);
   ENCODER_Reset(RIGHT);
   delay(dt);
+  */
 }
 
 void setPosition(int rangeTemp, int colonneTemp){
