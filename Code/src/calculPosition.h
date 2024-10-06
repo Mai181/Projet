@@ -10,7 +10,7 @@
 void setDt(int dtTemp);
 
 //Fonction qui reçois la valeur de distanceParEncoche
-void setDistanceParEncoche(int distanceParEncocheTemp);
+void setEncochesParCentimetre();
 
 //Fonction qui calcul la distance parcourue
-int distanceParcourue();
+float distanceParcourue();

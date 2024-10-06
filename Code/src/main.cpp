@@ -26,6 +26,7 @@ void setup() {
 	BoardInit();
   Serial.begin(9600); //Communication à 9600 bits/sec
   setDt(dt);
+  setEncochesParCentimetre();
 }
 
 void loop() {
@@ -122,6 +123,8 @@ void loop() {
     rotationDroite(90);
     direction += 90;
   }
+  ENCODER_Reset(LEFT);
+  ENCODER_Reset(RIGHT);
   delay(dt);
 }
 

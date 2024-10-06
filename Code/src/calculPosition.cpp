@@ -10,18 +10,21 @@
 #include <stdio.h>
 #include <avancement.h>
 #include <calculPosition.h>
+
 int dt=50;
-float distanceParEncoche;
+const int encochesCirconference=3200;
+const float diametre=7.62;
+float EncochesParCentimetre;
 
 
 void setDt(int dtTemp){
   dt=dtTemp;
 }
 
-void setDistanceParEncoche(int distanceParEncocheTemp){
-  distanceParEncoche=distanceParEncocheTemp;
+void setEncochesParCentimetre(){
+  EncochesParCentimetre=encochesCirconference/(diametre*PI);
 }
 
-int distanceParcourue(){
-  return 1;
+float distanceParcourue(){
+  return (float)((ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2)/encochesCirconference;
 }
