@@ -10,6 +10,7 @@
 #include <Rotations.h>
 #include <avancement.h>
 #include <calculPosition.h>
+#include <detectionSifflet.h>
 #include <math.h>
 
 const int dt=50;//différence de temps
@@ -30,12 +31,20 @@ void setup() {
 }
 
 void loop() {
+  //Recherche du sufflet
+  bool siffletActive = false;
+  do
+  {
+    siffletActive = detectionSifflet;
+  } while (siffletActive = false);
+  
+
   //Ajustement de la variable de direction
   if(direction == 360){ //si la direction est de 360 degrés c'est equivalent à 0
     direction = 0;
   }
 
-  if(direction < 0){  //si la direction es négatif on la remet sur 360
+  if(direction < 0){  //si la direction est négative, on la remet sur 360
   direction = direction + 360;
   }
 
