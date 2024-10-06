@@ -9,11 +9,11 @@
 #include <librobus.h>
 #include <stdio.h>
 #include <avancement.h>
-float dist=50.0   //la distance entre deux centre de carre
+float dist=50.0;  //la distance entre deux centre de carre
 
-void pulseDistance(float dist,int pulseTourRoue, float cirRoue) //dis= distance a parcourire en cm (du centre d'un carre a un autre est de 50cm)
+float pulseDistance(float dist,int pulseTourRoue, float cirRoue) //dis= distance a parcourire en cm (du centre d'un carre a un autre est de 50cm)
 {
-  int pulse=(pulseTourRoue/cirRoue)*dist);
+  int pulse=(pulseTourRoue/cirRoue)*dist;
   return pulse;   //le nombre de pulse pour parcourire la distance voulue.
 }
 
@@ -25,11 +25,13 @@ void accel(float vd, float vg)
   MOTOR_SetSpeed(LEFT,vg);
   MOTOR_SetSpeed(RIGHT,vd); 
 }
+
 void avance(float vd,float vg)
 {
   MOTOR_SetSpeed(LEFT,vg);
   MOTOR_SetSpeed(RIGHT,vd);
 }
+
 void stop(float vd, float vg)
 {
   MOTOR_SetSpeed(LEFT,vg/2);
@@ -41,39 +43,39 @@ void stop(float vd, float vg)
 
 void correction(float vd,float vg)
 {
-  while int i==1
+  if (ENCODER_Read(LEFT)<ENCODER_Read(RIGHT))
   {
-    if (ENCODER_Read(LEFT)<ENCODER_Read(RIGHT))
+    while (ENCODER_Read(RIGHT)!=ENCODER_Read(LEFT))
     {
-      while (ENCODER_Read(RIGHT)!=ENCODER_Read(LEFT))
-      {
-       vg=vg+0.3;
-     }
+      vg=vg+0.3;
     }
-    else if (ENCODER_Read(LEFT)>ENCODER_Read(RIGHT))
-    {
-      while (ENCODER_Read(RIGHT)!=ENCODER_Read(LEFT))
+  }
+  else if (ENCODER_Read(LEFT)>ENCODER_Read(RIGHT))
+  {
+    while (ENCODER_Read(RIGHT)!=ENCODER_Read(LEFT))
       {
         vg=vg-0.3;
       }
-    }
-    else
-    {
-      vg=vg;
-    }
-    delay(1000);
   }
+  else
+  {
+    vg=vg;
+  }
+  delay(1000);
+  
 }
 
-void deplacement(float vd, float vg)
+void deplacement(float vd, float vg, float dist, int pulseTourRoue, float cirRoue)
 {
-  while ENCODER_Read(RIGHT)!=pulseDistance(float dist,int pulseTourRoue, float cirRoue)  //tant que les pulses du moteur != la distance il avance et corrige la vitesse moteur gauche
+  while (ENCODER_Read(RIGHT)!=pulseDistance(dist,pulseTourRoue,cirRoue))  //tant que les pulses du moteur != la distance il avance et corrige la vitesse moteur gauche
   {
-   while ENCODER_Read(RIGHT)!= 10
+   while (ENCODER_Read(RIGHT)!= 10)
    {
-    avance(float vd,float vg);
-    correction(float vd,float vg);
+    avance(vd,vg);
+    correction(vd,vg);
    }
   }
-  stop(float vd, float vg);
+  stop(vd, vg);
+  ENCODER_Reset(RIGHT);
+  ENCODER_Reset(LEFT);
 }
