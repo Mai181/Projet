@@ -50,6 +50,7 @@ void correction(float vd,float vg)
     {
       vg=vg+0.3;
     }
+    vg=vg-0.3;
   }
   else if (ENCODER_Read(LEFT)>ENCODER_Read(RIGHT))
   {
@@ -57,25 +58,24 @@ void correction(float vd,float vg)
       {
         vg=vg-0.3;
       }
+      vg=vg+0.3;
   }
   else
   {
     vg=vg;
   }
-  delay(1000);
   
 }
 
 void deplacement(float vd, float vg, float dist, int pulse, float cirRoue)
 {
-  pulse=pulseDistance(dist, pulseroue, cirRoue);
-  while (ENCODER_Read(RIGHT)!=pulseDistance(dist,pulseroue,cirRoue))  //tant que les pulses du moteur != la distance il avance et corrige la vitesse moteur gauche
+  ENCODER_Reset(RIGHT);
+  ENCODER_Reset(LEFT);
+  
+  while (ENCODER_Read(RIGHT)!=pulse)  //tant que les pulses du moteur != la distance il avance et corrige la vitesse moteur gauche
   {
-   while (ENCODER_Read(RIGHT)!= 10)
-   {
     avance(vd,vg);
     correction(vd,vg);
-   }
   }
   stop(vd, vg);
   ENCODER_Reset(RIGHT);

@@ -36,13 +36,8 @@ void setup() {
 }
 
 void loop() {
-  if (test ==1) {
-    rotationDroite(180);
-    rotationGauche(180);
-    test = 0;
-  }
 
-/*
+  /*
   //Recherche du sufflet
   bool siffletActive = false;
   while (siffletActive == false)
@@ -50,8 +45,8 @@ void loop() {
     // siffletActive = detectionSifflet;
   }
   */
-  int pulse = pulseDistance(distance, ptr, circRoue);
-  deplacement(vd,vg,distance,pulse,circRoue);
+  int pulse=pulseDistance(distance, ptr, circRoue);
+  deplacement(vd,vg,distance,pulse, circRoue);
 
   //Ajustement de la variable de direction
   if(direction == 360){ //si la direction est de 360 degrés c'est equivalent à 0
