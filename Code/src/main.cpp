@@ -23,7 +23,11 @@ int range = 25; //postion en Y (au départ à 25cm)
 int colonne =75; //positon en X (au départ à 75cm)
 bool depart = 0; //signal du siflet detecté
 int test= 1;
-float dist=50.0;
+float distance=50.0;
+float vd=0.7;
+float vg=0.7;
+int ptr = 3200;
+float circRoue = 23.94;
 void setup() {
 	BoardInit();
   Serial.begin(9600); //Communication à 9600 bits/sec
@@ -45,8 +49,9 @@ void loop() {
   {
     // siffletActive = detectionSifflet;
   }
-*/
-  // deplacement(0.7,0.7,dist,);
+  */
+  int pulse = pulseDistance(distance, ptr, circRoue);
+  deplacement(vd,vg,distance,pulse,circRoue);
 
   //Ajustement de la variable de direction
   if(direction == 360){ //si la direction est de 360 degrés c'est equivalent à 0
@@ -144,5 +149,8 @@ void loop() {
     rotationDroite(90);
     direction += 90;
   }
+  ENCODER_Reset(LEFT);
+  ENCODER_Reset(RIGHT);
+  delay(dt);
   
 }

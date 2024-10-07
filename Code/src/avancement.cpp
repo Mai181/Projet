@@ -11,10 +11,10 @@
 #include <avancement.h>
 #include <Rotations.h>
 float dist=50.0;  //la distance entre deux centre de carre
-int pulseTourRoue=3200;
-float pulseDistance(float dist,int pulseTourRoue, float cirRoue) //dis= distance a parcourire en cm (du centre d'un carre a un autre est de 50cm)
+int pulseroue=3200;
+float pulseDistance(float dist,int ptr, float cirRoue) //dis= distance a parcourire en cm (du centre d'un carre a un autre est de 50cm)
 {
-  int pulse=(pulseTourRoue/cirRoue)*dist;
+  int pulse=(ptr/cirRoue)*dist;
   return pulse;   //le nombre de pulse pour parcourire la distance voulue.
 }
 
@@ -68,8 +68,8 @@ void correction(float vd,float vg)
 
 void deplacement(float vd, float vg, float dist, int pulse, float cirRoue)
 {
-  pulse=pulseDistance(dist, pulseTourRoue, cirRoue);
-  while (ENCODER_Read(RIGHT)!=pulseDistance(dist,pulseTourRoue,cirRoue))  //tant que les pulses du moteur != la distance il avance et corrige la vitesse moteur gauche
+  pulse=pulseDistance(dist, pulseroue, cirRoue);
+  while (ENCODER_Read(RIGHT)!=pulseDistance(dist,pulseroue,cirRoue))  //tant que les pulses du moteur != la distance il avance et corrige la vitesse moteur gauche
   {
    while (ENCODER_Read(RIGHT)!= 10)
    {
