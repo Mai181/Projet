@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <detectionObstacleDroite.h>
 
-bool obstacleDroite(){
+bool capteurDroit(){
 
     bool obstacleDroite = false;
     uint16_t lectureGauche;
@@ -12,7 +12,7 @@ bool obstacleDroite(){
     lectureGauche = ROBUS_ReadIR(2);
     lectureDroite = ROBUS_ReadIR(3);
 
-    if (lectureGauche == lectureDroite){
+    if (lectureGauche != lectureDroite){
         obstacleDroite = true;
     }
 

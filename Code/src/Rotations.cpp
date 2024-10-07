@@ -8,49 +8,71 @@
 #include <librobus.h>
 #include <Rotations.h>
 
-float cirCerRot = 114.98;  // circonferenceCercleRotation
+float cirCerRot = 60.318579;  // circonferenceCercleRotation
 float cirRoue = 23.94;  // circonferenceRoue
-int tour = 360;
-int pulseTourRoue = 3200; 
-float vn = -0.25;  // vitesse négative du moteur 
-float vp = 0.25;  // vitesse positive du moteur
+float tour = 360.0;
+float pulseTourRoue = 3200.0; 
+float vn = -0.20;  // vitesse négative du moteur 
+float vp = 0.20;  // vitesse positive du moteur
 // vitesse a tester avec le robot
 
 // Fonction qui fait tourner le robot a gauche
 // a = angle de rotation en degré
-void rotationGauche(int a) {
-    float b;
+void rotationGauche(float a) {
     ENCODER_Reset(RIGHT);
     ENCODER_Reset(LEFT);
-    b = a + ((a*10/360));
-    float pulse = (cirCerRot)/((tour*2/b)*cirRoue)*pulseTourRoue;
-    while(ENCODER_Read(RIGHT) < pulse) {
-        MOTOR_SetSpeed(LEFT, vn);
-        MOTOR_SetSpeed(RIGHT, vp); 
-        
-    }
-    MOTOR_SetSpeed(LEFT, 0);
-    MOTOR_SetSpeed(RIGHT, 0);
-    //manque quelle que chose pour arreter de tourner ( vitesse = 0 )
-    //idealement faudrait des rampe d'acceleration et deceleration pour combatre l'inertie du robot en rotation
-    /*si manque de pression apres les tests il pourrait avoir un reajustement de la position selon les valeur attendu 
-    des encodeur avec le deplacement*/
+    float pulse = (cirCerRot)/((tour/a)*cirRoue)*pulseTourRoue;
+    float pulseGauche;
+    float pulseDroite;
+    do{
+        pulseGauche = ENCODER_Read(LEFT);
+        pulseDroite = ENCODER_Read(RIGHT);
+        if (pulseGauche > (pulse * -1.0)){
+            MOTOR_SetSpeed(LEFT, vn);
+        }
+        else{
+            MOTOR_SetSpeed(LEFT, 0);
+        }
+        if (pulseDroite < pulse){
+            MOTOR_SetSpeed(RIGHT, vp);
+        }
+        else{
+            MOTOR_SetSpeed(RIGHT, 0);
+        }
+        delay(10);
+    }while(pulseDroite < pulse && pulseGauche < pulse);
+
+    Serial.println(ENCODER_Read(LEFT));
+    Serial.println(ENCODER_Read(RIGHT));
 }
 
-// Fonction qui fait tourner le robot a droite
-// a = angle de rotation
-void rotationDroite(int a) {
-    float b;
+
+void rotationDroite(float a) {
     ENCODER_Reset(LEFT);
     ENCODER_Reset(RIGHT);
-    b = a + ((a*10/360));
-    float pulse = cirCerRot/((tour*2/b)*cirRoue)*pulseTourRoue;
-    while(ENCODER_Read(LEFT) < pulse) {
-        MOTOR_SetSpeed(LEFT, vp);
-        MOTOR_SetSpeed(RIGHT, vn); 
+    float pulse = cirCerRot/((tour/a)*cirRoue)*pulseTourRoue;
+    
 
-    }
-    MOTOR_SetSpeed(LEFT, 0);
-    MOTOR_SetSpeed(RIGHT, 0);
-    //meme chose qu'en haut
+    float pulseGauche;
+    float pulseDroite;
+    do{
+        pulseGauche = ENCODER_Read(LEFT);
+        pulseDroite = ENCODER_Read(RIGHT);
+        if (pulseGauche < pulse){
+            MOTOR_SetSpeed(LEFT, vp);
+        }
+        else{
+            MOTOR_SetSpeed(LEFT, 0);
+        }
+        if (pulseDroite > (pulse * -1.0)){
+            MOTOR_SetSpeed(RIGHT, vn);
+        }
+        else{
+            MOTOR_SetSpeed(RIGHT, 0);
+        }
+        delay(10);
+    }while(pulseDroite < pulse && pulseGauche < pulse);
+
+    Serial.println(ENCODER_Read(LEFT));
+    Serial.println(ENCODER_Read(RIGHT));
 }

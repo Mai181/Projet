@@ -6,7 +6,7 @@
 */
 
 // Fonction pour tourner à gauche
-void rotationGauche(int a);
+void rotationGauche(float a);
 
 // Fonction pour tourner a droite
-void rotationDroite(int a);
+void rotationDroite(float a);

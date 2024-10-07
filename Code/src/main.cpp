@@ -11,10 +11,11 @@
 #include <avancement.h>
 #include <detectionSifflet.h>
 #include <math.h>
+#include <detectionObstacleDevant.h>
+#include <detectionObstacleDroite.h>
 
-const int dt=50;//différence de temps
+const int dt=250;//différence de temps
 bool obstacleAvant, obstacleDroit, obstacleGauche; //Indique s'il y a un obstacle dans la direction
-bool capteurAvant, capteurDroit; //État des capteurs
 bool ligneDepart, ligneFin; //Indique que le robot est a la ligne départ ou de fin
 bool ruban; //Indique qu'il y a un ruban a cette rangé
 int direction = 0; //orientation du robot dans l'espace
@@ -30,10 +31,17 @@ void setup() {
 }
 
 void loop() {
-
   //Recherche du sifflet
+
+  if(ligneFin == 1){
+    siffletActive = false;
+  }
+
   while(siffletActive == false){
     siffletActive = detectionSifflet();
+    if (ROBUS_IsBumper(REAR) == 1){
+      siffletActive = true;
+    }
   }
 
   //Ajustement de la variable de direction
@@ -42,7 +50,7 @@ void loop() {
   }
 
   if(direction < 0){  //si la direction est négative, on la remet sur 360
-  direction = direction + 360;
+    direction = direction + 360;
   }
 
   //Calcul de la position des rubans
@@ -71,8 +79,9 @@ void loop() {
 
   
   //Calcul des obstacle à la droite du robot
-  if(capteurDroit == 1 || (colonne == 125 && direction == 0) || (ligneDepart == 1 && direction == 90) || ruban == 1){
+  if(capteurDroit() == 1 || (colonne == 125 && direction == 0) || (ligneDepart == 1 && direction == 90) || ruban == 1){
     obstacleDroit = 1;
+    Serial.println("obstacle droit");
   }
   else {
     obstacleDroit = 0;
@@ -81,15 +90,17 @@ void loop() {
   //Calcul des obstacle à la gauche du robot
   if((colonne == 25 && direction == 0) || (ligneDepart == 1 && direction == 270) || ruban == 1){
     obstacleGauche = 1;
+    Serial.println("obstacle gauche");
   }
   else {
     obstacleGauche = 0;
   }
 
   //Calcul des obstacle à l'avant du robot
-  if(capteurAvant == 1 || (ligneDepart == 1 && direction == 180) || (colonne == 125 && direction == 90) 
+  if(capteurAvant() == 1 || (ligneDepart == 1 && direction == 180) || (colonne == 125 && direction == 90) 
     || (colonne == 25 && direction == 270) || (ruban == 1 &&(direction == 90 || direction == 270))){
     obstacleAvant = 1;
+    Serial.println("obstacle avant");
   }
   else{
     obstacleAvant = 0;
@@ -97,6 +108,7 @@ void loop() {
 
   //Déplacement vers l'avant
   if(obstacleAvant == 0){
+    Serial.println("avance");
     avance(50.0);
     if(direction == 0){
       range += 50;
@@ -117,19 +129,22 @@ void loop() {
 
   //Tourner vers la droite
   if(obstacleDroit == 0 && obstacleAvant == 1){
-    rotationDroite(90);
+    Serial.println("tourne droite");
+    rotationDroite(90.0);
     direction += 90;
   }
 
   //Tourner vers la gauche
   if(obstacleGauche == 0 && obstacleDroit == 1 && obstacleAvant == 1){
-    rotationGauche(90);
+    Serial.println("tourne gauche");
+    rotationGauche(90.0);
     direction -= 90;
   }
 
   //Si il est entouré d'obstacle il tourne à droite jusqu'a trouver une sortie
   if(obstacleAvant == 1 && obstacleDroit == 1 && obstacleGauche == 1){
-    rotationDroite(90);
+    Serial.println("entourer");
+    rotationDroite(90.0);
     direction += 90;
   }
   delay(dt);

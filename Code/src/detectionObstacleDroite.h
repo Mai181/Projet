@@ -1,1 +1,1 @@
-bool obstacleDroit3();
+bool capteurDroit();

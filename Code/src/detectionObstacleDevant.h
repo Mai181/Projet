@@ -1,1 +1,1 @@
-bool obstacleDevant();
+bool capteurAvant();
