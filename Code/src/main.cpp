@@ -33,7 +33,7 @@ void loop() {
   //Recherche du sifflet
 
   for(int i = 0; i < 1; i++) {
-    avancement(50);
+    avancement(50); //test
   }
 
 
