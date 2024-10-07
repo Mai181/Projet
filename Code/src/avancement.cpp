@@ -13,12 +13,16 @@
 
 float erreurAccumuleeGauche = 0;  // Somme des erreurs pour la roue gauche
 float erreurAccumuleeDroite = 0;  // Somme des erreurs pour la roue droite
+float Ki = 0.0005;                   // Gain intégral
+float Kp = 0.0015;                   // Gain proportionnel
+float deltaT = 0.05;              // Intervalle de temps entre chaque cycle (en secondes)
+/*
 float Ki = 0.1;                   // Gain intégral
 float Kp = 1.0;                   // Gain proportionnel
-float deltaT = 0.05;               // Intervalle de temps entre chaque cycle (en secondes)
-
+float deltaT = 0.05;              // Intervalle de temps entre chaque cycle (en secondes)
+*/
 float lireVitesseDroit(){
-  unit8_t posInit = ENCODER_Read(RIGHT);
+  uint8_t posInit = ENCODER_Read(RIGHT);
   delay(deltaT*1000);
   float vitesse;
   vitesse = (ENCODER_Read(RIGHT) - posInit)/50; //clacul de la distance parcouru en 50ms afin de trouver la vitesse instanté
@@ -26,7 +30,7 @@ float lireVitesseDroit(){
 }
 
 float lireVitesseGauche(){
-  unit8_t posInit = ENCODER_Read(LEFT);
+  uint8_t posInit = ENCODER_Read(LEFT);
   delay(deltaT*1000);
   float vitesse;
   vitesse = (ENCODER_Read(LEFT) - posInit)/50; //clacul de la distance parcouru en 50ms afin de trouver la vitesse instanté
@@ -62,24 +66,29 @@ void CorrigerVitesse(float vd, float vg){
 
 void accel(float vd, float vg)
 {
-  MOTOR_SetSpeed(LEFT,vg/2);
-  MOTOR_SetSpeed(RIGHT,vd/2);
-  delay(500);
-  MOTOR_SetSpeed(LEFT,vg);
-  MOTOR_SetSpeed(RIGHT,vd); 
+  for(int i = 1; i < 10; i ++){
+    MOTOR_SetSpeed(LEFT, (i * (vg/10)));
+    MOTOR_SetSpeed(RIGHT, (i * (vd/10)));
+    delay(50);
+  }
 }
 
 void decel(float vd, float vg)
 {
-  MOTOR_SetSpeed(LEFT,vg/2);
-  MOTOR_SetSpeed(RIGHT,vd/2);
-  delay(500);
-  MOTOR_SetSpeed(LEFT,vg/4);
-  MOTOR_SetSpeed(RIGHT,vd/4);
+  for(int i = 10; i > 2; i --){
+    MOTOR_SetSpeed(LEFT, (i * (vg/10)));
+    MOTOR_SetSpeed(RIGHT, (i * (vd/10)));
+    delay(50);
+  }
 }
 
+void stop()
+{
+  MOTOR_SetSpeed(LEFT,0);
+  MOTOR_SetSpeed(RIGHT,0);
+}
 
-void deplacement(int dist)
+void avance(float dist)
 {
   float vd = 0.8; //vitesse desiré droite
   float vg = 0.8; //vitesse desiré gauche
@@ -87,7 +96,7 @@ void deplacement(int dist)
   float circRoue = 23.94; //circonférence de la roue
   float pulseParCM = ptr/circRoue; //calcule le nombre de pulse par CM
   int pulse = dist * pulseParCM; //calcul le nombre de pulse a faire pour la distance donné
-  int pulseArret = 5 * pulseParCM; //distance necesaire pour arrêter en pulse
+  int pulseArret = 8 * pulseParCM; //distance necesaire pour arrêter en pulse
 
   ENCODER_Reset(RIGHT);
   ENCODER_Reset(LEFT);
@@ -98,10 +107,10 @@ void deplacement(int dist)
   accel(vd, vg);
   delay(50);
   while (((ENCODER_Read(RIGHT)+ENCODER_Read(LEFT))/2) < (pulse - pulseArret)){
-    
+    CorrigerVitesse(vd, vg);
   }
   while (((ENCODER_Read(RIGHT)+ENCODER_Read(LEFT))/2) < pulse){
-    decel(vd, vg)
+    decel(vd, vg);
   }
-  stop()
+  stop();
 }

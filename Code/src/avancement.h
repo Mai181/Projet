@@ -6,10 +6,8 @@
 ********/
 
 // Fonction pour déclarer les vitesses
-void avance(float vd, float vg);
-float pulseDistance(float dist,int ptr, float cirRoue);
-// Fonction pour ajuster les roues
-void deplacement(float vd, float vg, float dist, int pulse, float cirRoue);
-void correction(float vd,float vg);
-void stop(float vd, float vg);
+void decel(float vd, float vg);
+void avance(float dist);
+void CorrigerVitesse(float vd,float vg);
+void stop();
 void accel(float vd, float vg);
