@@ -19,29 +19,19 @@ float vp = 0.25;  // vitesse positive du moteur
 // Fonction qui fait tourner le robot a gauche
 // a = angle de rotation en degré
 void rotationGauche(int a) {
-<<<<<<< HEAD
     float b;
     ENCODER_Reset(RIGHT);
     ENCODER_Reset(LEFT);
     b = a + ((a*10/360));
     float pulse = (cirCerRot)/((tour*2/b)*cirRoue)*pulseTourRoue;
     while(ENCODER_Read(RIGHT) < pulse) {
-=======
-    
-    float pulse = (cirCerRot*pulseTourRoue)/((tour/a)*cirRoue);
-    while(ENCODER_Read(LEFT) != pulse) {
->>>>>>> 99e560b48efd70d722cf5ebde68f192fd6a286c1
         MOTOR_SetSpeed(LEFT, vn);
         MOTOR_SetSpeed(RIGHT, vp); 
         
     }
-<<<<<<< HEAD
     MOTOR_SetSpeed(LEFT, 0);
     MOTOR_SetSpeed(RIGHT, 0);
     //manque quelle que chose pour arreter de tourner ( vitesse = 0 )
-=======
-    //manque quelque chose pour arreter de tourner ( vitesse = 0 )
->>>>>>> 99e560b48efd70d722cf5ebde68f192fd6a286c1
     //idealement faudrait des rampe d'acceleration et deceleration pour combatre l'inertie du robot en rotation
     /*si manque de pression apres les tests il pourrait avoir un reajustement de la position selon les valeur attendu 
     des encodeur avec le deplacement*/

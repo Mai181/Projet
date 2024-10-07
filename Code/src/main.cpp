@@ -9,7 +9,6 @@
 #include <librobus.h>
 #include <Rotations.h>
 #include <avancement.h>
-#include <calculPosition.h>
 #include <detectionSifflet.h>
 #include <math.h>
 
@@ -22,24 +21,17 @@ int direction = 0; //orientation du robot dans l'espace
 int range = 25; //postion en Y (au départ à 25cm)
 int colonne =75; //positon en X (au départ à 75cm)
 bool depart = 0; //signal du siflet detecté
+bool siffletActive = false;
+
+  
 void setup() {
 	BoardInit();
   Serial.begin(9600); //Communication à 9600 bits/sec
-  setDt(dt);
-  setEncochesParCentimetre();
 }
 
 void loop() {
+
   //Recherche du sifflet
-
-  for(int i = 0; i < 1; i++) {
-    avance(50.0); //test
-  }
-
-
-  //Recherche du sufflet
-
-  bool siffletActive = false;
   while(siffletActive == false){
     siffletActive = detectionSifflet();
   }
@@ -105,7 +97,7 @@ void loop() {
 
   //Déplacement vers l'avant
   if(obstacleAvant == 0){
-    //avancerPID(50);
+    avance(50.0);
     if(direction == 0){
       range += 50;
     }
@@ -140,12 +132,5 @@ void loop() {
     rotationDroite(90);
     direction += 90;
   }
-  ENCODER_Reset(LEFT);
-  ENCODER_Reset(RIGHT);
   delay(dt);
-}
-
-void setPosition(int rangeTemp, int colonneTemp){
-  range=rangeTemp;
-  colonne=colonneTemp;
 }
