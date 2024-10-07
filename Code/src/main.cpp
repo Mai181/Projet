@@ -32,7 +32,7 @@ void setup() {
 void loop() {
 
   
-  /*              ça ne marche pas et je sais pas pourquoi...
+              ça ne marche pas et je sais pas pourquoi...
   //Recherche du sifflet
 =======
   if (test ==1) {
