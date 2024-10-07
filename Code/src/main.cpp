@@ -30,28 +30,19 @@ void setup() {
 }
 
 void loop() {
-
-  
-              ça ne marche pas et je sais pas pourquoi...
   //Recherche du sifflet
-=======
-  if (test ==1) {
-    rotationDroite(180);
-    rotationGauche(180);
-    test = 0;
+
+  for(int i = 0; i < 1; i++) {
+    avancement(50);
   }
->>>>>>> eedff034a532a47fb50c7c05cf1396944cffa01f
+
 
   //Recherche du sufflet
->>>>>>> d5896153759de892d09d1cfc09e4c2d377661c29
+
   bool siffletActive = false;
   while(siffletActive == false){
     siffletActive = detectionSifflet();
   }
-  
-  int pulse=pulseDistance(distance, ptr, circRoue);
-  accel(vd,vg);
-  deplacement(vd,vg,distance,pulse, circRoue);
 
   //Ajustement de la variable de direction
   if(direction == 360){ //si la direction est de 360 degrés c'est equivalent à 0
@@ -152,13 +143,9 @@ void loop() {
   ENCODER_Reset(LEFT);
   ENCODER_Reset(RIGHT);
   delay(dt);
-<<<<<<< HEAD
 }
 
 void setPosition(int rangeTemp, int colonneTemp){
   range=rangeTemp;
   colonne=colonneTemp;
-=======
-  
->>>>>>> d5896153759de892d09d1cfc09e4c2d377661c29
 }
