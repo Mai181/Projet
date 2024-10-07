@@ -37,15 +37,14 @@ void setup() {
 
 void loop() {
 
-  /*
   //Recherche du sufflet
   bool siffletActive = false;
-  while (siffletActive == false)
-  {
-    // siffletActive = detectionSifflet;
+  while(siffletActive == false){
+    siffletActive = detectionSifflet();
   }
-  */
+  
   int pulse=pulseDistance(distance, ptr, circRoue);
+  accel(vd,vg);
   deplacement(vd,vg,distance,pulse, circRoue);
 
   //Ajustement de la variable de direction
