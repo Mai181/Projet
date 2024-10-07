@@ -144,8 +144,5 @@ void loop() {
     rotationDroite(90);
     direction += 90;
   }
-  ENCODER_Reset(LEFT);
-  ENCODER_Reset(RIGHT);
-  delay(dt);
   
 }
