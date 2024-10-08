@@ -14,7 +14,7 @@
 #include <detectionObstacleDevant.h>
 #include <detectionObstacleDroite.h>
 
-const int dt=250;//différence de temps
+const int dt=500;//différence de temps
 bool obstacleAvant, obstacleDroit, obstacleGauche; //Indique s'il y a un obstacle dans la direction
 bool ligneDepart, ligneFin; //Indique que le robot est a la ligne départ ou de fin
 bool ruban; //Indique qu'il y a un ruban a cette rangé
@@ -23,6 +23,7 @@ int range = 25; //postion en Y (au départ à 25cm)
 int colonne =75; //positon en X (au départ à 75cm)
 bool depart = 0; //signal du siflet detecté
 bool siffletActive = false;
+float distanceParcourue = 0; // Suivi de la distance parcourue
 
   
 void setup() {
@@ -32,7 +33,7 @@ void setup() {
 
 void loop() {
   //Recherche du sifflet
-
+ 
   if(ligneFin == 1){
     siffletActive = false;
   }
@@ -109,7 +110,7 @@ void loop() {
   //Déplacement vers l'avant
   if(obstacleAvant == 0){
     Serial.println("avance");
-    avance(50.0);
+    distanceParcourue = avance(50.0, distanceParcourue);
     if(direction == 0){
       range += 50;
     }

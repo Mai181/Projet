@@ -24,7 +24,10 @@ void rotationGauche(float a) {
     float pulse = (cirCerRot)/((tour/a)*cirRoue)*pulseTourRoue;
     float pulseGauche;
     float pulseDroite;
-    do{
+    int tourneGauche =0;
+    int tourneDroite =0;
+
+    while(tourneDroite == 0 || tourneGauche == 0){
         pulseGauche = ENCODER_Read(LEFT);
         pulseDroite = ENCODER_Read(RIGHT);
         if (pulseGauche > (pulse * -1.0)){
@@ -32,18 +35,20 @@ void rotationGauche(float a) {
         }
         else{
             MOTOR_SetSpeed(LEFT, 0);
+            tourneGauche = 1;
         }
         if (pulseDroite < pulse){
             MOTOR_SetSpeed(RIGHT, vp);
         }
         else{
             MOTOR_SetSpeed(RIGHT, 0);
+            tourneDroite = 1;
         }
         delay(10);
-    }while(pulseDroite < pulse && pulseGauche < pulse);
+    }
 
-    Serial.println(ENCODER_Read(LEFT));
-    Serial.println(ENCODER_Read(RIGHT));
+//    Serial.println(ENCODER_Read(LEFT));
+//    Serial.println(ENCODER_Read(RIGHT));
 }
 
 
@@ -51,11 +56,12 @@ void rotationDroite(float a) {
     ENCODER_Reset(LEFT);
     ENCODER_Reset(RIGHT);
     float pulse = cirCerRot/((tour/a)*cirRoue)*pulseTourRoue;
-    
-
+    int tourneGauche =0;
+    int tourneDroite =0;
     float pulseGauche;
     float pulseDroite;
-    do{
+
+    while (tourneGauche == 0 || tourneDroite == 0) {
         pulseGauche = ENCODER_Read(LEFT);
         pulseDroite = ENCODER_Read(RIGHT);
         if (pulseGauche < pulse){
@@ -63,16 +69,18 @@ void rotationDroite(float a) {
         }
         else{
             MOTOR_SetSpeed(LEFT, 0);
+            tourneGauche =1;
         }
         if (pulseDroite > (pulse * -1.0)){
             MOTOR_SetSpeed(RIGHT, vn);
         }
         else{
             MOTOR_SetSpeed(RIGHT, 0);
+            tourneDroite = 1;
         }
         delay(10);
-    }while(pulseDroite < pulse && pulseGauche < pulse);
+    }
 
-    Serial.println(ENCODER_Read(LEFT));
-    Serial.println(ENCODER_Read(RIGHT));
+//    Serial.println(ENCODER_Read(LEFT));
+//    Serial.println(ENCODER_Read(RIGHT));
 }

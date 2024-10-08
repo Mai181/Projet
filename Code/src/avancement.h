@@ -6,8 +6,8 @@
 ********/
 
 // Fonction pour déclarer les vitesses
-void decel(float vd, float vg);
-void avance(float dist);
-void CorrigerVitesse(float vd,float vg);
+void decel(int pulse, float vd, float vg);
+float avance(float dist, float distanceParcourue);
+void CorrigerVitesse(float vd,float vg, float distanceParcourue);
 void stop();
 void accel(float vd, float vg);
