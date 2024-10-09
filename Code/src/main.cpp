@@ -21,7 +21,7 @@ int direction = 0; //orientation du robot dans l'espace
 int range = 25; //postion en Y (au départ à 25cm)
 
 int colonne =75; //positon en X (au départ à 75cm)
-bool depart = 0; //signal du siflet detecté
+bool depart = false; //signal du siflet detecté
 bool siffletActive = false;
 
 // Paramètres du régulateur PI
@@ -29,8 +29,10 @@ float erreurAccumuleeGauche = 0;  // Somme des erreurs accumulées pour la roue 
 float erreurAccumuleeDroite = 0;  // Somme des erreurs accumulées pour la roue droite
 float totalpulseDroit;
 float totalpulseGauche;
-float Ki1 = 0.005;  // Gain intégral
-float Kp1 = 0.0015;  // Gain proportionnel pour A
+//float Ki1 = 0.0005;  // Gain intégral pour A
+//float Kp1 = 0.0012;  // Gain proportionnel pour A
+float Ki1 = 0.00035;  // Gain intégral pour B
+float Kp1 = 0.001;  // Gain proportionnel pour B
 float deltaT = 0.05;  // Intervalle de temps entre les cycles (en secondes)
 
 
@@ -226,7 +228,10 @@ void loop() {
 
   //Calcul de la Fin du parcours
   if(range == 525){
-    rotationDroite(180);
+    rotationDroite(90);
+    delay(250);
+    rotationDroite(90);
+    direction += 180;
     ligneFin = 1;
   }
 //si arriver a la fin
@@ -243,7 +248,7 @@ void loop() {
   }
 
   //Calcul des obstacle à la droite du robot
-  if(capteurDroit() == 1 || (colonne == 125 && direction == 0) || (ligneDepart == 1 && direction == 90) || ruban == 1){
+  if(capteurDroit() == 1 || (colonne == 125 && direction == 0) || (ligneDepart == 1 && direction == 90) || ruban == 1 || (colonne == 25 && direction == 180)){
     obstacleDroit = 1;
     Serial.println("obstacle droit");
   }
@@ -252,7 +257,7 @@ void loop() {
   }
 
   //Calcul des obstacle à la gauche du robot
-  if((colonne == 25 && direction == 0) || (ligneDepart == 1 && direction == 270) || ruban == 1){
+  if((colonne == 25 && direction == 0) || (ligneDepart == 1 && direction == 270) || ruban == 1 || (colonne == 125 && direction == 180)){
     obstacleGauche = 1;
     Serial.println("obstacle gauche");
   }

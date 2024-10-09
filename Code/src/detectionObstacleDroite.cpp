@@ -12,7 +12,7 @@ bool capteurDroit(){
     lectureGauche = ROBUS_ReadIR(2);
     lectureDroite = ROBUS_ReadIR(3);
 
-    if (lectureGauche != lectureDroite){
+    if (lectureGauche < 500 && lectureDroite < 500){
         obstacleDroite = true;
     }
 
