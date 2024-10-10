@@ -60,12 +60,18 @@ int rubans[23][7] = {{1, 1, 1, 1, 1, 1, 1},  // x=0   (0)
             // index 0, 1, 2, 3, 4, 5, 6 
             // y =  0,25,50,75,100,125,150  ***index colonne = y/25
 
-int verifications[4][3] = {{colonne+25, colonne-25, range+25},  // direction = 0
-                          {range-25, range+25, colonne+25},     // direction = 90
-                          {colonne-25, colonne+25, range-25},   // direction = 180
-                          {range+25, range-25, colonne+25}};    // direction = 270
-                      //    Droit     Gauche     Avant
-                      
+int verifCol[4][3] = {{25, -25, 0},  // direction = 0
+                      {0, 0, 25},     // direction = 90
+                      {-25, 25, 0},   // direction = 180
+                      {0, 0, 25}};    // direction = 270
+                // Droit, Gauche, Avant
+
+int verifRan[4][3] = {{0, 0, 25},   // direction = 0
+                      {-25, 25, 0},   // direction = 90
+                      {0, 0, -25},   // direction = 180
+                      {25, -25, 0}};  // direction = 270
+                // Droit, Gauche, Avant
+
 // Fonction pour limiter une valeur dans une plage donnée
 float limiter(float valeur, float minVal, float maxVal) {
     if (valeur > maxVal) return maxVal;
@@ -228,14 +234,6 @@ void loop() {
     direction = direction + 360;
   }
 
-  //Calcul de la position des rubans
-  if((range % 100) >= 40){
-    ruban = 1;
-  }
-  else {
-    ruban = 0;
-  }
-
   //Calcul du depart du parcours
   if(range == 25){
     ligneDepart = 1;
@@ -269,7 +267,7 @@ void loop() {
   }
 
   //Calcul des obstacle à la droite du robot
-  if(capteurDroit() == 1 || (colonne == 125 && direction == 0) || (ligneDepart == 1 && direction == 90) || ruban == 1 || (colonne == 25 && direction == 180)){
+  if(capteurDroit() == 1 || (colonne == 125 && direction == 0) || (ligneDepart == 1 && direction == 90) || (colonne == 25 && direction == 180) || (rubans[(range + verifRan[direction][0])/25][(colonne + verifCol[direction][0])/25] == 1)){
     obstacleDroit = 1;
     Serial.println("obstacle droit");
   }
@@ -278,7 +276,7 @@ void loop() {
   }
 
   //Calcul des obstacle à la gauche du robot
-  if((colonne == 25 && direction == 0) || (ligneDepart == 1 && direction == 270) || ruban == 1 || (colonne == 125 && direction == 180)){
+  if((colonne == 25 && direction == 0) || (ligneDepart == 1 && direction == 270) || (colonne == 125 && direction == 180) || (rubans[(range + verifRan[direction][1])/25][(colonne + verifCol[direction][1])/25] == 1)){
 
     obstacleGauche = 1;
     Serial.println("obstacle gauche");
@@ -288,8 +286,7 @@ void loop() {
   }
 
   //Calcul des obstacle à l'avant du robot
-  if(capteurAvant() == 1 || (ligneDepart == 1 && direction == 180) || (colonne == 125 && direction == 90) 
-    || (colonne == 25 && direction == 270) || (ruban == 1 &&(direction == 90 || direction == 270))){
+  if(capteurAvant() == 1 || (ligneDepart == 1 && direction == 180) || (colonne == 125 && direction == 90) || (colonne == 25 && direction == 270) || (rubans[(range + verifRan[direction][2])/25][(colonne + verifCol[direction][2])/25] == 1)){
     obstacleAvant = 1;
     Serial.println("obstacle avant");
   }
