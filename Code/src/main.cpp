@@ -60,6 +60,12 @@ int rubans[23][7] = {{1, 1, 1, 1, 1, 1, 1},  // x=0   (0)
             // index 0, 1, 2, 3, 4, 5, 6 
             // y =  0,25,50,75,100,125,150  ***index colonne = y/25
 
+int verifications[4][3] = {{colonne+25, colonne-25, range+25},  // direction = 0
+                          {range-25, range+25, colonne+25},     // direction = 90
+                          {colonne-25, colonne+25, range-25},   // direction = 180
+                          {range+25, range-25, colonne+25}};    // direction = 270
+                      //    Droit     Gauche     Avant
+                      
 // Fonction pour limiter une valeur dans une plage donnée
 float limiter(float valeur, float minVal, float maxVal) {
     if (valeur > maxVal) return maxVal;
@@ -281,6 +287,7 @@ void loop() {
 
   //Calcul des obstacle à la gauche du robot
   if((colonne == 25 && direction == 0) || (ligneDepart == 1 && direction == 270) || ruban == 1 || (colonne == 125 && direction == 180)){
+
     obstacleGauche = 1;
     Serial.println("obstacle gauche");
   }
