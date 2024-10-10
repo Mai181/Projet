@@ -36,26 +36,26 @@ float deltaT = 0.05;  // Intervalle de temps entre les cycles (en secondes)
 // Matrice pour les obstacles du parcours
 int rubans[23][7] = {{1, 1, 1, 1, 1, 1, 1},  // x=0   (0)
                     {1, 0, 0, 0, 0, 0, 1},   // x=25  (1)
-                    {1, 0, 1, 0, 1, 0, 1},   // x=50  (2)
+                    {1, 0, 1, 1, 1, 0, 1},   // x=50  (2)
                     {1, 0, 1, 0, 1, 0, 1},   // x=75  (3)
-                    {1, 0, 1, 0, 1, 0, 1},   // x=100 (4)
+                    {1, 0, 1, 1, 1, 0, 1},   // x=100 (4)
                     {1, 0, 0, 0, 0, 0, 1},   // x=125 (5)
-                    {1, 0, 1, 0, 1, 0, 1},   // x=150 (6)
+                    {1, 0, 1, 1, 1, 0, 1},   // x=150 (6)
                     {1, 0, 1, 0, 1, 0, 1},   // x=175 (7)
-                    {1, 0, 1, 0, 1, 0, 1},   // x=200 (8)
+                    {1, 0, 1, 1, 1, 0, 1},   // x=200 (8)
                     {1, 0, 0, 0, 0, 0, 1},   // x=225 (9)
                     {1, 0, 1, 0, 1, 0, 1},   // x=250 (10)
                     {1, 0, 1, 0, 1, 0, 1},   // x=275 (11)
                     {1, 0, 1, 0, 1, 0, 1},   // x=300 (12)
                     {1, 0, 0, 0, 0, 0, 1},   // x=325 (13)
-                    {1, 0, 1, 0, 1, 0, 1},   // x=350 (14)
+                    {1, 0, 1, 1, 1, 0, 1},   // x=350 (14)
                     {1, 0, 1, 0, 1, 0, 1},   // x=375 (15)
-                    {1, 0, 1, 0, 1, 0, 1},   // x=400 (16)
+                    {1, 0, 1, 1, 1, 0, 1},   // x=400 (16)
                     {1, 0, 0, 0, 0, 0, 1},   // x=425 (17)
-                    {1, 0, 1, 0, 1, 0, 1},   // x=450 (18)
+                    {1, 0, 1, 1, 1, 0, 1},   // x=450 (18)
                     {1, 0, 1, 0, 1, 0, 1},   // x=475 (19)
                     {1, 0, 1, 0, 1, 0, 1},   // x=500 (20)
-                    {1, 0, 1, 0, 1, 0, 1},   // x=525 (21)
+                    {1, 0, 0, 0, 0, 0, 1},   // x=525 (21)
                     {1, 1, 1, 1, 1, 1, 1}};  // x=550 (22)  ***index range = x/25
             // index 0, 1, 2, 3, 4, 5, 6 
             // y =  0,25,50,75,100,125,150  ***index colonne = y/25
@@ -210,12 +210,12 @@ void avance(float dist) {
     decel(pulse, vd, vg);
 
     // Debug : Affichage des pulses et de la position
-    Serial.print("Total Pulses Droit: ");
-    Serial.println(totalpulseDroit);
-    Serial.print("Total Pulses Gauche: ");
-    Serial.println(totalpulseGauche);
-    Serial.print("Nombre de pulses calculé : ");
-    Serial.println(pulse);
+//   Serial.print("Total Pulses Droit: ");
+//    Serial.println(totalpulseDroit);
+//    Serial.print("Total Pulses Gauche: ");
+//    Serial.println(totalpulseGauche);
+//    Serial.print("Nombre de pulses calculé : ");
+//    Serial.println(pulse);
 }
   
 void setup() {
@@ -233,29 +233,35 @@ void loop() {
   if(direction < 0){  //si la direction est négative, on la remet sur 360
     direction = direction + 360;
   }
-
-  //Calcul du depart du parcours
-  if(range == 25){
-    ligneDepart = 1;
-  }
-  else{
-    ligneDepart = 0;
-  }
-  if (range == 25 && ligneFin == 1){
-    siffletActive = false;
-  }
-
-  //Calcul de la Fin du parcours
-  if(range == 525){
-    rotationDroite(90);
-    delay(250);
-    rotationDroite(90);
-    direction += 180;
+  if (range == 525){
     ligneFin = 1;
   }
+  else{
+    ligneFin = 0;
+  }
+
+
 //si arriver a la fin
-  if(ligneFin == 1 && range == 25){
-    siffletActive = false;
+  if(range == 525){
+    if (colonne == 125){
+      rotationGauche(90.0);
+      delay(250);
+      avance(50.0);
+      delay(250);
+      rotationGauche(90.0); //a modifier si pas tout a fait en ligne
+    }
+    else if (colonne == 0){
+      rotationDroite(90.0);
+      delay(250);
+      avance(50.0);
+      delay(250);
+      rotationDroite(90.0); //a modifier si pas tout a fait en ligne      
+    }
+      delay(250);
+      avance(250);
+      delay(250);
+      avance(300);
+      siffletActive = false;
   }
 
   //Recherche du sifflet
@@ -267,7 +273,7 @@ void loop() {
   }
 
   //Calcul des obstacle à la droite du robot
-  if(capteurDroit() == 1 || (colonne == 125 && direction == 0) || (ligneDepart == 1 && direction == 90) || (colonne == 25 && direction == 180) || (rubans[(range + verifRan[direction][0])/25][(colonne + verifCol[direction][0])/25] == 1)){
+  if(capteurDroit() == 1 || ((rubans[(range + verifRan[direction/90][0])/25][(colonne + verifCol[direction/90][0])/25] == 1 && ligneFin == 0))){
     obstacleDroit = 1;
     Serial.println("obstacle droit");
   }
@@ -276,7 +282,7 @@ void loop() {
   }
 
   //Calcul des obstacle à la gauche du robot
-  if((colonne == 25 && direction == 0) || (ligneDepart == 1 && direction == 270) || (colonne == 125 && direction == 180) || (rubans[(range + verifRan[direction][1])/25][(colonne + verifCol[direction][1])/25] == 1)){
+  if((rubans[(range + verifRan[direction/90][1])/25][(colonne + verifCol[direction/90][1])/25] == 1 && ligneFin == 0)){
 
     obstacleGauche = 1;
     Serial.println("obstacle gauche");
@@ -286,9 +292,11 @@ void loop() {
   }
 
   //Calcul des obstacle à l'avant du robot
-  if(capteurAvant() == 1 || (ligneDepart == 1 && direction == 180) || (colonne == 125 && direction == 90) || (colonne == 25 && direction == 270) || (rubans[(range + verifRan[direction][2])/25][(colonne + verifCol[direction][2])/25] == 1)){
+  if(capteurAvant() == 1 || (rubans[(range + verifRan[direction/90][2])/25][(colonne + verifCol[direction/90][2])/25] == 1 && ligneFin == 0)){
     obstacleAvant = 1;
-    Serial.println("obstacle avant");
+    Serial.println(rubans[(range + verifRan[direction/90][2])/25][(colonne + verifCol[direction/90][2])/25]);
+    Serial.println((range + verifRan[direction/90][2])/25);
+    Serial.println((colonne + verifCol[direction/90][2])/25);
   }
   else{
     obstacleAvant = 0;
