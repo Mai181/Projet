@@ -27,7 +27,7 @@ float erreurAccumuleeGauche = 0;  // Somme des erreurs accumulées pour la roue 
 float erreurAccumuleeDroite = 0;  // Somme des erreurs accumulées pour la roue droite
 float totalpulseDroit;
 float totalpulseGauche;
-//float Ki1 = 0.0005;  // Gain intégral pour A
+//float Ki1 = 0.0005;  // Gain intégral pour A ne pas oublier d'enlever la valeur -0.0005 a la ligne 149 de la vitesse de decel
 //float Kp1 = 0.0012;  // Gain proportionnel pour A
 float Ki1 = 0.00035;  // Gain intégral pour B
 float Kp1 = 0.001;  // Gain proportionnel pour B
@@ -146,7 +146,7 @@ void decel(int pulse, float vd, float vg) {
         float vitesseDroit = vd * facteurDecel;
         float vitesseGauche = vg * facteurDecel;
 
-        MOTOR_SetSpeed(RIGHT, vitesseDroit);
+        MOTOR_SetSpeed(RIGHT, vitesseDroit-0.005);
         MOTOR_SetSpeed(LEFT, vitesseGauche);
 /*        Serial.print("vitesse droit decel:");
         Serial.println(vitesseDroit);
@@ -219,6 +219,7 @@ void setup() {
 }
 
 void loop() {
+  avance(250.0);
 
   //Ajustement de la variable de direction
   if(direction == 360){ //si la direction est de 360 degrés c'est equivalent à 0
@@ -243,6 +244,9 @@ void loop() {
   }
   else{
     ligneDepart = 0;
+  }
+  if (range == 25 && ligneFin == 1){
+    siffletActive = false;
   }
 
   //Calcul de la Fin du parcours
