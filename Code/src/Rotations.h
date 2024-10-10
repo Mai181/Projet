@@ -1,6 +1,6 @@
 /*
     Fichier: Rotations
-    Auteurs: Maina Clermont 
+    Auteurs: P-19
     Date: 26 septembre 2024
     Description: déclaration des fonctions de rotation
 */

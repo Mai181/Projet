@@ -1,8 +1,8 @@
 /********
     Fichier: Rotations
-    Auteurs: Maina Clermont 
+    Auteurs: P-19
     Date: 26 septembre 2024
-    Description: rotation des robots
+    Description: code des rotation des robots
 ********/
 
 #include <librobus.h>

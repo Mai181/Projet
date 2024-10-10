@@ -8,10 +8,8 @@
 #include <Arduino.h>
 #include <librobus.h>
 #include <Rotations.h>
-#include <detectionSifflet.h>
 #include <math.h>
-#include <detectionObstacleDevant.h>
-#include <detectionObstacleDroite.h>
+#include <detections.h>
 
 const int dt=500;//différence de temps
 bool obstacleAvant, obstacleDroit, obstacleGauche; //Indique s'il y a un obstacle dans la direction
@@ -20,7 +18,7 @@ bool ruban; //Indique qu'il y a un ruban a cette rangé
 int direction = 0; //orientation du robot dans l'espace
 int range = 25; //postion en Y (au départ à 25cm)
 
-int colonne =75; //positon en X (au départ à 75cm)
+int colonne = 75; //positon en X (au départ à 75cm)
 bool depart = false; //signal du siflet detecté
 bool siffletActive = false;
 
@@ -35,6 +33,32 @@ float Ki1 = 0.00035;  // Gain intégral pour B
 float Kp1 = 0.001;  // Gain proportionnel pour B
 float deltaT = 0.05;  // Intervalle de temps entre les cycles (en secondes)
 
+// Matrice pour les obstacles du parcours
+int rubans[23][7] = {{1, 1, 1, 1, 1, 1, 1},  // x=0   (0)
+                    {1, 0, 0, 0, 0, 0, 1},   // x=25  (1)
+                    {1, 0, 1, 0, 1, 0, 1},   // x=50  (2)
+                    {1, 0, 1, 0, 1, 0, 1},   // x=75  (3)
+                    {1, 0, 1, 0, 1, 0, 1},   // x=100 (4)
+                    {1, 0, 0, 0, 0, 0, 1},   // x=125 (5)
+                    {1, 0, 1, 0, 1, 0, 1},   // x=150 (6)
+                    {1, 0, 1, 0, 1, 0, 1},   // x=175 (7)
+                    {1, 0, 1, 0, 1, 0, 1},   // x=200 (8)
+                    {1, 0, 0, 0, 0, 0, 1},   // x=225 (9)
+                    {1, 0, 1, 0, 1, 0, 1},   // x=250 (10)
+                    {1, 0, 1, 0, 1, 0, 1},   // x=275 (11)
+                    {1, 0, 1, 0, 1, 0, 1},   // x=300 (12)
+                    {1, 0, 0, 0, 0, 0, 1},   // x=325 (13)
+                    {1, 0, 1, 0, 1, 0, 1},   // x=350 (14)
+                    {1, 0, 1, 0, 1, 0, 1},   // x=375 (15)
+                    {1, 0, 1, 0, 1, 0, 1},   // x=400 (16)
+                    {1, 0, 0, 0, 0, 0, 1},   // x=425 (17)
+                    {1, 0, 1, 0, 1, 0, 1},   // x=450 (18)
+                    {1, 0, 1, 0, 1, 0, 1},   // x=475 (19)
+                    {1, 0, 1, 0, 1, 0, 1},   // x=500 (20)
+                    {1, 0, 1, 0, 1, 0, 1},   // x=525 (21)
+                    {1, 1, 1, 1, 1, 1, 1}};  // x=550 (22)  ***index range = x/25
+            // index 0, 1, 2, 3, 4, 5, 6 
+            // y =  0,25,50,75,100,125,150  ***index colonne = y/25
 
 // Fonction pour limiter une valeur dans une plage donnée
 float limiter(float valeur, float minVal, float maxVal) {
@@ -154,8 +178,6 @@ void avance(float dist) {
     int pulse = dist * pulseParCM;  // Nombre de pulses pour la distance donnée
     int pulseArret = 10 * pulseParCM;  // Distance nécessaire pour arrêter (en pulses)
 
-
-
     // Réinitialisation des encodeurs
     ENCODER_Reset(RIGHT);
     ENCODER_Reset(LEFT);
@@ -182,8 +204,6 @@ void avance(float dist) {
     // Décélération progressive
     decel(pulse, vd, vg);
 
-
-
     // Debug : Affichage des pulses et de la position
     Serial.print("Total Pulses Droit: ");
     Serial.println(totalpulseDroit);
@@ -192,7 +212,6 @@ void avance(float dist) {
     Serial.print("Nombre de pulses calculé : ");
     Serial.println(pulse);
 }
-
   
 void setup() {
 	BoardInit();
