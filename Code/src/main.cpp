@@ -27,10 +27,10 @@ float erreurAccumuleeGauche = 0;  // Somme des erreurs accumulées pour la roue 
 float erreurAccumuleeDroite = 0;  // Somme des erreurs accumulées pour la roue droite
 float totalpulseDroit;
 float totalpulseGauche;
-//float Ki1 = 0.0005;  // Gain intégral pour A ne pas oublier d'enlever la valeur -0.0005 a la ligne 149 de la vitesse de decel
-//float Kp1 = 0.0012;  // Gain proportionnel pour A
-float Ki1 = 0.00035;  // Gain intégral pour B
-float Kp1 = 0.001;  // Gain proportionnel pour B
+float Ki1 = 0.0005;  // Gain intégral pour A ne pas oublier d'enlever la valeur -0.0005 a la ligne 149 de la vitesse de decel
+float Kp1 = 0.0012;  // Gain proportionnel pour A
+//float Ki1 = 0.0006;  // Gain intégral pour B
+//float Kp1 = 0.0017;  // Gain proportionnel pour B
 float deltaT = 0.05;  // Intervalle de temps entre les cycles (en secondes)
 
 // Matrice pour les obstacles du parcours
@@ -128,39 +128,32 @@ void CorrigerVitesse(float vd, float vg) {
 }
 // Fonction pour l'accélération progressive
 void accel(float vd, float vg) {
-    for (int i = 1; i <= 5; i++) {
-        CorrigerVitesse(i * (vd / 5), i * (vg / 5));
-        delay(150);  // Attendre un peu entre chaque étape d'accélération
+    for (int i = 1; i <= 10; i++) {
+        CorrigerVitesse(i * (vd / 10), i * (vg / 10));
+        delay(75);  // Attendre un peu entre chaque étape d'accélération
     }
 }
+
+
 
 // Fonction de décélération progressive
 void decel(int pulse, float vd, float vg) {
     int pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2);
+    int i = 4;
 
     while (pulsesRestants > 100) {
-        // Calcul des pulses restants
-        pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2);
-
-        // Réduire la vitesse proportionnellement à la distance restante
-        float facteurDecel = ((float)pulsesRestants * 5 ) / pulse;
-        if (facteurDecel < 0.15) {
-            facteurDecel = 0.15;  // Ne pas descendre en dessous de 10% de la vitesse
-        }
-
-        // Appliquer la réduction de la vitesse
-        float vitesseDroit = vd * facteurDecel;
-        float vitesseGauche = vg * facteurDecel;
-
-        MOTOR_SetSpeed(RIGHT, vitesseDroit-0.005);
-        MOTOR_SetSpeed(LEFT, vitesseGauche);
+          if (i > 1){
+          CorrigerVitesse(i * (vd / 5), i * (vg / 5));
+          delay(50);  // Attendre un peu entre chaque étape d'accélération
+          i--;
+          }
+          pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2);
+      }
 /*        Serial.print("vitesse droit decel:");
         Serial.println(vitesseDroit);
         Serial.print("vitesse gauche decel:");
         Serial.println(vitesseGauche);
 */
-        delay(50);  // Attendre entre chaque ajustement de la vitesse
-    }
 
     // Assurer l'arrêt complet des moteurs
     MOTOR_SetSpeed(LEFT, 0);
@@ -182,7 +175,7 @@ void avance(float dist) {
     float circRoue = 23.94;  // Circonférence de la roue en cm
     float pulseParCM = ptr / circRoue;  // Calcul du nombre de pulses par cm
     int pulse = dist * pulseParCM;  // Nombre de pulses pour la distance donnée
-    int pulseArret = 10 * pulseParCM;  // Distance nécessaire pour arrêter (en pulses)
+    int pulseArret = 15 * pulseParCM;  // Distance nécessaire pour arrêter (en pulses)
 
     // Réinitialisation des encodeurs
     ENCODER_Reset(RIGHT);
@@ -225,7 +218,6 @@ void setup() {
 }
 
 void loop() {
-  avance(250.0);
 
   //Ajustement de la variable de direction
   if(direction == 360){ //si la direction est de 360 degrés c'est equivalent à 0
