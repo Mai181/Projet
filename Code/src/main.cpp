@@ -29,7 +29,7 @@ float totalpulseDroit;
 float totalpulseGauche;
 float Ki1 = 0.0005;  // Gain intégral pour A ne pas oublier d'enlever la valeur -0.0005 a la ligne 149 de la vitesse de decel
 float Kp1 = 0.0012;  // Gain proportionnel pour A
-//float Ki1 = 0.0006;  // Gain intégral pour B
+//float Ki1 = 0.0006;  // Gain intégral pour B elever 200 pulse pour la fin
 //float Kp1 = 0.0017;  // Gain proportionnel pour B
 float deltaT = 0.05;  // Intervalle de temps entre les cycles (en secondes)
 
@@ -63,7 +63,7 @@ int rubans[23][7] = {{1, 1, 1, 1, 1, 1, 1},  // x=0   (0)
 int verifCol[4][3] = {{25, -25, 0},  // direction = 0
                       {0, 0, 25},     // direction = 90
                       {-25, 25, 0},   // direction = 180
-                      {0, 0, 25}};    // direction = 270
+                      {0, 0, -25}};    // direction = 270
                 // Droit, Gauche, Avant
 
 int verifRan[4][3] = {{0, 0, 25},   // direction = 0
@@ -147,8 +147,8 @@ void decel(int pulse, float vd, float vg) {
     int pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2);
     int i = 4;
 
-    while (pulsesRestants > 100) {
-          if (i > 1){
+    while (pulsesRestants > 200) {
+          if (i >= 1){
           CorrigerVitesse(i * (vd / 5), i * (vg / 5));
           delay(50);  // Attendre un peu entre chaque étape d'accélération
           i--;
@@ -250,17 +250,19 @@ void loop() {
       delay(250);
       rotationGauche(90.0); //a modifier si pas tout a fait en ligne
     }
-    else if (colonne == 0){
+    else if (colonne == 25){
       rotationDroite(90.0);
       delay(250);
       avance(50.0);
       delay(250);
       rotationDroite(90.0); //a modifier si pas tout a fait en ligne      
     }
+      delay(250.0);
+      avance(250.0);
+      delay(250.0);
+      avance(250.0);
+      avance(50.0);
       delay(250);
-      avance(250);
-      delay(250);
-      avance(300);
       siffletActive = false;
   }
 

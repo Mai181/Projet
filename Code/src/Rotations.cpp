@@ -12,8 +12,8 @@ float cirCerRot = 58.0;  // circonferenceCercleRotation
 float cirRoue = 23.94;  // circonferenceRoue
 float tour = 360.0;
 float pulseTourRoue = 3200.0; 
-float vn = -0.20;  // vitesse négative du moteur 
-float vp = 0.20;  // vitesse positive du moteur
+float vn = -0.17;  // vitesse négative du moteur 
+float vp = 0.17;  // vitesse positive du moteur
 // vitesse a tester avec le robot
 
 // Paramètres du régulateur PI
@@ -22,6 +22,8 @@ float RerreurAccumuleeDroite = 0;  // Somme des erreurs accumulées pour la roue
 float RdeltaT = 0.01;  // Intervalle de temps entre les cycles (en secondes)
 float RKi1 = 0.005;  // Gain intégral
 float RKp1 = 0.0015;  // Gain proportionnel pour A
+//float RKi1 = 0.0006;  // Gain intégral pour B elever 200 pulse pour la fin
+//float RKp1 = 0.0017;  // Gain proportionnel pour B
 
 
 // Fonction pour limiter une valeur dans une plage donnée
