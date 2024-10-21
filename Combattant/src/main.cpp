@@ -17,9 +17,9 @@
 
 
 /**Délai en ms entre chaque itération du loop */
-CONST int DT=50;
+const int DT=50;
 /** Boucle de débug */
-CONST bool DEBUG=false;
+const bool DEBUGAGE=false;
 
 
 /********** FIN de la zone des variables et constantes
@@ -40,7 +40,7 @@ void setup(){
 /** Fonction de départ, se fait appeler à chaque fois qu'elle est terminée */
 void loop(){
     //boucle de test : code temporaire qui peut être remplacé et effacé
-    while(DEBUG){
+    while(DEBUGAGE){
         //code temporaire qui peut être remplacé et effacé
     }
     //fin boucle de test
