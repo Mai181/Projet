@@ -10,21 +10,71 @@
 
 #include <Arduino.h>
 #include <librobus.h>
+#include <GroveColorSensor.h>
+
+
 
 /********** 
  * Début de la zone des variables et constantes */
 //
+GroveColorSensor colorSensor;
+int numTest = 5;  // nb of tests
 
 
 /**Délai en ms entre chaque itération du loop */
-CONST int DT=50;
+//CONST 
+int DT=50;
 /** Boucle de débug */
-CONST bool DEBUG=false;
+//CONST 
+bool DEBUG=false;
 
 
 /********** FIN de la zone des variables et constantes
  * Début de la zone des fonctions */
 //
+/**Fonction détecte couleur et retourne valeur entre -1 et 3 selon s'il y a un erreur ou selon la couleur détectée
+ * @return -1=inconnu, 0=red, 1=green, 2=blue, 3=yellow
+*/
+int detectColor() {
+    int redSum = 0, greenSum = 0, blueSum = 0;
+    int color= -1;
+
+    // Multiple tests
+    for (int i = 0; i < numTest; i++) {
+        int red, green, blue;
+        colorSensor.readRGB(&red, &green, &blue);  // Read RGB values
+
+        redSum += red;  //sum tests
+        greenSum += green;
+        blueSum += blue;
+
+        delay(50);
+    }
+    
+    // Calculate avg
+    int redAvg = redSum / numTest;
+    int greenAvg = greenSum / numTest;
+    int blueAvg = blueSum / numTest;
+
+    // Determine color based on avg
+    if (redAvg > greenAvg && redAvg > blueAvg) {
+        Serial.print("Detected Color: Red");
+        color= 0;
+    } else if (greenAvg > redAvg && greenAvg > blueAvg) {
+        Serial.print("Detected Color: Green");
+        color= 1;
+    } else if (blueAvg > redAvg && blueAvg > greenAvg) {
+        Serial.print("Detected Color: Blue");
+        color= 2;
+    } else if (redAvg > greenAvg && greenAvg > blueAvg) {
+        Serial.print("Detected Color: Yellow");
+        color= 3; // Yellow detected as red + green
+    } else {
+        Serial.print("Detected Color: Unknown");
+    }
+    colorSensor.clearInterrupt();
+    return color;
+}
 
 
 /********** FIN de la zone des fonctions
@@ -35,6 +85,7 @@ CONST bool DEBUG=false;
 void setup(){
 	BoardInit();
     Serial.begin(9600); //Communication à 9600 bits/sec
+    colorSensor.ledStatus = 1;
 }
 
 /** Fonction de départ, se fait appeler à chaque fois qu'elle est terminée */
