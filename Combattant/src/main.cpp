@@ -26,7 +26,7 @@ int numTest = 5;  // nb of tests
 
 const int DT=50;
 /** Boucle de débug */
-const bool DEBUGAGE=false;
+const bool DEBUGAGE=true;
 
 
 /********** FIN de la zone des variables et constantes
@@ -113,6 +113,17 @@ void loop(){
     //boucle de test : code temporaire qui peut être remplacé et effacé
     while(DEBUGAGE){
         //code temporaire qui peut être remplacé et effacé
+        Serial.print("Couleur détectée : ");
+        Serial.println(detectColor());
+        delay(500);
+        /*
+        Serial.print("mouvement servo ouvert ");
+        SERVO_ouvert(true);
+        delay(1000);
+        Serial.print("mouvement servo fermé ");
+        SERVO_ouvert(false);
+        delay(500);
+        */
     }
     //fin boucle de test
 
