@@ -104,6 +104,7 @@ void INIT_servos(){
 void setup(){
 	BoardInit();
     Serial.begin(9600); //Communication à 9600 bits/sec
+    Wire.begin();
     colorSensor.ledStatus = 1;
     INIT_servos();
 }
