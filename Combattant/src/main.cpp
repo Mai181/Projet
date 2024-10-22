@@ -21,9 +21,8 @@
 GroveColorSensor colorSensor;
 int numTest = 5;  // nb of tests
 
-
+int dataSuiveurLigne[3];
 /**Délai en ms entre chaque itération du loop */
-
 const int DT=50;
 /** Boucle de débug */
 const bool DEBUGAGE=true;
@@ -76,8 +75,7 @@ int detectColor() {
     Serial.println("detectColor finished");
     return color;
 }
-    /**Lorsque la fonction est appelée, soit que les servomoteurs sont fermés (45) ou ouverts (135)
-     */
+/**Lorsque la fonction est appelée, soit que les servomoteurs sont fermés (45) ou ouverts (135)*/
 void SERVO_ouvert(bool ouvert) {
     
     uint8_t servoAngle = 45;	// angle servomoteur lorsque fermé
@@ -92,6 +90,16 @@ void INIT_servos(){
     SERVO_Enable(0);
     SERVO_Enable(1);
     SERVO_ouvert(true);
+}
+
+/**Écrit un tableau des retour des capteurs
+ * 0=noir
+ * 1=blanc
+ */
+void suiveurLigne(){
+    dataSuiveurLigne[0]=digitalRead(52);
+    dataSuiveurLigne[1]=digitalRead(50);
+    dataSuiveurLigne[2]=digitalRead(48);
 }
 
 
@@ -135,6 +143,12 @@ void loop(){
         Serial.print("mouvement servo fermé ");
         SERVO_ouvert(false);
         */
+        Serial.print("U1 : ");
+        Serial.println(dataSuiveurLigne[0]);
+        Serial.print("U2 : ");
+        Serial.println(dataSuiveurLigne[1]);
+        Serial.print("U3 : ");
+        Serial.println(dataSuiveurLigne[2]);
         Serial.println("loop test finished");
         delay(500);
     }
