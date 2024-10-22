@@ -73,6 +73,7 @@ int detectColor() {
         Serial.print("Detected Color: Unknown");
     }
     colorSensor.clearInterrupt();
+    Serial.println("detectColor finished");
     return color;
 }
     /**Lorsque la fonction est appelée, soit que les servomoteurs sont fermés (45) ou ouverts (135)
@@ -107,6 +108,7 @@ void setup(){
     Wire.begin();
     colorSensor.ledStatus = 1;
     INIT_servos();
+    Serial.println("Setup finished");
 }
 
 /** Fonction de départ, se fait appeler à chaque fois qu'elle est terminée */
@@ -116,19 +118,21 @@ void loop(){
         //code temporaire qui peut être remplacé et effacé
         Serial.print("Couleur détectée : ");
         Serial.println(detectColor());
-        delay(500);
         /*
+        delay(500);
         Serial.print("mouvement servo ouvert ");
         SERVO_ouvert(true);
         delay(1000);
         Serial.print("mouvement servo fermé ");
         SERVO_ouvert(false);
-        delay(500);
         */
+        Serial.println("loop finished");
+        delay(500);
     }
     //fin boucle de test
 
 
 
+    Serial.println("loop finished");
     delay(DT);
 }
