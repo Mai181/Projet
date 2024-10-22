@@ -119,6 +119,7 @@ void loop(){
     while(DEBUGAGE){
         //code temporaire qui peut être remplacé et effacé
         Serial.println("loop test started");
+        MOTOR_SetSpeed(1,0.5);
         Serial.print("Couleur détectée : ");
         Serial.println(detectColor());
         /*
