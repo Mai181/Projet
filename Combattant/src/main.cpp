@@ -111,11 +111,11 @@ void suiveurLigne(){
 
 /** Fonction de départ, se fait appeler une seule fois au début du programme*/
 
-void setup(){
+void setup() {
 	BoardInit();
     Serial.begin(9600); //Communication à 9600 bits/sec
-    Serial.println("Setup started");
     delay(10);
+    Serial.println("Setup started");
     MOTOR_SetSpeed(0,-0.25);
     delay(100);
     //Wire.begin();
@@ -125,7 +125,6 @@ void setup(){
 }
 
 /** Fonction de départ, se fait appeler à chaque fois qu'elle est terminée */
-
 void loop(){
     //boucle de test : code temporaire qui peut être remplacé et effacé
     Serial.println("loop started");
@@ -133,9 +132,9 @@ void loop(){
         //code temporaire qui peut être remplacé et effacé
         Serial.println("loop test started");
         MOTOR_SetSpeed(1,0.5);
+        /*
         Serial.print("Couleur détectée : ");
         Serial.println(detectColor());
-        /*
         delay(500);
         Serial.print("mouvement servo ouvert ");
         SERVO_ouvert(true);
