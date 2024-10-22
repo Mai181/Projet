@@ -11,6 +11,7 @@
 #include <Arduino.h>
 #include <librobus.h>
 #include <GroveColorSensor.h>
+#include <stdint.h>
 
 
 
@@ -74,6 +75,25 @@ int detectColor() {
     colorSensor.clearInterrupt();
     return color;
 }
+    /**Lorsque la fonction est appelée, soit que les servomoteurs sont fermés (45) ou ouverts (135)
+     */
+void SERVO_ouvert(bool ouvert) {
+    
+    uint8_t servoAngle = 45;	// angle servomoteur lorsque fermé
+        if (ouvert){
+            servoAngle = 135;   // angle servomoteur lorsque ouvert
+        }
+
+    SERVO_SetAngle(0, servoAngle);  // Servomoteur gauche
+    SERVO_SetAngle(1, 180 - servoAngle); // Servomoteur droit
+}
+void INIT_servos(){
+    SERVO_Enable(0);
+    SERVO_Enable(1);
+    SERVO_ouvert(true);
+}
+
+
 
 
 /********** FIN de la zone des fonctions
@@ -85,6 +105,7 @@ void setup(){
 	BoardInit();
     Serial.begin(9600); //Communication à 9600 bits/sec
     colorSensor.ledStatus = 1;
+    INIT_servos();
 }
 
 /** Fonction de départ, se fait appeler à chaque fois qu'elle est terminée */
