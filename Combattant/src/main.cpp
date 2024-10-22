@@ -105,6 +105,7 @@ void INIT_servos(){
 void setup(){
 	BoardInit();
     Serial.begin(9600); //Communication à 9600 bits/sec
+    Serial.println("Setup started");
     Wire.begin();
     colorSensor.ledStatus = 1;
     INIT_servos();
@@ -114,8 +115,10 @@ void setup(){
 /** Fonction de départ, se fait appeler à chaque fois qu'elle est terminée */
 void loop(){
     //boucle de test : code temporaire qui peut être remplacé et effacé
+    Serial.println("loop started");
     while(DEBUGAGE){
         //code temporaire qui peut être remplacé et effacé
+        Serial.println("loop test started");
         Serial.print("Couleur détectée : ");
         Serial.println(detectColor());
         /*
@@ -126,7 +129,7 @@ void loop(){
         Serial.print("mouvement servo fermé ");
         SERVO_ouvert(false);
         */
-        Serial.println("loop finished");
+        Serial.println("loop test finished");
         delay(500);
     }
     //fin boucle de test
