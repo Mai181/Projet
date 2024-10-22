@@ -102,11 +102,14 @@ void INIT_servos(){
 //
 
 /** Fonction de départ, se fait appeler une seule fois au début du programme*/
+
 void setup(){
 	BoardInit();
     Serial.begin(9600); //Communication à 9600 bits/sec
     Serial.println("Setup started");
+    delay(10);
     MOTOR_SetSpeed(0,-0.25);
+    delay(100);
     //Wire.begin();
     //colorSensor.ledStatus = 1;
     //INIT_servos();
@@ -114,6 +117,7 @@ void setup(){
 }
 
 /** Fonction de départ, se fait appeler à chaque fois qu'elle est terminée */
+
 void loop(){
     //boucle de test : code temporaire qui peut être remplacé et effacé
     Serial.println("loop started");
