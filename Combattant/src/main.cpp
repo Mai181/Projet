@@ -106,6 +106,7 @@ void setup(){
 	BoardInit();
     Serial.begin(9600); //Communication à 9600 bits/sec
     Serial.println("Setup started");
+    MOTOR_SetSpeed(0,-0.25);
     Wire.begin();
     colorSensor.ledStatus = 1;
     INIT_servos();
