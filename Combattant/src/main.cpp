@@ -111,7 +111,7 @@ void INIT_servos(){
  * 0=noir
  * 1=blanc
  */
-void suiveurLigne(){
+void detecteurligne(){
     dataSuiveurLigne[0]=digitalRead(52);
     dataSuiveurLigne[1]=digitalRead(50);
     dataSuiveurLigne[2]=digitalRead(48);
@@ -177,6 +177,7 @@ int directionCouleur(){
 
     return direction;
 }
+
 // Fonction pour limiter une valeur dans une plage donnée
 float limiterRot(float valeur, float minVal, float maxVal) {
     if (valeur > maxVal) return maxVal;
@@ -184,7 +185,187 @@ float limiterRot(float valeur, float minVal, float maxVal) {
     return valeur;
 }
 
-// Lecture de la vitesse de la roue droite
+                            /*************************Fonctions pour les déplacements**************************/
+                            
+// Fonction pour limiter une valeur dans une plage donnée
+float limiter(float valeur, float minVal, float maxVal) {
+    if (valeur > maxVal) return maxVal;
+    if (valeur < minVal) return minVal;
+    return valeur;
+}
+
+// Lecture de la vitesse de la roue droite en ligne droite
+float lireVitesseDroit() {
+    int32_t posInit = ENCODER_Read(RIGHT);
+    delay(50);
+    float vitesse = (ENCODER_Read(RIGHT) - posInit) / 50.0;
+    return vitesse;
+}
+
+// Lecture de la vitesse de la roue gauche en ligne droite
+float lireVitesseGauche() {
+    int32_t posInit = ENCODER_Read(LEFT);
+    delay(50);
+    float vitesse = (ENCODER_Read(LEFT) - posInit) / 50.0;
+    return vitesse;
+}
+
+// Fonction de régulation PI pour ajuster les vitesses des moteurs
+float CorrigerVitesse(float vd, float vg, float erreurAccumuleeDroite) {
+    //Parametre du PI
+    float Ki1 = 0.0006;  // Gain intégral pour B elever 200 pulse pour la fin
+    float Kp1 = 0.0017;  // Gain proportionnel pour B
+    float totalpulseDroit = ENCODER_Read(RIGHT);
+    float totalpulseGauche = ENCODER_Read(LEFT);
+
+    // Calcul des écarts entre la consigne et la mesure
+    float ecartDroit = totalpulseGauche - totalpulseDroit;
+    Serial.print("ecrat:");
+    Serial.println(ecartDroit);
+
+    // Calcul des termes proportionnels
+    float termePropDroit = ecartDroit * Kp1;
+    Serial.print("termePropDroit:");
+    Serial.println(termePropDroit);
+
+    // Mise à jour des erreurs accumulées pour l'intégrale
+    erreurAccumuleeDroite += ecartDroit * 0.05;
+
+    // Calcul des termes intégrals
+    float termeIntDroit = erreurAccumuleeDroite * Ki1;
+    // Calcul des corrections finales en limitant la vitesse pour éviter des valeurs trop élevées
+    float correctionDroit = limiter(vd + termePropDroit + termeIntDroit, -1.0, 1.0);
+
+    // Application des corrections aux moteurs
+    MOTOR_SetSpeed(RIGHT, correctionDroit);
+    MOTOR_SetSpeed(LEFT, vg);
+    Serial.println(correctionDroit);
+
+    return erreurAccumuleeDroite;
+}
+
+// Fonction pour l'accélération progressive
+float accel(float vd, float vg, float erreurAccumuleeDroite) {
+    for (int i = 1; i <= 10; i++) {
+        erreurAccumuleeDroite = CorrigerVitesse(i * (vd / 10), i * (vg / 10), erreurAccumuleeDroite);
+        delay(75);  // Attendre un peu entre chaque étape d'accélération
+    }
+    return erreurAccumuleeDroite;
+}
+
+// Fonction de décélération progressive
+float decel(int pulse, float vd, float vg, float erreurAccumuleeDroite) {
+    int pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2);
+    int i = 4;
+
+    while (pulsesRestants > 200) {
+          if (i >= 1){
+          erreurAccumuleeDroite = CorrigerVitesse(i * (vd / 5), i * (vg / 5), erreurAccumuleeDroite);
+          delay(50);  // Attendre un peu entre chaque étape d'accélération
+          i--;
+          }
+          
+          pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2);
+      }
+    // Assurer l'arrêt complet des moteurs
+    MOTOR_SetSpeed(LEFT, 0);
+    MOTOR_SetSpeed(RIGHT, 0);
+    return erreurAccumuleeDroite;
+}
+
+// Fonction pour arrêter les moteurs
+void stop() {
+    MOTOR_SetSpeed(LEFT, 0);
+    MOTOR_SetSpeed(RIGHT, 0);
+}
+
+// Fonction pour faire avancer le robot sur une distance donnée
+void deplacement(float dist) {
+    float vd = 0.6;  // Vitesse désirée droite
+    float vg = 0.6;  // Vitesse désirée gauche
+    int ptr = 3200;  // Nombre de pulses par rotation
+    float circRoue = 23.94;  // Circonférence de la roue en cm
+    float pulseParCM = ptr / circRoue;  // Calcul du nombre de pulses par cm
+    int pulse = dist * pulseParCM;  // Nombre de pulses pour la distance donnée
+    int pulseArret = 15 * pulseParCM;  // Distance nécessaire pour arrêter (en pulses)
+    float erreurAccumuleeDroite =0; //erreur accumuler de la roue droite pi le I du PI
+    float distanceParcourue = 0; // Suivi de la distance parcourue
+
+    // Réinitialisation des encodeurs
+    ENCODER_Reset(RIGHT);
+    ENCODER_Reset(LEFT);
+
+    // Accélération progressive
+    erreurAccumuleeDroite = accel(vd, vg, erreurAccumuleeDroite);
+    delay(50);
+
+    // Avancer jusqu'à presque atteindre la distance cible
+    while (((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2) < (pulse - pulseArret)) {
+
+        // Mettre à jour la distance parcourue en cm
+        distanceParcourue = ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2) / pulseParCM;
+
+        // Correction des vitesses en fonction de la distance parcourue
+        erreurAccumuleeDroite = CorrigerVitesse(vd, vg, erreurAccumuleeDroite);
+
+        // Pause pour laisser le temps aux corrections
+        delay(50);
+    }
+
+    // Décélération progressive
+    erreurAccumuleeDroite = decel(pulse, vd, vg, erreurAccumuleeDroite);
+}
+
+// Fonction qui permet au robot de suivre une ligne
+void suivreligne(){
+    float vitesseBaseDroit = 0.6;  // Vitesse désirée droite
+    float vitesseBaseGauche = 0.6;  // Vitesse désirée gauche
+    float vitesseDroit;
+    float vitesseGauche;
+    float correction = 0.05;
+    float erreurAccumuleeDroite =0; //erreur accumuler de la roue droite pi le I du PI
+
+    detecteurligne();
+    //determine qu'il y a une ligne a suivre
+    if(dataSuiveurLigne[0] == 0 && dataSuiveurLigne[1] == 1 && dataSuiveurLigne[0] == 0){
+        erreurAccumuleeDroite = accel(vitesseBaseDroit, vitesseBaseGauche, erreurAccumuleeDroite);
+
+        while(dataSuiveurLigne[0] == 1 && dataSuiveurLigne[1] == 1 && dataSuiveurLigne[0] == 1){
+            detecteurligne();
+            //détermine qu'il est trop à gauche
+            if(dataSuiveurLigne[0] == 1 && dataSuiveurLigne[1] == 1 && dataSuiveurLigne[0] == 0){
+                vitesseDroit = vitesseBaseDroit + (correction * 1);
+                vitesseGauche = vitesseBaseGauche + (correction * -1);
+            }
+            //détermine qu'il est trop à droite
+            else if(dataSuiveurLigne[0] == 0 && dataSuiveurLigne[1] == 1 && dataSuiveurLigne[0] == 1){
+                vitesseDroit = vitesseBaseDroit + (correction * -1);
+                vitesseGauche = vitesseBaseGauche + (correction * 1);
+            }
+            //détermine qu'il est trop à gauche
+            else if(dataSuiveurLigne[0] == 1 && dataSuiveurLigne[1] == 0 && dataSuiveurLigne[0] == 0){
+                vitesseDroit = vitesseBaseDroit + (correction * 2);
+                vitesseGauche = vitesseBaseGauche + (correction * -2);
+            }
+            //détermine qu'il est trop à droite
+            else if(dataSuiveurLigne[0] == 0 && dataSuiveurLigne[1] == 0 && dataSuiveurLigne[0] == 1){
+                vitesseDroit = vitesseBaseDroit + (correction * -2);
+                vitesseGauche = vitesseBaseGauche + (correction * 2);
+            }
+            else{
+                erreurAccumuleeDroite = CorrigerVitesse(vitesseBaseDroit, vitesseBaseGauche, erreurAccumuleeDroite);
+            }
+            MOTOR_SetSpeed(LEFT, vitesseGauche);
+            MOTOR_SetSpeed(RIGHT, vitesseDroit);
+            delay(50);
+        }
+        erreurAccumuleeDroite = decel(32000, vitesseDroit, vitesseGauche, erreurAccumuleeDroite);
+    }
+}
+
+                                /*************************Fonctions pour la rotation**************************/
+
+// Lecture de la vitesse de la roue droite en rotation
 float lireVitesseDroitRot() {
     int32_t posInit = ENCODER_Read(RIGHT);
     delay(10);
@@ -192,7 +373,7 @@ float lireVitesseDroitRot() {
     return vitesse;
 }
 
-// Lecture de la vitesse de la roue gauche
+// Lecture de la vitesse de la roue gauche en rotation
 float lireVitesseGaucheRot() {
     int32_t posInit = ENCODER_Read(LEFT);
     delay(10);
@@ -201,7 +382,7 @@ float lireVitesseGaucheRot() {
 }
 
 // Fonction de régulation PI pour ajuster les vitesses des moteurs
-void CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, float RerreurAccumuleeDroite) {
+float CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, float RerreurAccumuleeDroite) {
     float vitesseDroit = lireVitesseDroitRot();
     float vitesseGauche = lireVitesseGaucheRot();
     float RKi1 = 0.006;  // Gain intégral
@@ -245,17 +426,16 @@ void CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, f
 }
 
 // Fonction qui fait tourner le robot a gauche
-// a = angle de rotation en degré
 void rotationGauche(float a) {
+    // a = angle de rotation en degré
     ENCODER_Reset(RIGHT);
     ENCODER_Reset(LEFT);
     float pulse = (cirCerRot)/((tour/a)*cirRoue)*pulseTourRoue;
-    float verif = (pulseTourRoue/cirRoue)*(a*(cirCerRot/tour));
     float pulseGauche;
     float pulseDroite;
     int tourneGauche =0;
     int tourneDroite =0;
-    float RerreurAccumuleeDroite = 0;  // Somme des erreurs accumulées pour la roue droite
+    float RerreurAccumuleeDroite;  // Somme des erreurs accumulées pour la roue droite
 
     while(tourneDroite == 0 || tourneGauche == 0){
         pulseGauche = ENCODER_Read(LEFT);
@@ -279,8 +459,8 @@ void rotationGauche(float a) {
 }
 
 // Fonction qui fait tourner le robot à droite
-// a = angle de rotation en degré
 void rotationDroite(float a) {
+    // a = angle de rotation en degré
     ENCODER_Reset(RIGHT);
     ENCODER_Reset(LEFT);
     float pulse = (cirCerRot)/((tour/a)*cirRoue)*pulseTourRoue;
@@ -311,7 +491,7 @@ void rotationDroite(float a) {
     }
 }
 
-//Fonction qui permet d'appaler les bonne fonction en fontion de la direction désiré
+// Fonction qui permet de faire un rotation de manière globale (pas de gauche ou droite, plutot -90 et 90 degrés)
 void rotationGlobal(float angle){
     if(angle > 0){
         rotationDroite(angle);
@@ -373,6 +553,9 @@ void loop(){
         Serial.print("U3 : ");
         Serial.println(dataSuiveurLigne[2]);
         Serial.println("loop test finished");
+        rotationGlobal(90.0);
+        delay(500);
+        rotationGlobal(-90.0);
         delay(500);
     }
     //fin boucle de test

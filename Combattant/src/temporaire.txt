@@ -1,5 +1,5 @@
 // fonction main 
-
+#include <librobus.h>
 //fonction - Avancer d'un distance données
 /*reprise du code du défi du parcour*/
 
@@ -115,7 +115,7 @@ void deplacement(float dist) {
     ENCODER_Reset(LEFT);
 
     // Accélération progressive
-    accel(vd, vg);
+    erreurAccumuleeDroite = accel(vd, vg, erreurAccumuleeDroite);
     delay(50);
 
     // Avancer jusqu'à presque atteindre la distance cible
@@ -132,7 +132,7 @@ void deplacement(float dist) {
     }
 
     // Décélération progressive
-    decel(pulse, vd, vg);
+    erreurAccumuleeDroite = decel(pulse, vd, vg, erreurAccumuleeDroite);
 }
 
 
@@ -151,7 +151,7 @@ void suivreligne(){
     detecteurligne()
     //determine qu'il y a une ligne a suivre
     if(dataSuiveurLigne[0] == 0 && dataSuiveurLigne[1] == 1 && dataSuiveurLigne[0] == 0){
-        accel(vd, vg);
+        erreurAccumuleeDroite = accel(vd, vg, erreurAccumuleeDroite);
 
         while(dataSuiveurLigne[0] == 1 && dataSuiveurLigne[1] == 1 && dataSuiveurLigne[0] == 1){
             detecteurligne()
@@ -182,7 +182,7 @@ void suivreligne(){
             MOTOR_SetSpeed(RIGHT, vitesseDroit);
             delay(50);
         }
-        decel(32000, vitesseDroit, vitesseGauche);
+        erreurAccumuleeDroite = decel(32000, vitesseDroit, vitesseGauche, erreurAccumuleeDroite);
     }
 }
 
