@@ -34,7 +34,7 @@ const bool DEBUGAGE=true;
 /********** FIN de la zone des variables et constantes
  * Début de la zone des fonctions */
 //
-/**Fonction détecte couleur et retourne couleur détectée ou erreur selon s'il y a un erreur ou selon la couleur détectée
+/** Fonction détecte couleur et retourne couleur détectée ou erreur selon s'il y a un erreur ou selon la couleur détectée
  * @return "E"=inconnu, "R"=red, "V"=green, "B"=blue, "J"=yellow
 */
 char detectColor() {
@@ -90,7 +90,8 @@ char detectColor() {
     return color;
 }
 
-/*Lorsque la fonction est appelée, soit que les servomoteurs sont fermés (45) ou ouverts (135)*/
+/** Lorsque la fonction est appelée, soit que les servomoteurs sont 
+ * fermés (45) ou ouverts (135)*/
 void SERVO_ouvert(bool ouvert) {
     
     uint8_t servoAngle = 45;	// angle servomoteur lorsque fermé
@@ -101,13 +102,16 @@ void SERVO_ouvert(bool ouvert) {
     SERVO_SetAngle(0, servoAngle);  // Servomoteur gauche
     SERVO_SetAngle(1, 180 - servoAngle); // Servomoteur droit
 }
+/** 
+ * 
+*/
 void INIT_servos(){
     SERVO_Enable(0);
     SERVO_Enable(1);
     SERVO_ouvert(true);
 }
 
-// Fonction de lecture du capteur de ligne
+/** Fonction de lecture du capteur de ligne*/
 void detecteurligne(){
 /**Écrit un tableau des retour des capteurs
  * 0=noir
@@ -118,22 +122,12 @@ void detecteurligne(){
     dataSuiveurLigne[2]=digitalRead(48);
 }
 
+/** Detecte s'il y a un objet dans sa vision
+ * @return Une valeur réelle correspondant à la distance entre le 
+ * capteur et l'objet
+*/
 int detectionObjet(){
-    /*
-    int capteurHaut=analogRead(A7);
-    int capteurBas=analogRead(A6);
-
-    Serial.print("captDisHaut : ");
-    Serial.println(capteurHaut);
-    Serial.print("captDisBas : ");
-    Serial.println(capteurBas);
-    if (capteurHaut+20>capteurBas&&capteurBas+20>capteurHaut){
-        return -1;
-    }
-
-    return capteurHaut-capteurBas;
-    */
-    float res=0;
+    float res=0.0;
     int current=0;
     int test=25;
     int min=analogRead(A6);
@@ -146,17 +140,18 @@ int detectionObjet(){
             max=current;
         }
         res+=current;
-        delay(5000/test);
+        delay(50/test);
     }
     Serial.print("min : ");
     Serial.println(min);
     Serial.print("max : ");
     Serial.println(max);
-    return res/(float)test;
+    return 1/(0.0001*(res/((float) test))+0.0018);
 }
 
-// Fonction direction en fonction de la couleur (en degré)
-// Retourne int (0, 90, 180, 270)
+/** Fonction direction en fonction de la couleur (en degré)
+    @return int (0, 90, 180, 270)
+*/
 int directionCouleur(){
     int direction;
     char current = detectColor();
@@ -179,7 +174,9 @@ int directionCouleur(){
     return direction;
 }
 
-// Fonction pour limiter une valeur dans une plage donnée
+/** Fonction pour limiter une valeur dans une plage donnée
+ * @return
+*/
 float limiterRot(float valeur, float minVal, float maxVal) {
     if (valeur > maxVal) return maxVal;
     if (valeur < minVal) return minVal;
@@ -188,14 +185,18 @@ float limiterRot(float valeur, float minVal, float maxVal) {
 
                             /*************************Fonctions pour les déplacements**************************/
                             
-// Fonction pour limiter une valeur dans une plage donnée
+/** Fonction pour limiter une valeur dans une plage donnée
+ * @return
+*/
 float limiter(float valeur, float minVal, float maxVal) {
     if (valeur > maxVal) return maxVal;
     if (valeur < minVal) return minVal;
     return valeur;
 }
 
-// Lecture de la vitesse de la roue droite en ligne droite
+/** Lecture de la vitesse de la roue droite en ligne droite
+ * @return
+*/
 float lireVitesseDroit() {
     int32_t posInit = ENCODER_Read(RIGHT);
     delay(50);
@@ -203,7 +204,9 @@ float lireVitesseDroit() {
     return vitesse;
 }
 
-// Lecture de la vitesse de la roue gauche en ligne droite
+/** Lecture de la vitesse de la roue gauche en ligne droite
+ * @return
+*/
 float lireVitesseGauche() {
     int32_t posInit = ENCODER_Read(LEFT);
     delay(50);
@@ -211,7 +214,9 @@ float lireVitesseGauche() {
     return vitesse;
 }
 
-// Fonction de régulation PI pour ajuster les vitesses des moteurs
+/** Fonction de régulation PI pour ajuster les vitesses des moteurs
+ * @return
+*/
 float CorrigerVitesse(float vd, float vg, float erreurAccumuleeDroite) {
     //Parametre du PI
     float Ki1 = 0.0006;  // Gain intégral pour B elever 200 pulse pour la fin
@@ -245,7 +250,9 @@ float CorrigerVitesse(float vd, float vg, float erreurAccumuleeDroite) {
     return erreurAccumuleeDroite;
 }
 
-// Fonction pour l'accélération progressive
+/** Fonction pour l'accélération progressive
+ * @return
+*/
 float accel(float vd, float vg, float erreurAccumuleeDroite) {
     for (int i = 1; i <= 10; i++) {
         erreurAccumuleeDroite = CorrigerVitesse(i * (vd / 10), i * (vg / 10), erreurAccumuleeDroite);
@@ -254,7 +261,9 @@ float accel(float vd, float vg, float erreurAccumuleeDroite) {
     return erreurAccumuleeDroite;
 }
 
-// Fonction de décélération progressive
+/** Fonction de décélération progressive
+ * @return
+*/
 float decel(int pulse, float vd, float vg, float erreurAccumuleeDroite) {
     int pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2);
     int i = 4;
@@ -274,13 +283,17 @@ float decel(int pulse, float vd, float vg, float erreurAccumuleeDroite) {
     return erreurAccumuleeDroite;
 }
 
-// Fonction pour arrêter les moteurs
+/** Fonction pour arrêter les moteurs
+ * @return
+*/
 void stop() {
     MOTOR_SetSpeed(LEFT, 0);
     MOTOR_SetSpeed(RIGHT, 0);
 }
 
-// Fonction pour faire avancer le robot sur une distance donnée
+/** Fonction pour faire avancer le robot sur une distance donnée
+ * @return
+*/
 void deplacement(float dist) {
     float vd = 0.6;  // Vitesse désirée droite
     float vg = 0.6;  // Vitesse désirée gauche
@@ -317,7 +330,9 @@ void deplacement(float dist) {
     erreurAccumuleeDroite = decel(pulse, vd, vg, erreurAccumuleeDroite);
 }
 
-// Fonction qui permet au robot de suivre une ligne
+/** Fonction qui permet au robot de suivre une ligne
+ * @return
+*/
 void suivreligne(){
     float vitesseBaseDroit = 0.6;  // Vitesse désirée droite
     float vitesseBaseGauche = 0.6;  // Vitesse désirée gauche
@@ -366,7 +381,9 @@ void suivreligne(){
 
                                 /*************************Fonctions pour la rotation**************************/
 
-// Lecture de la vitesse de la roue droite en rotation
+/** Lecture de la vitesse de la roue droite en rotation
+ * @return
+*/
 float lireVitesseDroitRot() {
     int32_t posInit = ENCODER_Read(RIGHT);
     delay(10);
@@ -374,7 +391,9 @@ float lireVitesseDroitRot() {
     return vitesse;
 }
 
-// Lecture de la vitesse de la roue gauche en rotation
+/** Lecture de la vitesse de la roue gauche en rotation
+ * @return
+*/
 float lireVitesseGaucheRot() {
     int32_t posInit = ENCODER_Read(LEFT);
     delay(10);
@@ -382,7 +401,9 @@ float lireVitesseGaucheRot() {
     return vitesse;
 }
 
-// Fonction de régulation PI pour ajuster les vitesses des moteurs
+/** Fonction de régulation PI pour ajuster les vitesses des moteurs
+ * @return
+*/
 float CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, float RerreurAccumuleeDroite) {
     float vitesseDroit = lireVitesseDroitRot();
     float vitesseGauche = lireVitesseGaucheRot();
@@ -426,7 +447,7 @@ float CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, 
     return RerreurAccumuleeDroite;
 }
 
-// Fonction qui fait tourner le robot a gauche
+/** Fonction qui fait tourner le robot a gauche*/
 void rotationGauche(float a) {
     // a = angle de rotation en degré
     ENCODER_Reset(RIGHT);
@@ -459,7 +480,7 @@ void rotationGauche(float a) {
     }
 }
 
-// Fonction qui fait tourner le robot à droite
+/** Fonction qui fait tourner le robot à droite*/
 void rotationDroite(float a) {
     // a = angle de rotation en degré
     ENCODER_Reset(RIGHT);
@@ -492,7 +513,10 @@ void rotationDroite(float a) {
     }
 }
 
-// Fonction qui permet de faire un rotation de manière globale (pas de gauche ou droite, plutot -90 et 90 degrés)
+/** Fonction qui permet de faire un rotation de manière globale (pas de 
+ * gauche ou droite, plutot -90 et 90 degrés)
+ * @return
+*/
 void rotationGlobal(float angle){
     if(angle > 0){
         rotationDroite(angle);
@@ -502,10 +526,10 @@ void rotationGlobal(float angle){
     }
 }
 
-/******************************************** FIN de la zone des fonctions - Début du main***********************************************/
+/******************************************** FIN de la zone des fonctions
+ *  - Début du main***********************************************/
 
 /** Fonction de départ, se fait appeler une seule fois au début du programme*/
-
 void setup() {
 	BoardInit();
     Serial.begin(9600); //Communication à 9600 bits/sec
