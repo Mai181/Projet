@@ -13,7 +13,12 @@
 #include <Adafruit_TCS34725.h>
 #include <stdint.h>
 
-
+float cirCerRot = 58.0;  // circonferenceCercleRotation
+float cirRoue = 23.94;  // circonferenceRoue
+float tour = 360.0;
+float pulseTourRoue = 3200.0; 
+float vitesseRotationNeg = -0.17;  // vitesse négative du moteur 
+float vitesseRotationPos = 0.17;  // vitesse positive du moteur
 /********** 
  * Début de la zone des variables et constantes */
 //
@@ -85,7 +90,7 @@ char detectColor() {
     return color;
 }
 
-/**Lorsque la fonction est appelée, soit que les servomoteurs sont fermés (45) ou ouverts (135)*/
+/*Lorsque la fonction est appelée, soit que les servomoteurs sont fermés (45) ou ouverts (135)*/
 void SERVO_ouvert(bool ouvert) {
     
     uint8_t servoAngle = 45;	// angle servomoteur lorsque fermé
@@ -172,8 +177,151 @@ int directionCouleur(){
 
     return direction;
 }
+// Fonction pour limiter une valeur dans une plage donnée
+float limiterRot(float valeur, float minVal, float maxVal) {
+    if (valeur > maxVal) return maxVal;
+    if (valeur < minVal) return minVal;
+    return valeur;
+}
 
-/********** FIN de la zone des fonctions
+// Lecture de la vitesse de la roue droite
+float lireVitesseDroitRot() {
+    int32_t posInit = ENCODER_Read(RIGHT);
+    delay(10);
+    float vitesse = (ENCODER_Read(RIGHT) - posInit) / 10.0;
+    return vitesse;
+}
+
+// Lecture de la vitesse de la roue gauche
+float lireVitesseGaucheRot() {
+    int32_t posInit = ENCODER_Read(LEFT);
+    delay(10);
+    float vitesse = (ENCODER_Read(LEFT) - posInit) / 10.0;
+    return vitesse;
+}
+
+// Fonction de régulation PI pour ajuster les vitesses des moteurs
+void CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, float RerreurAccumuleeDroite) {
+    float vitesseDroit = lireVitesseDroitRot();
+    float vitesseGauche = lireVitesseGaucheRot();
+    float RKi1 = 0.006;  // Gain intégral
+    float RKp1 = 0.0017;  // Gain proportionnel pour A
+    if (vitesseGauche < 0){
+        vitesseGauche *= -1.0;
+    }
+    if (vitesseDroit < 0){
+        vitesseDroit *= -1.0;
+    }
+    // Calcul des écarts entre la consigne et la mesure
+    float ecartDroit = vitesseGauche - vitesseDroit;
+
+    // Calcul des termes proportionnels
+    float termePropDroit = ecartDroit * RKp1;
+
+    // Mise à jour des erreurs accumulées pour l'intégrale
+    RerreurAccumuleeDroite += ecartDroit * 0.01;
+
+    //calcul de erreur position total
+    
+
+    // Calcul des termes intégrals
+    float termeIntDroit = RerreurAccumuleeDroite * RKi1;
+
+    // Calcul des corrections finales en limitant la vitesse pour éviter des valeurs trop élevées
+    float correctionDroit = limiterRot(vd + termePropDroit + termeIntDroit, -1.0, 1.0);
+    Serial.print("vitesse droit:");
+    Serial.println(vitesseDroit);
+    Serial.print("vitesse gauche:");
+    Serial.println(vitesseGauche);
+
+    // Application des corrections aux moteurs
+    if (tourneDroit == 0){
+        MOTOR_SetSpeed(RIGHT, correctionDroit);
+    }
+    if (tourneGauche == 0){
+        MOTOR_SetSpeed(LEFT, vg);        
+    }
+    return RerreurAccumuleeDroite;
+}
+
+// Fonction qui fait tourner le robot a gauche
+// a = angle de rotation en degré
+void rotationGauche(float a) {
+    ENCODER_Reset(RIGHT);
+    ENCODER_Reset(LEFT);
+    float pulse = (cirCerRot)/((tour/a)*cirRoue)*pulseTourRoue;
+    float verif = (pulseTourRoue/cirRoue)*(a*(cirCerRot/tour));
+    float pulseGauche;
+    float pulseDroite;
+    int tourneGauche =0;
+    int tourneDroite =0;
+    float RerreurAccumuleeDroite = 0;  // Somme des erreurs accumulées pour la roue droite
+
+    while(tourneDroite == 0 || tourneGauche == 0){
+        pulseGauche = ENCODER_Read(LEFT);
+        pulseDroite = ENCODER_Read(RIGHT);
+        RerreurAccumuleeDroite = CorrigerVitesseRot(vitesseRotationPos, vitesseRotationNeg, tourneDroite, tourneGauche, RerreurAccumuleeDroite);
+
+        while ((pulseGauche < ((pulse-300.0) * -1.0) || pulseDroite > pulse-300.0) && (tourneDroite == 0 || tourneGauche == 0)){
+            pulseGauche = ENCODER_Read(LEFT);
+            pulseDroite = ENCODER_Read(RIGHT);
+            if (pulseGauche < ((pulse-50) * -1.0)){
+                MOTOR_SetSpeed(LEFT, 0);
+                tourneGauche = 1;
+            }
+            if (pulseDroite > (pulse-50)){
+                MOTOR_SetSpeed(RIGHT, 0);
+                tourneDroite = 1;
+            }
+            delay(10);
+        }
+    }
+}
+
+// Fonction qui fait tourner le robot à droite
+// a = angle de rotation en degré
+void rotationDroite(float a) {
+    ENCODER_Reset(RIGHT);
+    ENCODER_Reset(LEFT);
+    float pulse = (cirCerRot)/((tour/a)*cirRoue)*pulseTourRoue;
+    float pulseGauche;
+    float pulseDroite;
+    int tourneGauche =0;
+    int tourneDroite =0;
+    float RerreurAccumuleeDroite = 0;  // Somme des erreurs accumulées pour la roue droite
+
+    while(tourneDroite == 0 || tourneGauche == 0){
+        pulseGauche = ENCODER_Read(LEFT);
+        pulseDroite = ENCODER_Read(RIGHT);
+        RerreurAccumuleeDroite = CorrigerVitesseRot(vitesseRotationNeg, vitesseRotationPos, tourneDroite, tourneGauche, RerreurAccumuleeDroite);
+
+        while ((pulseDroite < ((pulse-300.0) * -1.0) || pulseDroite > pulse-300.0) && (tourneDroite == 0 || tourneGauche == 0)){
+            pulseGauche = ENCODER_Read(LEFT);
+            pulseDroite = ENCODER_Read(RIGHT);
+            if (pulseDroite  < ((pulse-50) * -1.0)){
+                MOTOR_SetSpeed(RIGHT, 0);
+                tourneGauche = 1;
+            }
+            if (pulseGauche > (pulse-50)){
+                MOTOR_SetSpeed(LEFT, 0);
+                tourneDroite = 1;
+            }
+            delay(10);
+        }
+    }
+}
+
+//Fonction qui permet d'appaler les bonne fonction en fontion de la direction désiré
+void rotationGlobal(float angle){
+    if(angle > 0){
+        rotationDroite(angle);
+    }
+    else if(angle < 0){
+        rotationGauche((angle * -1.0));
+    }
+}
+
+/****************************************************** FIN de la zone des fonctions***********************************************
  * Début du main */
 //
 

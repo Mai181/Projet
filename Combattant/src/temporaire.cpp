@@ -194,9 +194,6 @@ void suivreligne(){
     Date: 26 septembre 2024
     Description: code des rotation des robots
 ********/
-
-#include <librobus.h>
-#include <Rotations.h>
 /*-------------------------------!!Ces variables doivent être global!!--------------------------------*/
 
 float cirCerRot = 58.0;  // circonferenceCercleRotation
@@ -206,9 +203,6 @@ float pulseTourRoue = 3200.0;
 float vitesseRotationNeg = -0.17;  // vitesse négative du moteur 
 float vitesseRotationPos = 0.17;  // vitesse positive du moteur
 // vitesse a tester avec le robot
-
-// Paramètres du régulateur PI
-float RerreurAccumuleeDroite = 0;  // Somme des erreurs accumulées pour la roue droite
 
 //float RKi1 = 0.0006;  // Gain intégral pour B elever 200 pulse pour la fin
 //float RKp1 = 0.0017;  // Gain proportionnel pour B
