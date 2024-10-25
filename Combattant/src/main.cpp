@@ -107,11 +107,12 @@ void INIT_servos(){
     SERVO_ouvert(true);
 }
 
+// Fonction de lecture du capteur de ligne
+void detecteurligne(){
 /**Écrit un tableau des retour des capteurs
  * 0=noir
  * 1=blanc
  */
-void detecteurligne(){
     dataSuiveurLigne[0]=digitalRead(52);
     dataSuiveurLigne[1]=digitalRead(50);
     dataSuiveurLigne[2]=digitalRead(48);
@@ -501,9 +502,7 @@ void rotationGlobal(float angle){
     }
 }
 
-/****************************************************** FIN de la zone des fonctions***********************************************
- * Début du main */
-//
+/******************************************** FIN de la zone des fonctions - Début du main***********************************************/
 
 /** Fonction de départ, se fait appeler une seule fois au début du programme*/
 
