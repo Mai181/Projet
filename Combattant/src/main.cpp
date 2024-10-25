@@ -36,7 +36,7 @@ const bool DEBUGAGE=true;
 */
 char detectColor() {
     int redSum = 0, greenSum = 0, blueSum = 0;
-    char color;
+    char color = "erreur";
     int clear;
 
     // Multiple tests
@@ -81,7 +81,6 @@ char detectColor() {
         color = "rouge";
     } else {
         Serial.print("Detected Color: Unknown");
-        color = "erreur";
     }
     colorSensor.clearInterrupt();
     Serial.println("detectColor finished");
