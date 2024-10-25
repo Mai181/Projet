@@ -10,7 +10,7 @@
 
 #include <Arduino.h>
 #include <librobus.h>
-#include <GroveColorSensor.h>
+#include <Adafruit_TCS34725.h>
 #include <stdint.h>
 
 
@@ -18,7 +18,7 @@
 /********** 
  * Début de la zone des variables et constantes */
 //
-GroveColorSensor colorSensor;
+Adafruit_TCS34725 colorSensor;
 int numTest = 5;  // nb of tests
 
 int dataSuiveurLigne[3];
@@ -37,11 +37,12 @@ const bool DEBUGAGE=true;
 int detectColor() {
     int redSum = 0, greenSum = 0, blueSum = 0;
     int color= -1;
+    int clear;
 
     // Multiple tests
     for (int i = 0; i < numTest; i++) {
         int red, green, blue;
-        colorSensor.readRGB(&red, &green, &blue);  // Read RGB values
+        colorSensor.getRawData(&red, &green, &blue, &clear);  // Read RGB values
 
         redSum += red;  //sum tests
         greenSum += green;
@@ -51,23 +52,33 @@ int detectColor() {
     }
     
     // Calculate avg
-    int redAvg = redSum / numTest;
-    int greenAvg = greenSum / numTest;
-    int blueAvg = blueSum / numTest;
+    float redAvg = redSum / (float)numTest;
+    float greenAvg = greenSum / (float)numTest;
+    float blueAvg = blueSum / (float)numTest;
+    Serial.println("Red");
+    Serial.println(redAvg);
+    Serial.println("green");
+    Serial.println(greenAvg);
+    Serial.println("blue");
+    Serial.println(blueAvg);
+    Serial.println("clear");
+    Serial.println(clear);
 
     // Determine color based on avg
-    if (redAvg > greenAvg && redAvg > blueAvg) {
-        Serial.print("Detected Color: Red");
-        color= 0;
+    if (redSum>10 && greenSum>10 &&blueSum>10){
+        Serial.print("Detected Color: Unknown");
+    } else if (redAvg >= greenAvg && greenAvg > blueAvg) {
+        Serial.print("Detected Color: Yellow");
+        color= 3; // Yellow detected as red + green
     } else if (greenAvg > redAvg && greenAvg > blueAvg) {
         Serial.print("Detected Color: Green");
         color= 1;
     } else if (blueAvg > redAvg && blueAvg > greenAvg) {
         Serial.print("Detected Color: Blue");
         color= 2;
-    } else if (redAvg > greenAvg && greenAvg > blueAvg) {
-        Serial.print("Detected Color: Yellow");
-        color= 3; // Yellow detected as red + green
+    } else if (redAvg > greenAvg && redAvg > blueAvg) {
+        Serial.print("Detected Color: Red");
+        color= 0;
     } else {
         Serial.print("Detected Color: Unknown");
     }
@@ -75,6 +86,7 @@ int detectColor() {
     Serial.println("detectColor finished");
     return color;
 }
+
 /**Lorsque la fonction est appelée, soit que les servomoteurs sont fermés (45) ou ouverts (135)*/
 void SERVO_ouvert(bool ouvert) {
     
@@ -102,7 +114,42 @@ void suiveurLigne(){
     dataSuiveurLigne[2]=digitalRead(48);
 }
 
+int detectionObjet(){
+    /*
+    int capteurHaut=analogRead(A7);
+    int capteurBas=analogRead(A6);
 
+    Serial.print("captDisHaut : ");
+    Serial.println(capteurHaut);
+    Serial.print("captDisBas : ");
+    Serial.println(capteurBas);
+    if (capteurHaut+20>capteurBas&&capteurBas+20>capteurHaut){
+        return -1;
+    }
+
+    return capteurHaut-capteurBas;
+    */
+    float res=0;
+    int current=0;
+    int test=25;
+    int min=analogRead(A6);
+    int max=analogRead(A6);
+    for(int i=test;i>0;i--){
+        current=analogRead(A6);
+        if(min>current){
+            min=current;
+        }else if (max<current){
+            max=current;
+        }
+        res+=current;
+        delay(5000/test);
+    }
+    Serial.print("min : ");
+    Serial.println(min);
+    Serial.print("max : ");
+    Serial.println(max);
+    return res/(float)test;
+}
 
 
 /********** FIN de la zone des fonctions
@@ -114,14 +161,17 @@ void suiveurLigne(){
 void setup() {
 	BoardInit();
     Serial.begin(9600); //Communication à 9600 bits/sec
+    
     delay(10);
+    Serial.println("");
     Serial.println("Setup started");
-    MOTOR_SetSpeed(0,-0.25);
+    //MOTOR_SetSpeed(0,-0.05);
     delay(100);
     //Wire.begin();
     //colorSensor.ledStatus = 1;
     //INIT_servos();
     Serial.println("Setup finished");
+    
 }
 
 /** Fonction de départ, se fait appeler à chaque fois qu'elle est terminée */
@@ -131,7 +181,13 @@ void loop(){
     while(DEBUGAGE){
         //code temporaire qui peut être remplacé et effacé
         Serial.println("loop test started");
-        MOTOR_SetSpeed(1,0.5);
+        //MOTOR_SetSpeed(1,0.1);
+
+        float res =detectionObjet();
+        Serial.print("detectObjet : ");
+        Serial.println(res);
+
+
         /*
         Serial.print("Couleur détectée : ");
         Serial.println(detectColor());
