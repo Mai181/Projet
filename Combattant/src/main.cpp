@@ -14,7 +14,6 @@
 #include <stdint.h>
 
 
-
 /********** 
  * Début de la zone des variables et constantes */
 //
@@ -22,21 +21,20 @@ Adafruit_TCS34725 colorSensor;
 int numTest = 5;  // nb of tests
 
 int dataSuiveurLigne[3];
-/**Délai en ms entre chaque itération du loop */
+/** Délai en ms entre chaque itération du loop */
 const int DT=50;
 /** Boucle de débug */
 const bool DEBUGAGE=true;
-
 
 /********** FIN de la zone des variables et constantes
  * Début de la zone des fonctions */
 //
 /**Fonction détecte couleur et retourne couleur détectée ou erreur selon s'il y a un erreur ou selon la couleur détectée
- * @return "erreur"=inconnu, "rouge"=red, "vert"=green, "bleu"=blue, "jaune"=yellow
+ * @return "E"=inconnu, "R"=red, "V"=green, "B"=blue, "J"=yellow
 */
 char detectColor() {
     int redSum = 0, greenSum = 0, blueSum = 0;
-    char color = "erreur";
+    char color = 'E';
     int clear;
 
     // Multiple tests
@@ -69,16 +67,16 @@ char detectColor() {
         Serial.print("Detected Color: Unknown");
     } else if (redAvg >= greenAvg && greenAvg > blueAvg) {
         Serial.print("Detected Color: Yellow");
-        color = "jaune"; // Yellow detected as red + green
+        color = 'J'; // Yellow detected as red + green
     } else if (greenAvg > redAvg && greenAvg > blueAvg) {
         Serial.print("Detected Color: Green");
-        color = "vert";
+        color = 'V';
     } else if (blueAvg > redAvg && blueAvg > greenAvg) {
         Serial.print("Detected Color: Blue");
-        color = "bleu";
+        color = 'B';
     } else if (redAvg > greenAvg && redAvg > blueAvg) {
         Serial.print("Detected Color: Red");
-        color = "rouge";
+        color = 'R';
     } else {
         Serial.print("Detected Color: Unknown");
     }
@@ -151,6 +149,29 @@ int detectionObjet(){
     return res/(float)test;
 }
 
+// Fonction direction en fonction de la couleur (en degré)
+// Retourne int (0, 90, 180, 270)
+int directionCouleur(){
+    int direction;
+    char current = detectColor();
+    while (current == 'E'){
+        current = detectColor();
+    }
+    if (current == 'R') {
+        direction = 180;
+    }
+    else if (current == 'J'){
+        direction = 90;
+    }
+    else if (current == 'B'){
+        direction = 0;
+    }
+    else {
+        direction = 270;
+    }
+
+    return direction;
+}
 
 /********** FIN de la zone des fonctions
  * Début du main */
@@ -187,7 +208,6 @@ void loop(){
         Serial.print("detectObjet : ");
         Serial.println(res);
 
-
         /*
         Serial.print("Couleur détectée : ");
         Serial.println(detectColor());
@@ -208,8 +228,6 @@ void loop(){
         delay(500);
     }
     //fin boucle de test
-
-
 
     Serial.println("loop finished");
     delay(DT);
