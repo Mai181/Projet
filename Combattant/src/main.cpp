@@ -31,12 +31,12 @@ const bool DEBUGAGE=true;
 /********** FIN de la zone des variables et constantes
  * Début de la zone des fonctions */
 //
-/**Fonction détecte couleur et retourne valeur entre -1 et 3 selon s'il y a un erreur ou selon la couleur détectée
- * @return -1=inconnu, 0=red, 1=green, 2=blue, 3=yellow
+/**Fonction détecte couleur et retourne couleur détectée ou erreur selon s'il y a un erreur ou selon la couleur détectée
+ * @return "erreur"=inconnu, "rouge"=red, "vert"=green, "bleu"=blue, "jaune"=yellow
 */
-int detectColor() {
+char detectColor() {
     int redSum = 0, greenSum = 0, blueSum = 0;
-    int color= -1;
+    char color;
     int clear;
 
     // Multiple tests
@@ -69,18 +69,19 @@ int detectColor() {
         Serial.print("Detected Color: Unknown");
     } else if (redAvg >= greenAvg && greenAvg > blueAvg) {
         Serial.print("Detected Color: Yellow");
-        color= 3; // Yellow detected as red + green
+        color = "jaune"; // Yellow detected as red + green
     } else if (greenAvg > redAvg && greenAvg > blueAvg) {
         Serial.print("Detected Color: Green");
-        color= 1;
+        color = "vert";
     } else if (blueAvg > redAvg && blueAvg > greenAvg) {
         Serial.print("Detected Color: Blue");
-        color= 2;
+        color = "bleu";
     } else if (redAvg > greenAvg && redAvg > blueAvg) {
         Serial.print("Detected Color: Red");
-        color= 0;
+        color = "rouge";
     } else {
         Serial.print("Detected Color: Unknown");
+        color = "erreur";
     }
     colorSensor.clearInterrupt();
     Serial.println("detectColor finished");
@@ -183,7 +184,7 @@ void loop(){
         Serial.println("loop test started");
         //MOTOR_SetSpeed(1,0.1);
 
-        float res =detectionObjet();
+        float res = detectionObjet();
         Serial.print("detectObjet : ");
         Serial.println(res);
 
