@@ -302,7 +302,9 @@ void stop() {
     MOTOR_SetSpeed(RIGHT, 0);
 }
 
-// Fonction de décélération progressive
+/** Fonction de décélération progressive
+ * @return
+*/
 float decel(int pulse, float erreurAccumuleeDroite) {
     float topSpeedDroit = 11.08;
     float topSpeedGauche = 10.90;
@@ -340,7 +342,7 @@ float decel(int pulse, float erreurAccumuleeDroite) {
     return erreurAccumuleeDroite;
 }
 
-// Fonction pour faire avancer le robot sur une distance donnée
+/** Fonction pour faire avancer le robot sur une distance donnée*/
 void deplacement(float dist) {
     float vd = 0.6;  // Vitesse désirée droite
     float vg = 0.6;  // Vitesse désirée gauche
@@ -575,9 +577,7 @@ void rotationDroite(float a) {
 }
 
 /** Fonction qui permet de faire un rotation de manière globale (pas de 
- * gauche ou droite, plutot -90 et 90 degrés)
- * @return
-*/
+ * gauche ou droite, plutot -90 et 90 degrés)*/
 void rotationGlobal(float angle){
     if(angle > 0){
         rotationDroite(angle);
