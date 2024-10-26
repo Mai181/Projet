@@ -175,6 +175,27 @@ int distanceObjet(){
     return 10*(25-(sqrtf(10)*sqrtf(63*(res/((float)test))-2500)/sqrtf(res/((float)test))))-1.34445983;
 }
 
+/**
+ * Détecte s'il y a un objet devant, fait la différence entre un mur et un objet
+ * 
+ * @return valeur bouléenne : true=objet, false=mur
+ */
+bool detectionObjet(){
+    float capteurDisHaut=0;
+    float capteurDisBas=0;
+    int test=2;
+    for(int i=test;i>0;i--){
+        capteurDisHaut+=analogRead(A7);
+        capteurDisBas+=analogRead(A6);
+        delay(0.1);
+    }
+    float incertitudeMultiplicative=1.1495;
+    if(capteurDisBas*incertitudeMultiplicative > capteurDisHaut && capteurDisHaut*incertitudeMultiplicative > capteurDisBas){
+        return true;
+    }
+    return false;
+}
+
 /** Fonction direction en fonction de la couleur (en degré)
     @return int (0, 90, 180, 270)
 */
