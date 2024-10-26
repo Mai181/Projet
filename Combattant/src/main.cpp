@@ -20,6 +20,9 @@ float tour = 360.0;
 float pulseTourRoue = 3200.0; 
 float vitesseRotationNeg = -0.17;  // vitesse négative du moteur 
 float vitesseRotationPos = 0.17;  // vitesse positive du moteur
+
+float direction; //direction actuel du robot dans l'espace (face à la zone rouge étant 0 degré)
+
 /********** 
  * Début de la zone des variables et constantes */
 //
@@ -400,26 +403,40 @@ void deplacement(float dist) {
 /** Fonction qui permet au robot de suivre une ligne
  * @return
 */
-void suivreligne(){
+void suivreligne(float dist){
     float vitesseBaseDroit = -0.4;  // Vitesse désirée droite
     float vitesseBaseGauche = -0.4;  // Vitesse désirée gauche
     float vitesseDroit;
     float vitesseGauche;
-    float correction = 0.0005;
+    float correction = 0.005;
     float erreurAccumuleeDroite =0; //erreur accumuler de la roue droite pi le I du PI
+    int ptr = 3200;  // Nombre de pulses par rotation
+    float circRoue = 23.94;  // Circonférence de la roue en cm
+    float pulseParCM = ptr / circRoue;  // Calcul du nombre de pulses par cm
+    int pulse = dist * pulseParCM;  // Nombre de pulses pour la distance donnée
+    int pulseArret = 20 * pulseParCM;  // Distance nécessaire pour arrêter (en pulses)
     ENCODER_Reset(LEFT);
     ENCODER_Reset(RIGHT);
 
     detecteurligne();
     //determine qu'il y a une ligne a suivre
+    int perteLigne = 0; //utilisé comme compteur, is apres Xsec il ne retrouve pas la ligne il arrête
+
     if(dataSuiveurLigne[0] == 0 && dataSuiveurLigne[1] == 1 && dataSuiveurLigne[2] == 0){
 
         erreurAccumuleeDroite = accel(vitesseBaseDroit, vitesseBaseGauche, erreurAccumuleeDroite);
+        int pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2);
 
-        while(1){
+        while(pulsesRestants > pulseArret && perteLigne < 15){
 
             detecteurligne();
-
+            if(dataSuiveurLigne[0] == 0 && dataSuiveurLigne[1] == 0 && dataSuiveurLigne[2] == 0){
+                perteLigne++;
+            }
+            else{
+                perteLigne = 0;
+            }
+            
             //détermine qu'il est trop à gauche
             if(dataSuiveurLigne[0] == 1 && dataSuiveurLigne[1] == 0 && dataSuiveurLigne[2] == 0){
                 vitesseDroit = vitesseBaseDroit - (correction * -1);
@@ -435,10 +452,11 @@ void suivreligne(){
             }
             MOTOR_SetSpeed(LEFT, vitesseGauche);
             MOTOR_SetSpeed(RIGHT, vitesseDroit);
+            pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2);
             delay(100);
         }
 
-        erreurAccumuleeDroite = decel(32000, erreurAccumuleeDroite);
+        erreurAccumuleeDroite = decel(pulse, erreurAccumuleeDroite);
     }
 }
 
@@ -586,6 +604,55 @@ void rotationGlobal(float angle){
         rotationGauche((angle * -1.0));
     }
 }
+
+                        /*************************Fonctions pour la détection d'objets **************************/
+
+void radar(){
+    float a = 15.0; //6 rotation de 15 degrées seront effectuer pour avoir 90 deg au total
+    int nombreRotation = 6;
+    float pulseGauche;
+    float pulseDroite;
+    int tourneGauche =0;
+    int tourneDroite =0;
+    float RerreurAccumuleeDroite = 0;  // Somme des erreurs accumulées pour la roue droite
+    float dirMax = direction + 90.0; //angle max de 90 degrées pour scanner la zone
+    float vitesseRotationDroit = -0.20;
+    float vitesseRotationGauche = 0.20;
+    float pulseDeg = (pulseTourRoue/cirRoue)/(cirCerRot/360.0);
+    float dirOG = direction; //enregistrement de la position initial
+
+    ENCODER_Reset(RIGHT);
+    ENCODER_Reset(LEFT); 
+    
+    for(int i = 1; (i < nombreRotation /*|| fct détec a detecté un object*/);){
+        float pulse = (cirCerRot)/((tour/a)*cirRoue)*pulseTourRoue;
+
+        while(tourneDroite == 0 || tourneGauche == 0){
+            RerreurAccumuleeDroite = CorrigerVitesseRot(vitesseRotationDroit, vitesseRotationGauche, tourneDroite, tourneGauche, RerreurAccumuleeDroite);
+            pulseGauche = ENCODER_Read(LEFT);
+            pulseDroite = ENCODER_Read(RIGHT);
+            direction = dirOG + ((((pulseDroite * -1) + pulseGauche)/2)/pulseDeg); //moyenne déplacement roue traduit en degrés
+
+            while ((pulseDroite < ((pulse - 200) * -1.0) || pulseGauche > pulse - 200) && (tourneDroite == 0 || tourneGauche == 0)){
+                if (pulseDroite  < ((pulse-20) * -1.0)){
+                    MOTOR_SetSpeed(RIGHT, 0);
+                    tourneGauche = 1;
+                }
+                if (pulseGauche > (pulse-20)){
+                    MOTOR_SetSpeed(LEFT, 0);
+                    tourneDroite = 1;
+                }
+                /*appel de la fonction de détection avec l'angle*/
+                delay(10);
+                pulseGauche = ENCODER_Read(LEFT);
+                pulseDroite = ENCODER_Read(RIGHT);
+            }
+        }
+    }
+}
+
+
+
 
 /******************************************** FIN de la zone des fonctions
  *  - Début du main***********************************************/
