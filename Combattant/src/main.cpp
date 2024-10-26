@@ -14,6 +14,10 @@
 #include <stdint.h>
 #include <math.h>
 
+
+/********** 
+ * Début de la zone des variables et constantes */
+//
 float cirCerRot = 58.0;  // circonferenceCercleRotation
 float cirRoue = 23.94;  // circonferenceRoue
 float tour = 360.0;
@@ -26,9 +30,6 @@ float pulseParCM = ptr / circRoue;  // Calcul du nombre de pulses par cm
 
 float direction; //direction actuel du robot dans l'espace (face à la zone rouge étant 0 degré)
 
-/********** 
- * Début de la zone des variables et constantes */
-//
 Adafruit_TCS34725 colorSensor;
 int numTest = 5;  // nb of tests
 
@@ -36,7 +37,7 @@ int dataSuiveurLigne[3];
 /** Délai en ms entre chaque itération du loop */
 const int DT=50;
 /** Boucle de débug */
-const bool DEBUGAGE=true;
+const bool DEBUGAGE=false;
 
 /********** FIN de la zone des variables et constantes
  * Début de la zone des fonctions */
@@ -200,6 +201,10 @@ bool detectionObjet(){
         return true;
     }
     return false;
+}
+
+void memoireObjet(){
+
 }
 
 /** Fonction direction en fonction de la couleur (en degré)
@@ -759,35 +764,15 @@ void setup() {
 
 /** Fonction de départ, se fait appeler à chaque fois qu'elle est terminée */
 void loop(){
-    /*
     //boucle de test : code temporaire qui peut être remplacé et effacé
     Serial.println("loop started");
     while(DEBUGAGE){
         //code temporaire qui peut être remplacé et effacé
         Serial.println("loop test started");
-        //MOTOR_SetSpeed(1,0.1);
-
-        float res = distanceObjet();
-        Serial.print("distanceObjet : ");
-        Serial.println(res);
-        Serial.print("Couleur détectée : ");
-        Serial.println(detectColor());
-        delay(500);
-        Serial.print("mouvement servo ouvert ");
-        SERVO_ouvert(true);
-        delay(1000);
-        Serial.print("mouvement servo fermé ");
-        SERVO_ouvert(false);
-
 
     }
     //fin boucle de test
 
     Serial.println("loop finished");
     delay(DT);
-    */
-   deplacement(80.0);
-   delay(1000); 
-   deplacement(-80.0);
-   delay(1000);
 }
