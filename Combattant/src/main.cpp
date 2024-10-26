@@ -38,15 +38,9 @@ float circRoue = 23.94;  // Circonférence de la roue en cm
 float pulseParCM = ptr / circRoue;  // Calcul du nombre de pulses par cm
 
 float direction; //direction actuel du robot dans l'espace (face à la zone rouge étant 0 degré)
-
-Adafruit_TCS34725 colorSensor;
-int numTest = 5;  // nb of tests
-
-int dataSuiveurLigne[3];
-/** Délai en ms entre chaque itération du loop */
-const int DT=50;
-/** Boucle de débug */
-bool DEBUGAGE=false;
+bool siffletActive = false;
+float distLigne = 90.0;                             // À changer selon les pinces!!!!
+float distObj;
 
 /********** FIN de la zone des variables et constantes
  * Début de la zone des fonctions */
@@ -753,7 +747,7 @@ void radar(){
 
 /** Fonction décisionnelle pour le défi (programme principal) */
 void decisions(){
-    positionementGlobal(direction);
+    positionnementGlobal(direction);
     radar();
     distObj = distanceObjet();
     // Double vérification de la distance si elle est supérieure à 15 cm
@@ -768,7 +762,7 @@ void decisions(){
     // Attrape l'objet  ??????
 
     deplacement(distObj*-1.0);
-    positionementGlobal(direction);
+    positionnementGlobal(direction);
     deplacement(distLigne);               
     // Lache l'objet  ??????
     
@@ -798,7 +792,7 @@ void setup() {
 /** Fonction de départ, se fait appeler à chaque fois qu'elle est terminée */
 void loop(){
     //boucle de test : code temporaire qui peut être remplacé et effacé
-/*    Serial.println("loop started");
+    Serial.println("loop started");
     while(DEBUGAGE){
         //code temporaire qui peut être remplacé et effacé
         Serial.println("loop test started");
