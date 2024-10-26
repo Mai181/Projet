@@ -118,9 +118,30 @@ void INIT_servos(){
 void detecteurligne(){
 /**
  */
-    dataSuiveurLigne[0]=digitalRead(52);
-    dataSuiveurLigne[1]=digitalRead(50);
-    dataSuiveurLigne[2]=digitalRead(48);
+    int valeurU3=analogRead(A8);
+    int valeurU2=analogRead(A9);
+    int valeurU1=analogRead(A10);
+
+    if (valeurU1 > 45){
+        dataSuiveurLigne[0] = 1;
+    }
+    else{
+        dataSuiveurLigne[0] = 0;
+    }
+
+    if (valeurU2 > 45){
+        dataSuiveurLigne[1] = 1;
+    }
+    else{
+        dataSuiveurLigne[1] = 0;
+    }
+
+    if (valeurU3 > 45){
+        dataSuiveurLigne[2] = 1;
+    }
+    else{
+        dataSuiveurLigne[2] = 0;
+    }
 }
 
 /** Donne la distance avec l'obstacle/objet devant, plus grande 
@@ -228,24 +249,33 @@ float CorrigerVitesse(float vd, float vg, float erreurAccumuleeDroite) {
     float Kp1 = 0.0017;  // Gain proportionnel pour B
     float totalpulseDroit = ENCODER_Read(RIGHT);
     float totalpulseGauche = ENCODER_Read(LEFT);
+    float ecartDroit;
+    float correctionDroit;
 
-    // Calcul des écarts entre la consigne et la mesure
-    float ecartDroit = totalpulseGauche - totalpulseDroit;
-    Serial.print("ecrat:");
-    Serial.println(ecartDroit);
+    if(vd > 0){
+        // Calcul des écarts entre la consigne et la mesure
+        ecartDroit = totalpulseGauche - totalpulseDroit;
+    }
+    else{
+        ecartDroit = totalpulseDroit - totalpulseGauche;
+    }
 
     // Calcul des termes proportionnels
     float termePropDroit = ecartDroit * Kp1;
-    Serial.print("termePropDroit:");
-    Serial.println(termePropDroit);
 
     // Mise à jour des erreurs accumulées pour l'intégrale
     erreurAccumuleeDroite += ecartDroit * 0.05;
 
     // Calcul des termes intégrals
     float termeIntDroit = erreurAccumuleeDroite * Ki1;
-    // Calcul des corrections finales en limitant la vitesse pour éviter des valeurs trop élevées
-    float correctionDroit = limiter(vd + termePropDroit + termeIntDroit, -1.0, 1.0);
+    if(vd > 0){
+        // Calcul des corrections finales en limitant la vitesse pour éviter des valeurs trop élevées
+        correctionDroit = limiter(vd + termePropDroit + termeIntDroit, -1.0, 1.0);
+    }
+    else{
+        // Calcul des corrections finales en limitant la vitesse pour éviter des valeurs trop élevées
+        correctionDroit = limiter(vd - termePropDroit - termeIntDroit, -1.0, 1.0);
+    }
 
     // Application des corrections aux moteurs
     MOTOR_SetSpeed(RIGHT, correctionDroit);
@@ -266,39 +296,51 @@ float accel(float vd, float vg, float erreurAccumuleeDroite) {
     return erreurAccumuleeDroite;
 }
 
-/** Fonction de décélération progressive
- * @return
-*/
-float decel(int pulse, float vd, float vg, float erreurAccumuleeDroite) {
-    int pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2);
-    int i = 4;
-
-    while (pulsesRestants > 200) {
-          if (i >= 1){
-          erreurAccumuleeDroite = CorrigerVitesse(i * (vd / 5), i * (vg / 5), erreurAccumuleeDroite);
-          delay(50);  // Attendre un peu entre chaque étape d'accélération
-          i--;
-          }
-          
-          pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2);
-      }
-    // Assurer l'arrêt complet des moteurs
-    MOTOR_SetSpeed(LEFT, 0);
-    MOTOR_SetSpeed(RIGHT, 0);
-    return erreurAccumuleeDroite;
-}
-
-/** Fonction pour arrêter les moteurs
- * @return
-*/
+/** Fonction pour arrêter les moteurs*/
 void stop() {
     MOTOR_SetSpeed(LEFT, 0);
     MOTOR_SetSpeed(RIGHT, 0);
 }
 
-/** Fonction pour faire avancer le robot sur une distance donnée
- * @return
-*/
+// Fonction de décélération progressive
+float decel(int pulse, float erreurAccumuleeDroite) {
+    float topSpeedDroit = 11.08;
+    float topSpeedGauche = 10.90;
+    float ReadedSpeedDroit = lireVitesseDroit();
+    float ReadedSpeedGauche = lireVitesseGauche();
+    float RealSpeedDroit = ReadedSpeedDroit/topSpeedDroit;
+    float RealSpeedGauche = ReadedSpeedGauche/topSpeedGauche;
+
+    int pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2);
+
+    float i = 9.0;
+
+    if(pulse > 0){
+        while (pulsesRestants > 20) {
+            if (i >= 0){
+            erreurAccumuleeDroite = CorrigerVitesse(i * (RealSpeedDroit / 10.0), i * (RealSpeedGauche / 10.0), erreurAccumuleeDroite);
+            delay(75);  // Attendre un peu entre chaque étape d'accélération
+            i--;
+            }
+            pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2);
+        }
+    }
+    else{
+        while (pulsesRestants < -20) {
+            if (i >= 0){
+            erreurAccumuleeDroite = CorrigerVitesse(i * (RealSpeedDroit / 10.0), i * (RealSpeedGauche / 10.0), erreurAccumuleeDroite);
+            delay(75);  // Attendre un peu entre chaque étape d'accélération
+            i--;
+            }
+            pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2);
+        }
+    }
+
+    stop();
+    return erreurAccumuleeDroite;
+}
+
+// Fonction pour faire avancer le robot sur une distance donnée
 void deplacement(float dist) {
     float vd = 0.6;  // Vitesse désirée droite
     float vg = 0.6;  // Vitesse désirée gauche
@@ -306,7 +348,7 @@ void deplacement(float dist) {
     float circRoue = 23.94;  // Circonférence de la roue en cm
     float pulseParCM = ptr / circRoue;  // Calcul du nombre de pulses par cm
     int pulse = dist * pulseParCM;  // Nombre de pulses pour la distance donnée
-    int pulseArret = 15 * pulseParCM;  // Distance nécessaire pour arrêter (en pulses)
+    int pulseArret = 20 * pulseParCM;  // Distance nécessaire pour arrêter (en pulses)
     float erreurAccumuleeDroite =0; //erreur accumuler de la roue droite pi le I du PI
     float distanceParcourue = 0; // Suivi de la distance parcourue
 
@@ -314,73 +356,87 @@ void deplacement(float dist) {
     ENCODER_Reset(RIGHT);
     ENCODER_Reset(LEFT);
 
-    // Accélération progressive
-    erreurAccumuleeDroite = accel(vd, vg, erreurAccumuleeDroite);
-    delay(50);
-
-    // Avancer jusqu'à presque atteindre la distance cible
-    while (((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2) < (pulse - pulseArret)) {
-
-        // Mettre à jour la distance parcourue en cm
-        distanceParcourue = ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2) / pulseParCM;
-
-        // Correction des vitesses en fonction de la distance parcourue
-        erreurAccumuleeDroite = CorrigerVitesse(vd, vg, erreurAccumuleeDroite);
-
-        // Pause pour laisser le temps aux corrections
+    if(dist > 0){
+        // Accélération progressive
+        erreurAccumuleeDroite = accel(vd, vg, erreurAccumuleeDroite);
         delay(50);
+        // Avancer jusqu'à presque atteindre la distance cible
+        while (((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2) < (pulse - pulseArret)) {
+
+            // Mettre à jour la distance parcourue en cm
+            distanceParcourue = ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2) / pulseParCM;
+
+            // Correction des vitesses en fonction de la distance parcourue
+            erreurAccumuleeDroite = CorrigerVitesse(vd, vg, erreurAccumuleeDroite);
+
+            // Pause pour laisser le temps aux corrections
+            delay(50);
+        }
+    }
+    else{
+        // Accélération progressive
+        erreurAccumuleeDroite = accel((vd*-1), (vg*-1), erreurAccumuleeDroite);
+        delay(50);
+                // Avancer jusqu'à presque atteindre la distance cible
+        while (((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2) > (pulse + pulseArret)) {
+
+            // Mettre à jour la distance parcourue en cm
+            distanceParcourue = ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2) / pulseParCM;
+
+            // Correction des vitesses en fonction de la distance parcourue
+            erreurAccumuleeDroite = CorrigerVitesse((vd*-1), (vg*-1), erreurAccumuleeDroite);
+
+            // Pause pour laisser le temps aux corrections
+            delay(50);
+        }
     }
 
     // Décélération progressive
-    erreurAccumuleeDroite = decel(pulse, vd, vg, erreurAccumuleeDroite);
+    erreurAccumuleeDroite = decel(pulse, erreurAccumuleeDroite);
 }
 
 /** Fonction qui permet au robot de suivre une ligne
  * @return
 */
 void suivreligne(){
-    float vitesseBaseDroit = 0.6;  // Vitesse désirée droite
-    float vitesseBaseGauche = 0.6;  // Vitesse désirée gauche
+    float vitesseBaseDroit = -0.4;  // Vitesse désirée droite
+    float vitesseBaseGauche = -0.4;  // Vitesse désirée gauche
     float vitesseDroit;
     float vitesseGauche;
-    float correction = 0.05;
+    float correction = 0.0005;
     float erreurAccumuleeDroite =0; //erreur accumuler de la roue droite pi le I du PI
+    ENCODER_Reset(LEFT);
+    ENCODER_Reset(RIGHT);
 
     detecteurligne();
     //determine qu'il y a une ligne a suivre
-    if(dataSuiveurLigne[0] == 0 && dataSuiveurLigne[1] == 1 && dataSuiveurLigne[0] == 0){
+    if(dataSuiveurLigne[0] == 0 && dataSuiveurLigne[1] == 1 && dataSuiveurLigne[2] == 0){
+
         erreurAccumuleeDroite = accel(vitesseBaseDroit, vitesseBaseGauche, erreurAccumuleeDroite);
 
-        while(dataSuiveurLigne[0] == 1 && dataSuiveurLigne[1] == 1 && dataSuiveurLigne[0] == 1){
+        while(1){
+
             detecteurligne();
+
             //détermine qu'il est trop à gauche
-            if(dataSuiveurLigne[0] == 1 && dataSuiveurLigne[1] == 1 && dataSuiveurLigne[0] == 0){
-                vitesseDroit = vitesseBaseDroit + (correction * 1);
-                vitesseGauche = vitesseBaseGauche + (correction * -1);
+            if(dataSuiveurLigne[0] == 1 && dataSuiveurLigne[1] == 0 && dataSuiveurLigne[2] == 0){
+                vitesseDroit = vitesseBaseDroit - (correction * -1);
+                vitesseGauche = vitesseBaseGauche - (correction * 1);
             }
             //détermine qu'il est trop à droite
-            else if(dataSuiveurLigne[0] == 0 && dataSuiveurLigne[1] == 1 && dataSuiveurLigne[0] == 1){
-                vitesseDroit = vitesseBaseDroit + (correction * -1);
-                vitesseGauche = vitesseBaseGauche + (correction * 1);
-            }
-            //détermine qu'il est trop à gauche
-            else if(dataSuiveurLigne[0] == 1 && dataSuiveurLigne[1] == 0 && dataSuiveurLigne[0] == 0){
-                vitesseDroit = vitesseBaseDroit + (correction * 2);
-                vitesseGauche = vitesseBaseGauche + (correction * -2);
-            }
-            //détermine qu'il est trop à droite
-            else if(dataSuiveurLigne[0] == 0 && dataSuiveurLigne[1] == 0 && dataSuiveurLigne[0] == 1){
-                vitesseDroit = vitesseBaseDroit + (correction * -2);
-                vitesseGauche = vitesseBaseGauche + (correction * 2);
+            else if(dataSuiveurLigne[0] == 0 && dataSuiveurLigne[1] == 0 && dataSuiveurLigne[2] == 1){
+                vitesseDroit = vitesseBaseDroit - (correction * 1);
+                vitesseGauche = vitesseBaseGauche - (correction * -1);
             }
             else{
                 erreurAccumuleeDroite = CorrigerVitesse(vitesseBaseDroit, vitesseBaseGauche, erreurAccumuleeDroite);
             }
             MOTOR_SetSpeed(LEFT, vitesseGauche);
             MOTOR_SetSpeed(RIGHT, vitesseDroit);
-            delay(50);
+            delay(100);
         }
-        erreurAccumuleeDroite = decel(32000, vitesseDroit, vitesseGauche, erreurAccumuleeDroite);
+
+        erreurAccumuleeDroite = decel(32000, erreurAccumuleeDroite);
     }
 }
 
@@ -548,11 +604,15 @@ void setup() {
     //colorSensor.ledStatus = 1;
     //INIT_servos();
     Serial.println("Setup finished");
+    pinMode(A8, INPUT);
+    pinMode(A9, INPUT);
+    pinMode(A10, INPUT);
     
 }
 
 /** Fonction de départ, se fait appeler à chaque fois qu'elle est terminée */
 void loop(){
+    /*
     //boucle de test : code temporaire qui peut être remplacé et effacé
     Serial.println("loop started");
     while(DEBUGAGE){
@@ -563,8 +623,6 @@ void loop(){
         float res = distanceObjet();
         Serial.print("distanceObjet : ");
         Serial.println(res);
-
-        /*
         Serial.print("Couleur détectée : ");
         Serial.println(detectColor());
         delay(500);
@@ -573,21 +631,16 @@ void loop(){
         delay(1000);
         Serial.print("mouvement servo fermé ");
         SERVO_ouvert(false);
-        */
-        Serial.print("U1 : ");
-        Serial.println(dataSuiveurLigne[0]);
-        Serial.print("U2 : ");
-        Serial.println(dataSuiveurLigne[1]);
-        Serial.print("U3 : ");
-        Serial.println(dataSuiveurLigne[2]);
-        Serial.println("loop test finished");
-        rotationGlobal(90.0);
-        delay(500);
-        rotationGlobal(-90.0);
-        delay(500);
+
+
     }
     //fin boucle de test
 
     Serial.println("loop finished");
     delay(DT);
+    */
+   deplacement(80.0);
+   delay(1000); 
+   deplacement(-80.0);
+   delay(1000);
 }
