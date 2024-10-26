@@ -46,7 +46,7 @@ int dataSuiveurLigne[3];
 /** Délai en ms entre chaque itération du loop */
 const int DT=50;
 /** Boucle de débug */
-const bool DEBUGAGE=false;
+bool DEBUGAGE=false;
 
 /********** FIN de la zone des variables et constantes
  * Début de la zone des fonctions */
