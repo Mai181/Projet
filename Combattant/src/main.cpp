@@ -578,7 +578,7 @@ void rotationDroite(float a) {
         pulseDroite = ENCODER_Read(RIGHT);
         RerreurAccumuleeDroite = CorrigerVitesseRot(vitesseRotationNeg, vitesseRotationPos, tourneDroite, tourneGauche, RerreurAccumuleeDroite);
 
-        while ((pulseDroite < ((pulse-300.0) * -1.0) || pulseDroite > pulse-300.0) && (tourneDroite == 0 || tourneGauche == 0)){
+        while ((pulseDroite < ((pulse-300.0) * -1.0) || pulseGauche > pulse-300.0) && (tourneDroite == 0 || tourneGauche == 0)){
             pulseGauche = ENCODER_Read(LEFT);
             pulseDroite = ENCODER_Read(RIGHT);
             if (pulseDroite  < ((pulse-50) * -1.0)){
@@ -607,7 +607,8 @@ void positionementGlobal(float directionCible){
 }
 
                         /*************************Fonctions pour la détection d'objets **************************/
-/** Fonction qui permet de scanner un zone en tournant */
+
+/** Fonction qui permet de scanner et positionner le robot vers l'objet */
 void radar(){
     float a = 15.0; //6 rotation de 15 degrées seront effectuer pour avoir 90 deg au total
     int nombreRotation = 6;
