@@ -596,7 +596,8 @@ void rotationDroite(float a) {
 
 /** Fonction qui permet de faire un rotation de manière globale (pas de 
  * gauche ou droite, plutot -90 et 90 degrés)*/
-void rotationGlobal(float angle){
+void positionementGlobal(float directionCible){
+    float angle = directionCible - direction;
     if(angle > 0){
         rotationDroite(angle);
     }
@@ -606,7 +607,7 @@ void rotationGlobal(float angle){
 }
 
                         /*************************Fonctions pour la détection d'objets **************************/
-
+/** Fonction qui permet de scanner un zone en tournant */
 void radar(){
     float a = 15.0; //6 rotation de 15 degrées seront effectuer pour avoir 90 deg au total
     int nombreRotation = 6;
@@ -615,17 +616,17 @@ void radar(){
     int tourneGauche =0;
     int tourneDroite =0;
     float RerreurAccumuleeDroite = 0;  // Somme des erreurs accumulées pour la roue droite
-    float dirMax = direction + 90.0; //angle max de 90 degrées pour scanner la zone
     float vitesseRotationDroit = -0.20;
     float vitesseRotationGauche = 0.20;
     float pulseDeg = (pulseTourRoue/cirRoue)/(cirCerRot/360.0);
-    float dirOG = direction; //enregistrement de la position initial
-
-    ENCODER_Reset(RIGHT);
-    ENCODER_Reset(LEFT); 
+    float dirOG = direction; //enregistrement de la position initial 
     
     for(int i = 1; (i < nombreRotation /*|| fct détec a detecté un object*/);){
         float pulse = (cirCerRot)/((tour/a)*cirRoue)*pulseTourRoue;
+        direction = dirOG + ((i-1)*15.0);
+        dirOG = direction;
+        ENCODER_Reset(RIGHT);
+        ENCODER_Reset(LEFT);
 
         while(tourneDroite == 0 || tourneGauche == 0){
             RerreurAccumuleeDroite = CorrigerVitesseRot(vitesseRotationDroit, vitesseRotationGauche, tourneDroite, tourneGauche, RerreurAccumuleeDroite);
@@ -649,13 +650,10 @@ void radar(){
             }
         }
     }
+    positionementGlobal(/*valeur de la fonction detection d'objet*/90.0);
 }
 
-
-
-
-/******************************************** FIN de la zone des fonctions
- *  - Début du main***********************************************/
+/************************************ FIN de la zone des fonctions*  - Début du main**************************************/
 
 /** Fonction de départ, se fait appeler une seule fois au début du programme*/
 void setup() {
