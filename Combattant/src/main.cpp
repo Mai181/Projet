@@ -179,7 +179,7 @@ void detecteurligne(){
 
 /** Fonction direction en fonction de la couleur (en degré)
  *  
- *  @param c: 0 = Aucun, 1 = Rouge, 2 = Jaune, 3 = vert et 4 = bleu (int)
+ *  @param c: 0 = Aucun, 1 = Rouge, 2 = Jaune, 3 = Vert et 4 = Bleu (int)
  *  Si la fonction est appelée avec 0, la fonction détecte la couleur sur laquelle 
  *  est le robot présentement et assigne la bonne direction. Si la fonction est 
  *  appelée avec 1 et plus, la fonction assigne la direction en fonction de la couleur voulue
@@ -193,18 +193,32 @@ float directionCouleur(int c){
         while (current == 'E'){
             current = detectColor();
         }
-    }
-    if (current == 'R' || c == 1) {
-        return 180.0;
-    }
-    else if (current == 'J' || c == 2){
-        return 90.0;
-    }
-    else if (current == 'B' || c == 3){
-        return 0.0;
+        if (current == 'R') {
+            return 180.0;
+        }
+        else if (current == 'J'){
+            return 90.0;
+        }
+        else if (current == 'B'){
+            return 0.0;
+        }
+        else if (current == 'V') {
+            return 270.0;
+        }
     }
     else {
-        return 270.0;
+        if (c == 1) {
+            return 0.0;
+        }
+        else if (c == 2) {
+            return 270.0;
+        }
+        else if (c == 3) {
+            return 90.0;
+        }
+        else if (c == 4) {
+            return 180.0;
+        }
     }
 }
 
