@@ -807,7 +807,7 @@ int getMemoireObjet(int firstValue){
  * 
  * @return Angle global à lequel l'object à été détecté dans la zone de 90 degrés suivant l'angle initial
 */
-int radar(){
+float radar(){
     // a = angle de rotation en degré
     float a = 90;
     ENCODER_Reset(RIGHT);
@@ -846,7 +846,7 @@ int radar(){
         }
     }
     direction = dirInit + (((pulseDroite*-1)+pulseGauche)/2)/pulseParDeg;
-    int angle = getMemoireObjet(dirInit);
+    float angle = (float)getMemoireObjet(dirInit);
     return angle;
 }
 
@@ -855,7 +855,7 @@ int radar(){
 /** Fonction décisionnelle pour le défi (programme principal) */
 void decisions(){
     positionnementGlobal(direction);
-    radar();
+    positionnementGlobal(radar());
     distObj = distanceObjet();
     // Double vérification de la distance si elle est supérieure à 15 cm
     if (distObj > 15.0){
