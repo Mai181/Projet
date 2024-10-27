@@ -179,7 +179,7 @@ void detecteurligne(){
 
 /** Fonction direction en fonction de la couleur (en degré)
  *  
- *  @param c: 0 = Aucun, 1 = Rouge, 2 = Jaune, 3 = vert et 4 = bleu (int)
+ *  @param c: 0 = Aucun, 1 = Rouge, 2 = Jaune, 3 = Vert et 4 = Bleu (int)
  *  Si la fonction est appelée avec 0, la fonction détecte la couleur sur laquelle 
  *  est le robot présentement et assigne la bonne direction. Si la fonction est 
  *  appelée avec 1 et plus, la fonction assigne la direction en fonction de la couleur voulue
@@ -193,33 +193,33 @@ float directionCouleur(int c){
         while (current == 'E'){
             current = detectColor();
         }
-    }
-    if (current == 'R' || c == 1) {
-        return 180.0;
-    }
-    else if (current == 'J' || c == 2){
-        return 90.0;
-    }
-    else if (current == 'B' || c == 3){
-        return 0.0;
+        if (current == 'R') {
+            return 180.0;
+        }
+        else if (current == 'J'){
+            return 90.0;
+        }
+        else if (current == 'B'){
+            return 0.0;
+        }
+        else if (current == 'V') {
+            return 270.0;
+        }
     }
     else {
-        return 270.0;
+        if (c == 1) {
+            return 0.0;
+        }
+        else if (c == 2) {
+            return 270.0;
+        }
+        else if (c == 3) {
+            return 90.0;
+        }
+        else if (c == 4) {
+            return 180.0;
+        }
     }
-}
-
-/** Fonction pour limiter une valeur dans une plage donnée pour la rotation              // À supprimer!!!!!!
- * 
- *  @param valeur: valeur (float)
- *  @param minVal: son minimum (float)
- *  @param maxVal: son maximum (float)
- * 
- *  @return minVal si < valeur, maxVal si > valeur ou valeur 
-*/
-float limiterRot(float valeur, float minVal, float maxVal) {
-    if (valeur > maxVal) return maxVal;
-    if (valeur < minVal) return minVal;
-    return valeur;
 }
 
 /** Fonction pour détecter le signal de départ de 5kHz 
@@ -597,7 +597,7 @@ float CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, 
     float termeIntDroit = RerreurAccumuleeDroite * RKi1;
 
     // Calcul des corrections finales en limitant la vitesse pour éviter des valeurs trop élevées
-    float correctionDroit = limiterRot(vd + termePropDroit + termeIntDroit, -1.0, 1.0);
+    float correctionDroit = limiter(vd + termePropDroit + termeIntDroit, -1.0, 1.0);
 
     // Application des corrections aux moteurs
     if (tourneDroit == 0){
@@ -691,8 +691,11 @@ void rotationDroite(float a) {
 */
 void positionnementGlobal(float directionCible){
     float angle = directionCible - direction;
-    Serial.print("angle:");
-    Serial.println(angle);
+    if(angle > 180){
+        angle -= 360.0;
+    }
+    //Serial.print("angle:");
+    //Serial.println(angle);
     if(angle > 0){
         rotationDroite(angle);
     }
@@ -811,7 +814,7 @@ bool detectionObjet(){
  * 
  * @return Angle global à lequel l'object à été détecté dans la zone de 90 degrés suivant l'angle initial
 */
-int radar(){
+float radar(){
     // a = angle de rotation en degré
     float a = 90;
     ENCODER_Reset(RIGHT);
@@ -850,7 +853,7 @@ int radar(){
         }
     }
     direction = dirInit + (((pulseDroite*-1)+pulseGauche)/2)/pulseParDeg;
-    int angle = getMemoireObjet(dirInit);
+    float angle = (float)getMemoireObjet(dirInit);
     return angle;
 }
 
@@ -859,12 +862,13 @@ int radar(){
 /** Fonction décisionnelle pour le défi (programme principal) */
 void decisions(){
     positionnementGlobal(direction);
-    radar();
+    positionnementGlobal(radar());
     distObj = distanceObjet();
     // Double vérification de la distance si elle est supérieure à 15 cm
     if (distObj > 15.0){
         deplacement(distObj - 15.0);
         float distanceRestante = distanceObjet();
+        distObj = (distObj-15.0)+distanceRestante;
         deplacement(distanceRestante);
     }
     else {
@@ -900,16 +904,6 @@ void setup() {
 
 /** Fonction de départ, se fait appeler à chaque fois qu'elle est terminée */
 void loop(){
-/*    //boucle de test : code temporaire qui peut être remplacé et effacé
-    Serial.println("loop started");
-    while(DEBUGAGE){
-        //code temporaire qui peut être remplacé et effacé
-        Serial.println("loop test started");
-        
-        Serial.println("loop test finished");
-    }
-    //fin boucle de test
-
     //Recherche du sifflet
     while(siffletActive == false){
         siffletActive = detectionSifflet();
@@ -919,24 +913,18 @@ void loop(){
     }
 
     // Avance vers le milieu
-    deplacement(distLigne);
+    retourCentre();
+
+    // Positionnement initial
+    direction = directionCouleur(1);
     
     // Déroulement du programme principal
     for (int i = 1; i < 5; i++) {
         decisions();
         // Augmente la direction en fonction des couleurs
-        direction = i + 1;
+        direction = directionCouleur(i+1);
     }
 
     Serial.println("loop finished");
     delay(DT);
-    */
-   direction = 0;
-   float x =0;
-    while(direction < 350){
-        positionnementGlobal(x+=30);
-        delay(500);
-        Serial.println(direction);
-    }
-    delay(5000);
 }
