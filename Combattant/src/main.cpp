@@ -677,8 +677,11 @@ void rotationDroite(float a) {
 */
 void positionnementGlobal(float directionCible){
     float angle = directionCible - direction;
-    Serial.print("angle:");
-    Serial.println(angle);
+    if(angle > 180){
+        angle -= 360.0;
+    }
+    //Serial.print("angle:");
+    //Serial.println(angle);
     if(angle > 0){
         rotationDroite(angle);
     }
@@ -851,6 +854,7 @@ void decisions(){
     if (distObj > 15.0){
         deplacement(distObj - 15.0);
         float distanceRestante = distanceObjet();
+        distObj = (distObj-15.0)+distanceRestante;
         deplacement(distanceRestante);
     }
     else {
@@ -886,16 +890,6 @@ void setup() {
 
 /** Fonction de départ, se fait appeler à chaque fois qu'elle est terminée */
 void loop(){
-/*    //boucle de test : code temporaire qui peut être remplacé et effacé
-    Serial.println("loop started");
-    while(DEBUGAGE){
-        //code temporaire qui peut être remplacé et effacé
-        Serial.println("loop test started");
-        
-        Serial.println("loop test finished");
-    }
-    //fin boucle de test
-
     //Recherche du sifflet
     while(siffletActive == false){
         siffletActive = detectionSifflet();
@@ -905,7 +899,7 @@ void loop(){
     }
 
     // Avance vers le milieu
-    deplacement(distLigne);
+    retourCentre();
     
     // Déroulement du programme principal
     for (int i = 1; i < 5; i++) {
@@ -916,13 +910,4 @@ void loop(){
 
     Serial.println("loop finished");
     delay(DT);
-    */
-   direction = 0;
-   float x =0;
-    while(direction < 350){
-        positionnementGlobal(x+=30);
-        delay(500);
-        Serial.println(direction);
-    }
-    delay(5000);
 }
