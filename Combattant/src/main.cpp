@@ -133,8 +133,8 @@ void SERVO_ouvert(bool ouvert) {
             servoAngle = 135;   // angle servomoteur lorsque ouvert
         }
 
-    SERVO_SetAngle(0, servoAngle);  // Servomoteur gauche
-    SERVO_SetAngle(1, 180 - servoAngle); // Servomoteur droit
+    SERVO_SetAngle(1, servoAngle);  // Servomoteur gauche
+    SERVO_SetAngle(0, 180 - servoAngle); // Servomoteur droit
 }
 
 /** Fonction initialise servomoteurs
