@@ -914,12 +914,15 @@ void loop(){
 
     // Avance vers le milieu
     retourCentre();
+
+    // Positionnement initial
+    direction = directionCouleur(1);
     
     // Déroulement du programme principal
     for (int i = 1; i < 5; i++) {
         decisions();
         // Augmente la direction en fonction des couleurs
-        direction = i + 1;
+        direction = directionCouleur(i+1);
     }
 
     Serial.println("loop finished");
