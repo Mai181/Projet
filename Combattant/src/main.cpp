@@ -6,7 +6,7 @@
     Description: Trouve les objets dans une arène 
                 et va les porter dans les zones de 
                 couleur
-*/
+ */
 
 #include <Arduino.h>
 #include <librobus.h>
@@ -15,10 +15,10 @@
 #include <math.h>
 
 
-/********** 
- * Début de la zone des variables et constantes */
+/********** DÉBUT de la zone des variables et constantes */
 Adafruit_TCS34725 colorSensor;
-int numTest = 5;  // nb of tests
+/** nbr of tests */
+int numTest = 5; 
 
 /** Données collectés du suiveur de ligne */
 int dataSuiveurLigne[3];
@@ -30,24 +30,38 @@ const int DT=50;
 /** Boucle de débug */
 const bool DEBUGAGE = true;
 
-float cirCerRot = 58.0;  // CirconferenceCercleRotation
-float cirRoue = 23.94;  // CirconferenceRoue
 float tour = 360.0;
+/** Pulse par tour de roue */
 float pulseTourRoue = 3200.0; 
-float vitesseRotationNeg = -0.17;  // Vitesse négative du moteur 
-float vitesseRotationPos = 0.17;  // Vitesse positive du moteur
-int ptr = 3200;  // Nombre de pulses par rotation
-float circRoue = 23.94;  // Circonférence de la roue en cm
-float pulseParCM = ptr / circRoue;  // Calcul du nombre de pulses par cm
+/** Nombre de pulses par rotation */
+int ptr = 3200;  
+/** Circonférence de la roue en cm */
+float circRoue = 23.94;  
+/** Circonference cercle rotation */ 
+float cirCerRot = 60.056;   
+/** Calcul du nombre de pulses par cm */
+float pulseParCM = ptr / circRoue;
 
-float direction;  // Direction actuel du robot dans l'espace (face à la zone rouge étant 0 degré)
-bool siffletActive = false; // Booléen pour la détection du sifflet
-float distLigne = 90.0;  // Longueur d'un tape (du milieu à une zone de couleur)              ***À changer selon les pinces!!!!
-float distObj;  // Distance entre le robot et un objet
+/** Vitesse négative du moteur */
+float vitesseRotationNeg = -0.15;  
+/** Vitesse positive du moteur */
+float vitesseRotationPos = 0.15;  
+
+/** Direction actuel du robot dans l'espace (face à la zone rouge étant 0 degré) */
+float direction; 
+/** Booléen pour la détection du sifflet */
+bool siffletActive = false;
+/** Longueur d'un tape (du milieu à une zone de couleur) */
+float distLigne = 90.0;                                               //***À changer selon les pinces!!!!
+/** Distance entre le robot et un objet */
+float distObj;
+/** Calcul du nombre de pulses par degré */
+float pulseParDeg = (cirCerRot/360)*pulseParCM;
 
 /********** FIN de la zone des variables et constantes
  
  * Début de la zone des fonctions */
+                         /************************* Fonctions pour couleurs, servomoteurs et lignes **************************/
 /** Fonction détecte couleur et retourne couleur détectée ou 
  *  erreur selon s'il y a un erreur ou selon la couleur détectée
  * 
@@ -74,6 +88,7 @@ char detectColor() {
     float redAvg = redSum / (float)numTest;
     float greenAvg = greenSum / (float)numTest;
     float blueAvg = blueSum / (float)numTest;
+/*   
     Serial.println("Red");
     Serial.println(redAvg);
     Serial.println("green");
@@ -82,6 +97,7 @@ char detectColor() {
     Serial.println(blueAvg);
     Serial.println("clear");
     Serial.println(clear);
+*/
 
     // Determine color based on avg
     if (redSum>10 && greenSum>10 &&blueSum>10){
@@ -161,86 +177,6 @@ void detecteurligne(){
     }
 }
 
-/** Donne la distance avec l'obstacle/objet devant, plus grande 
- * précision à 10cm suivi d'une imprécision grandissante en augmentant 
- * la distance et énormément grandissante en réduisant la distance
- * 
- * @return Une valeur réelle correspondant à la distance entre le 
- * capteur et l'objet
-*/
-float distanceObjet(){
-    float res=0.0;
-    int current=0;
-    int test=5;
-    int min=analogRead(A6);
-    int max=analogRead(A6);
-    for(int i=test;i>0;i--){
-        current=analogRead(A6);
-        if(min>current){
-            min=current;
-        }else if (max<current){
-            max=current;
-        }
-        res+=current;
-        delay(5/test);
-    }
-    Serial.print("min : ");
-    Serial.println(min);
-    Serial.print("max : ");
-    Serial.println(max);
-    //Calcul traduisant la valeur analog en cm, document avec les calculs disponible sur Teams
-    return 10*(25-(sqrtf(10)*sqrtf(63*(res/((float)test))-2500)/sqrtf(res/((float)test))))-1.34445983;
-}
-
-/** Place une donnée en lien à la détection d'objet dans un tableau
- * 
- * @param donnee Donnée à enregistrer
-*/
-void setMemoireObjet(int donnee){
-    mapObjet[(int)direction]=donnee;
-}
-
-/** Retourne le centre de l'objet le plus proche dans le sens horaire
- * 
- * @param firstValue angle de départ pour la recherche d'objet dans le sens horaire
- * 
- * @return Angle du centre de l'objet selon 0 deg, l'absence d'objet donne -1
- */
-int getMemoireObjet(int firstValue){
-    for(int i=0;i<90;i++){
-        if(mapObjet[(firstValue+i)%360]==1){
-            for(int k=i;k<90;k++){
-                if(mapObjet[(firstValue+i)%360]==-1){
-                    return firstValue+(i+k-1)/2;
-                }
-            }
-        }
-    }
-    return -1;
-}
-
-/** Détecte s'il y a un objet devant, fait la différence entre un mur et un objet
- * 
- * @return valeur bouléenne : true=objet, false=mur
- */
-bool detectionObjet(){
-    float capteurDisHaut=0;
-    float capteurDisBas=0;
-    int test=2;
-    for(int i=test;i>0;i--){
-        capteurDisHaut+=analogRead(A7);
-        capteurDisBas+=analogRead(A6);
-        delay(0.1);
-    }
-    float incertitudeMultiplicative=1.1495;
-    if(capteurDisBas*incertitudeMultiplicative > capteurDisHaut && capteurDisHaut*incertitudeMultiplicative > capteurDisBas){
-        setMemoireObjet(1);
-        return true;
-    }
-    setMemoireObjet(-1);
-    return false;
-}
-
 /** Fonction direction en fonction de la couleur (en degré)
  *  
  *  @param c: 0 = Aucun, 1 = Rouge, 2 = Jaune, 3 = vert et 4 = bleu (int)
@@ -309,7 +245,7 @@ bool detectionSifflet(){
     return sifflet;
 }
 
-                         /*************************Fonctions pour les déplacements**************************/
+                            /************************* Fonctions pour les déplacements **************************/
                             
 /** Fonction pour limiter une valeur dans une plage donnée
  *  
@@ -358,7 +294,7 @@ float lireVitesseGauche() {
 float CorrigerVitesse(float vd, float vg, float erreurAccumuleeDroite) {
     //Parametre du PI
     float Ki1 = 0.0006;  // Gain intégral pour B elever 200 pulse pour la fin
-    float Kp1 = 0.0017;  // Gain proportionnel pour B
+    float Kp1 = 0.0012;  // Gain proportionnel pour B
     float totalpulseDroit = ENCODER_Read(RIGHT);
     float totalpulseGauche = ENCODER_Read(LEFT);
     float ecartDroit;
@@ -592,9 +528,10 @@ void retourCentre(){
     pulse = (distBordCentre * pulseParCM) + ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2);
     erreurAccumuleeDroite = decel(pulse, erreurAccumuleeDroite);
 
+
 }
 
-                            /*************************Fonctions pour la rotation**************************/
+                            /************************* Fonctions pour la rotation **************************/
 
 /** Lecture de la vitesse de la roue droite en rotation
  *  
@@ -631,7 +568,7 @@ float lireVitesseGaucheRot() {
 float CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, float RerreurAccumuleeDroite) {
     float vitesseDroit = ENCODER_Read(RIGHT);
     float vitesseGauche = ENCODER_Read(LEFT);
-    float RKi1 = 0.006;  // Gain intégral
+    float RKi1 = 0.0006;  // Gain intégral
     float RKp1 = 0.0017;  // Gain proportionnel pour A
     float ecartDroit;
 
@@ -651,7 +588,7 @@ float CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, 
     float termePropDroit = ecartDroit * RKp1;
 
     // Mise à jour des erreurs accumulées pour l'intégrale
-    RerreurAccumuleeDroite += ecartDroit * 0.01;
+    RerreurAccumuleeDroite += ecartDroit * 0.02;
 
     //calcul de erreur position total
     
@@ -661,10 +598,6 @@ float CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, 
 
     // Calcul des corrections finales en limitant la vitesse pour éviter des valeurs trop élevées
     float correctionDroit = limiterRot(vd + termePropDroit + termeIntDroit, -1.0, 1.0);
-    Serial.print("vitesse droit:");
-    Serial.println(vitesseDroit);
-    Serial.print("vitesse gauche:");
-    Serial.println(vitesseGauche);
 
     // Application des corrections aux moteurs
     if (tourneDroit == 0){
@@ -684,7 +617,7 @@ void rotationGauche(float a) {
     // a = angle de rotation en degré
     ENCODER_Reset(RIGHT);
     ENCODER_Reset(LEFT);
-    float pulse = (cirCerRot)/((tour/a)*cirRoue)*pulseTourRoue;
+    float pulse = (cirCerRot)/((tour/a)*circRoue)*pulseTourRoue;
     float pulseGauche;
     float pulseDroite;
     int tourneGauche =0;
@@ -709,7 +642,9 @@ void rotationGauche(float a) {
             }
             delay(10);
         }
+        delay(20);
     }
+    direction += ((pulseDroite+(pulseGauche*-1))/2)/pulseParDeg;
 }
 
 /** Fonction qui fait tourner le robot à droite
@@ -720,7 +655,7 @@ void rotationDroite(float a) {
     // a = angle de rotation en degré
     ENCODER_Reset(RIGHT);
     ENCODER_Reset(LEFT);
-    float pulse = (cirCerRot)/((tour/a)*cirRoue)*pulseTourRoue;
+    float pulse = (cirCerRot)/((tour/a)*circRoue)*pulseTourRoue;
     float pulseGauche;
     float pulseDroite;
     int tourneGauche =0;
@@ -746,6 +681,7 @@ void rotationDroite(float a) {
             delay(10);
         }
     }
+    direction += (((pulseDroite*-1)+pulseGauche)/2)/pulseParDeg;
 }
 
 /** Fonction qui permet de faire un rotation de manière globale (pas de 
@@ -755,13 +691,14 @@ void rotationDroite(float a) {
 */
 void positionnementGlobal(float directionCible){
     float angle = directionCible - direction;
+    Serial.print("angle:");
+    Serial.println(angle);
     if(angle > 0){
         rotationDroite(angle);
     }
     else if(angle < 0){
         rotationGauche((angle * -1.0));
     }
-    direction = directionCible;
 }
 
 /** Fonction qui repositionne le robot sur la ligne en avant de lui */
@@ -786,55 +723,138 @@ void positionnementLigne(){
     direction = direction - ((int)direction%90); //remet la direction sur le quart de cercle le plus proche (0, 90, 180, 270 ou 360)
 }
 
-                        /*************************Fonctions pour la détection d'objets **************************/
+                        /************************* Fonctions pour la détection d'objets **************************/
 
-/** Fonction qui permet de scanner et positionner le robot vers l'objet */
-void radar(){
-    float a = 15.0; //6 rotation de 15 degrées seront effectuer pour avoir 90 deg au total
-    int nombreRotation = 6;
+
+/** Donne la distance avec l'obstacle/objet devant, plus grande 
+ * précision à 10cm suivi d'une imprécision grandissante en augmentant 
+ * la distance et énormément grandissante en réduisant la distance
+ * 
+ * @return Une valeur réelle correspondant à la distance entre le 
+ * capteur et l'objet
+*/
+float distanceObjet(){
+    float res=0.0;
+    int current=0;
+    int test=5;
+    int min=analogRead(A6);
+    int max=analogRead(A6);
+    for(int i=test;i>0;i--){
+        current=analogRead(A6);
+        if(min>current){
+            min=current;
+        }else if (max<current){
+            max=current;
+        }
+        res+=current;
+        delay(5/test);
+    }
+    Serial.print("min : ");
+    Serial.println(min);
+    Serial.print("max : ");
+    Serial.println(max);
+    //Calcul traduisant la valeur analog en cm, document avec les calculs disponible sur Teams
+    return 10*(25-(sqrtf(10)*sqrtf(63*(res/((float)test))-2500)/sqrtf(res/((float)test))))-1.34445983;
+}
+
+/** Place une donnée en lien à la détection d'objet dans un tableau
+ * 
+ * @param donnee Donnée à enregistrer
+*/
+void setMemoireObjet(int donnee){
+    mapObjet[(int)direction]=donnee;
+}
+
+/** Retourne le centre de l'objet le plus proche dans le sens horaire
+ * 
+ * @param firstValue angle de départ pour la recherche d'objet dans le sens horaire
+ * 
+ * @return Angle du centre de l'objet selon 0 deg, l'absence d'objet donne -1
+ */
+int getMemoireObjet(int firstValue){
+    for(int i=0;i<90;i++){
+        if(mapObjet[(firstValue+i)%360]==1){
+            for(int k=i;k<90;k++){
+                if(mapObjet[(firstValue+i)%360]==-1){
+                    return firstValue+(i+k-1)/2;
+                }
+            }
+        }
+    }
+    return -1;
+}
+
+/** Détecte s'il y a un objet devant, fait la différence entre un mur et un objet
+ * 
+ * @return valeur bouléenne : true=objet, false=mur
+ */
+bool detectionObjet(){
+    float capteurDisHaut=0;
+    float capteurDisBas=0;
+    int test=2;
+    for(int i=test;i>0;i--){
+        capteurDisHaut+=analogRead(A7);
+        capteurDisBas+=analogRead(A6);
+        delay(0.1);
+    }
+    float incertitudeMultiplicative=1.1495;
+    if(capteurDisBas*incertitudeMultiplicative > capteurDisHaut && capteurDisHaut*incertitudeMultiplicative > capteurDisBas){
+        setMemoireObjet(1);
+        return true;
+    }
+    setMemoireObjet(-1);
+    return false;
+}
+
+
+/** Fonction qui permet de scanner et positionner le robot vers l'objet 
+ * 
+ * @return Angle global à lequel l'object à été détecté dans la zone de 90 degrés suivant l'angle initial
+*/
+int radar(){
+    // a = angle de rotation en degré
+    float a = 90;
+    ENCODER_Reset(RIGHT);
+    ENCODER_Reset(LEFT);
+    float pulse = (cirCerRot)/((tour/a)*circRoue)*pulseTourRoue;
     float pulseGauche;
     float pulseDroite;
     int tourneGauche =0;
     int tourneDroite =0;
     float RerreurAccumuleeDroite = 0;  // Somme des erreurs accumulées pour la roue droite
-    float vitesseRotationDroit = -0.20;
-    float vitesseRotationGauche = 0.20;
-    float pulseDeg = (pulseTourRoue/cirRoue)/(cirCerRot/360.0);
-    float dirOG = direction; //enregistrement de la position initial 
-    
-    for(int i = 1; (i < nombreRotation /*|| fct détec a detecté un object*/);){
-        float pulse = (cirCerRot)/((tour/a)*cirRoue)*pulseTourRoue;
-        direction = dirOG + ((i-1)*15.0);
-        dirOG = direction;
-        ENCODER_Reset(RIGHT);
-        ENCODER_Reset(LEFT);
+    float dirInit = direction;
 
-        while(tourneDroite == 0 || tourneGauche == 0){
-            RerreurAccumuleeDroite = CorrigerVitesseRot(vitesseRotationDroit, vitesseRotationGauche, tourneDroite, tourneGauche, RerreurAccumuleeDroite);
-            pulseGauche = ENCODER_Read(LEFT);
-            pulseDroite = ENCODER_Read(RIGHT);
-            direction = dirOG + ((((pulseDroite * -1) + pulseGauche)/2)/pulseDeg); //moyenne déplacement roue traduit en degrés
+    while((tourneDroite == 0 || tourneGauche == 0) && (pulse > ((pulseDroite+pulseGauche)/2))){
+        pulseGauche = ENCODER_Read(LEFT);
+        pulseDroite = ENCODER_Read(RIGHT);
+        direction = dirInit + (((pulseDroite*-1)+pulseGauche)/2)/pulseParDeg;
+        detectionObjet();
+        RerreurAccumuleeDroite = CorrigerVitesseRot(vitesseRotationNeg, vitesseRotationPos, tourneDroite, tourneGauche, RerreurAccumuleeDroite);
 
-            while ((pulseDroite < ((pulse - 200) * -1.0) || pulseGauche > pulse - 200) && (tourneDroite == 0 || tourneGauche == 0)){
-                if (pulseDroite  < ((pulse-20) * -1.0)){
+        if(getMemoireObjet(dirInit) != -1 ){
+            pulse = (((pulseDroite*-1)+pulseGauche)/2) + 300.0;
+            while(tourneDroite == 0 || tourneGauche == 0){
+                pulseGauche = ENCODER_Read(LEFT);
+                pulseDroite = ENCODER_Read(RIGHT);
+                
+                if (pulseDroite  < ((pulse) * -1.0)){
                     MOTOR_SetSpeed(RIGHT, 0);
                     tourneGauche = 1;
                 }
-                if (pulseGauche > (pulse-20)){
+                if (pulseGauche > (pulse)){
                     MOTOR_SetSpeed(LEFT, 0);
                     tourneDroite = 1;
                 }
-                /*appel de la fonction de détection avec l'angle*/
                 delay(10);
-                pulseGauche = ENCODER_Read(LEFT);
-                pulseDroite = ENCODER_Read(RIGHT);
             }
-            /*appel de la fonction detection sans stocker la valeur de retour*/
-            delay(5);
         }
     }
-    positionnementGlobal(/*valeur de la fonction detection d'objet*/90.0);
+    direction = dirInit + (((pulseDroite*-1)+pulseGauche)/2)/pulseParDeg;
+    int angle = getMemoireObjet(dirInit);
+    return angle;
 }
+
+                                /************************* Fonction principale **************************/
 
 /** Fonction décisionnelle pour le défi (programme principal) */
 void decisions(){
@@ -858,7 +878,7 @@ void decisions(){
     deplacement(distLigne * -1.0);
 }
 
-/************************************ FIN de la zone des fonctions*  - Début du main**************************************/
+/************************************ FIN de la zone des fonctions - Début du main **************************************/
 
 /** Fonction de départ, se fait appeler une seule fois au début du programme*/
 void setup() {
@@ -880,7 +900,7 @@ void setup() {
 
 /** Fonction de départ, se fait appeler à chaque fois qu'elle est terminée */
 void loop(){
-    //boucle de test : code temporaire qui peut être remplacé et effacé
+/*    //boucle de test : code temporaire qui peut être remplacé et effacé
     Serial.println("loop started");
     while(DEBUGAGE){
         //code temporaire qui peut être remplacé et effacé
@@ -904,9 +924,19 @@ void loop(){
     // Déroulement du programme principal
     for (int i = 1; i < 5; i++) {
         decisions();
+        // Augmente la direction en fonction des couleurs
         direction = i + 1;
     }
 
     Serial.println("loop finished");
     delay(DT);
+    */
+   direction = 0;
+   float x =0;
+    while(direction < 350){
+        positionnementGlobal(x+=30);
+        delay(500);
+        Serial.println(direction);
+    }
+    delay(5000);
 }
