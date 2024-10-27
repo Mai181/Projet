@@ -6,7 +6,7 @@
     Description: Trouve les objets dans une arène 
                 et va les porter dans les zones de 
                 couleur
-*/
+ */
 
 #include <Arduino.h>
 #include <librobus.h>
@@ -30,7 +30,6 @@ const int DT=50;
 /** Boucle de débug */
 const bool DEBUGAGE = true;
 
-float cirCerRot = 60.056;  // circonferenceCercleRotation
 float tour = 360.0;
 /** Pulse par tour de roue */
 float pulseTourRoue = 3200.0; 
@@ -39,7 +38,7 @@ int ptr = 3200;
 /** Circonférence de la roue en cm */
 float circRoue = 23.94;  
 /** Circonference cercle rotation */ 
-float cirCerRot = 58.0;   
+float cirCerRot = 60.056;   
 /** Calcul du nombre de pulses par cm */
 float pulseParCM = ptr / circRoue;
 
@@ -51,11 +50,11 @@ float vitesseRotationPos = 0.15;
 /** Direction actuel du robot dans l'espace (face à la zone rouge étant 0 degré) */
 float direction; 
 /** Booléen pour la détection du sifflet */
-bool siffletActive = false; 
+bool siffletActive = false;
 /** Longueur d'un tape (du milieu à une zone de couleur) */
 float distLigne = 90.0;                                               //***À changer selon les pinces!!!!
 /** Distance entre le robot et un objet */
-float distObj; 
+float distObj;
 
 float pulseParCM = ptr / circRoue;  // Calcul du nombre de pulses par cm
 float pulseParDeg = (cirCerRot/360)*pulseParCM;
@@ -530,6 +529,7 @@ void retourCentre(){
     pulse = (distBordCentre * pulseParCM) + ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2);
     erreurAccumuleeDroite = decel(pulse, erreurAccumuleeDroite);
 
+
 }
 
                             /************************* Fonctions pour la rotation **************************/
@@ -728,42 +728,35 @@ void positionnementLigne(){
 
 /** Fonction qui permet de scanner et positionner le robot vers l'objet */
 void radar(){
-    float a = 15.0; //6 rotation de 15 degrées seront effectuer pour avoir 90 deg au total
-    int nombreRotation = 6;
+    // a = angle de rotation en degré
+    float a = 90;
+    ENCODER_Reset(RIGHT);
+    ENCODER_Reset(LEFT);
+    float pulse = (cirCerRot)/((tour/a)*cirRoue)*pulseTourRoue;
     float pulseGauche;
     float pulseDroite;
     int tourneGauche =0;
     int tourneDroite =0;
     float RerreurAccumuleeDroite = 0;  // Somme des erreurs accumulées pour la roue droite
-    float vitesseRotationDroit = -0.20;
-    float vitesseRotationGauche = 0.20;
-    float pulseDeg = (pulseTourRoue/circRoue)/(cirCerRot/360.0);
-    float dirOG = direction; //enregistrement de la position initial 
-    
-    for(int i = 1; (i < nombreRotation /*|| fct détec a detecté un object*/);){
-        float pulse = (cirCerRot)/((tour/a)*circRoue)*pulseTourRoue;
-        direction = dirOG + ((i-1)*15.0);
-        dirOG = direction;
-        ENCODER_Reset(RIGHT);
-        ENCODER_Reset(LEFT);
 
-        while(tourneDroite == 0 || tourneGauche == 0){
-            RerreurAccumuleeDroite = CorrigerVitesseRot(vitesseRotationDroit, vitesseRotationGauche, tourneDroite, tourneGauche, RerreurAccumuleeDroite);
+    while(tourneDroite == 0 || tourneGauche == 0){
+        pulseGauche = ENCODER_Read(LEFT);
+        pulseDroite = ENCODER_Read(RIGHT);
+        RerreurAccumuleeDroite = CorrigerVitesseRot(vitesseRotationNeg, vitesseRotationPos, tourneDroite, tourneGauche, RerreurAccumuleeDroite);
+        
+
+        while ((pulseDroite < ((pulse-300.0) * -1.0) || pulseGauche > pulse-300.0) && (tourneDroite == 0 || tourneGauche == 0)){
             pulseGauche = ENCODER_Read(LEFT);
             pulseDroite = ENCODER_Read(RIGHT);
-            direction = dirOG + ((((pulseDroite * -1) + pulseGauche)/2)/pulseDeg); //moyenne déplacement roue traduit en degrés
-
-            while ((pulseDroite < ((pulse - 200) * -1.0) || pulseGauche > pulse - 200) && (tourneDroite == 0 || tourneGauche == 0)){
-                if (pulseDroite  < ((pulse-20) * -1.0)){
-                    MOTOR_SetSpeed(RIGHT, 0);
-                    tourneGauche = 1;
-                }
-                if (pulseGauche > (pulse-20)){
-                    MOTOR_SetSpeed(LEFT, 0);
-                    tourneDroite = 1;
-                }
-                /*appel de la fonction de détection avec l'angle*/
-                delay(10);
+            if (pulseDroite  < ((pulse) * -1.0)){
+                MOTOR_SetSpeed(RIGHT, 0);
+                tourneGauche = 1;
+            }
+            if (pulseGauche > (pulse)){
+                MOTOR_SetSpeed(LEFT, 0);
+                tourneDroite = 1;
+            }
+            delay(10);
                 pulseGauche = ENCODER_Read(LEFT);
                 pulseDroite = ENCODER_Read(RIGHT);
             }
