@@ -20,7 +20,11 @@
 Adafruit_TCS34725 colorSensor;
 int numTest = 5;  // nb of tests
 
+/** Données collectés du suiveur de ligne */
 int dataSuiveurLigne[3];
+/** Tableau mémorisant la position des objets */
+int mapObjet[360];
+
 /** Délai en ms entre chaque itération du loop */
 const int DT=50;
 /** Boucle de débug */
@@ -206,6 +210,33 @@ bool detectionObjet(){
         return true;
     }
     return false;
+}
+
+/** Place une donnée en lien à la détection d'objet dans un tableau
+ * 
+ * @param donnee Donnée à enregistrer
+*/
+void setMemoireObjet(int donnee){
+    mapObjet[(int)direction]=donnee;
+}
+
+/** Retourne le centre de l'objet le plus proche dans le sens horaire
+ * 
+ * @param firstValue angle de départ pour la recherche d'objet dans le sens horaire
+ * 
+ * @return Angle du centre de l'objet selon 0 deg, l'absence d'objet donne -1
+ */
+int getMemoireObjet(int firstValue){
+    for(int i=0;i<360;i++){
+        if(mapObjet[(firstValue+i)%360]==1){
+            for(int k=i;k<360;k++){
+                if(mapObjet[(firstValue+i)%360]==-1){
+                    return firstValue+(i+k-1)/2;
+                }
+            }
+        }
+    }
+    return -1;
 }
 
 /** Fonction direction en fonction de la couleur (en degré)
