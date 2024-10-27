@@ -208,20 +208,6 @@ float directionCouleur(int c){
     }
 }
 
-/** Fonction pour limiter une valeur dans une plage donnée pour la rotation              // À supprimer!!!!!!
- * 
- *  @param valeur: valeur (float)
- *  @param minVal: son minimum (float)
- *  @param maxVal: son maximum (float)
- * 
- *  @return minVal si < valeur, maxVal si > valeur ou valeur 
-*/
-float limiterRot(float valeur, float minVal, float maxVal) {
-    if (valeur > maxVal) return maxVal;
-    if (valeur < minVal) return minVal;
-    return valeur;
-}
-
 /** Fonction pour détecter le signal de départ de 5kHz 
  *  
  *  @return bool si le sifflet est détecter (true) ou non (false)
@@ -597,7 +583,7 @@ float CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, 
     float termeIntDroit = RerreurAccumuleeDroite * RKi1;
 
     // Calcul des corrections finales en limitant la vitesse pour éviter des valeurs trop élevées
-    float correctionDroit = limiterRot(vd + termePropDroit + termeIntDroit, -1.0, 1.0);
+    float correctionDroit = limiter(vd + termePropDroit + termeIntDroit, -1.0, 1.0);
 
     // Application des corrections aux moteurs
     if (tourneDroit == 0){
