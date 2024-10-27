@@ -55,8 +55,7 @@ bool siffletActive = false;
 float distLigne = 90.0;                                               //***À changer selon les pinces!!!!
 /** Distance entre le robot et un objet */
 float distObj;
-
-float pulseParCM = ptr / circRoue;  // Calcul du nombre de pulses par cm
+/** Calcul du nombre de pulses par degré */
 float pulseParDeg = (cirCerRot/360)*pulseParCM;
 
 /********** FIN de la zone des variables et constantes
@@ -726,47 +725,6 @@ void positionnementLigne(){
 
                         /************************* Fonctions pour la détection d'objets **************************/
 
-/** Fonction qui permet de scanner et positionner le robot vers l'objet */
-void radar(){
-    // a = angle de rotation en degré
-    float a = 90;
-    ENCODER_Reset(RIGHT);
-    ENCODER_Reset(LEFT);
-    float pulse = (cirCerRot)/((tour/a)*cirRoue)*pulseTourRoue;
-    float pulseGauche;
-    float pulseDroite;
-    int tourneGauche =0;
-    int tourneDroite =0;
-    float RerreurAccumuleeDroite = 0;  // Somme des erreurs accumulées pour la roue droite
-
-    while(tourneDroite == 0 || tourneGauche == 0){
-        pulseGauche = ENCODER_Read(LEFT);
-        pulseDroite = ENCODER_Read(RIGHT);
-        RerreurAccumuleeDroite = CorrigerVitesseRot(vitesseRotationNeg, vitesseRotationPos, tourneDroite, tourneGauche, RerreurAccumuleeDroite);
-        
-
-        while ((pulseDroite < ((pulse-300.0) * -1.0) || pulseGauche > pulse-300.0) && (tourneDroite == 0 || tourneGauche == 0)){
-            pulseGauche = ENCODER_Read(LEFT);
-            pulseDroite = ENCODER_Read(RIGHT);
-            if (pulseDroite  < ((pulse) * -1.0)){
-                MOTOR_SetSpeed(RIGHT, 0);
-                tourneGauche = 1;
-            }
-            if (pulseGauche > (pulse)){
-                MOTOR_SetSpeed(LEFT, 0);
-                tourneDroite = 1;
-            }
-            delay(10);
-                pulseGauche = ENCODER_Read(LEFT);
-                pulseDroite = ENCODER_Read(RIGHT);
-            }
-            /*appel de la fonction detection sans stocker la valeur de retour*/
-            delay(5);
-        }
-    }
-    positionnementGlobal(/*valeur de la fonction detection d'objet*/90.0);
-}
-
 /** Donne la distance avec l'obstacle/objet devant, plus grande 
  * précision à 10cm suivi d'une imprécision grandissante en augmentant 
  * la distance et énormément grandissante en réduisant la distance
@@ -843,6 +801,53 @@ int getMemoireObjet(int firstValue){
         }
     }
     return -1;
+}
+
+/** Fonction qui permet de scanner et positionner le robot vers l'objet 
+ * 
+ * @return angle global à lequel l'object à été détecté dans la zone de 90 degrés suivant l'angle initial
+*/
+int radar(){
+    // a = angle de rotation en degré
+    float a = 90;
+    ENCODER_Reset(RIGHT);
+    ENCODER_Reset(LEFT);
+    float pulse = (cirCerRot)/((tour/a)*circRoue)*pulseTourRoue;
+    float pulseGauche;
+    float pulseDroite;
+    int tourneGauche =0;
+    int tourneDroite =0;
+    float RerreurAccumuleeDroite = 0;  // Somme des erreurs accumulées pour la roue droite
+    float dirInit = direction;
+
+    while((tourneDroite == 0 || tourneGauche == 0) && (pulse > ((pulseDroite+pulseGauche)/2))){
+        pulseGauche = ENCODER_Read(LEFT);
+        pulseDroite = ENCODER_Read(RIGHT);
+        direction = dirInit + (((pulseDroite*-1)+pulseGauche)/2)/pulseParDeg;
+        detectionObjet();
+        RerreurAccumuleeDroite = CorrigerVitesseRot(vitesseRotationNeg, vitesseRotationPos, tourneDroite, tourneGauche, RerreurAccumuleeDroite);
+
+        if(getMemoireObjet(dirInit) != -1 ){
+            pulse = (((pulseDroite*-1)+pulseGauche)/2) + 300.0;
+            while(tourneDroite == 0 || tourneGauche == 0){
+                pulseGauche = ENCODER_Read(LEFT);
+                pulseDroite = ENCODER_Read(RIGHT);
+                
+                if (pulseDroite  < ((pulse) * -1.0)){
+                    MOTOR_SetSpeed(RIGHT, 0);
+                    tourneGauche = 1;
+                }
+                if (pulseGauche > (pulse)){
+                    MOTOR_SetSpeed(LEFT, 0);
+                    tourneDroite = 1;
+                }
+                delay(10);
+            }
+        }
+    }
+    direction = dirInit + (((pulseDroite*-1)+pulseGauche)/2)/pulseParDeg;
+    int angle = getMemoireObjet(dirInit);
+    return angle;
 }
 
                                 /************************* Fonction principale **************************/
