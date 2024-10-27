@@ -48,7 +48,7 @@ float vitesseRotationNeg = -0.15;
 float vitesseRotationPos = 0.15;  
 
 /** Direction actuel du robot dans l'espace (face à la zone rouge étant 0 degré) */
-float direction; 
+float direction = 0; 
 /** Booléen pour la détection du sifflet */
 bool siffletActive = false;
 /** Longueur d'un tape (du milieu à une zone de couleur) */
@@ -101,7 +101,7 @@ char detectColor() {
 
     // Determine color based on avg
     if (redSum>10 && greenSum>10 &&blueSum>10){
-        Serial.print("Detected Color: Unknown");
+        //Serial.print("Detected Color: Unknown");
     } else if (redAvg >= greenAvg && greenAvg > blueAvg) {
         Serial.print("Detected Color: Yellow");
         color = 'J'; // Yellow detected as red + green
@@ -188,10 +188,13 @@ void detecteurligne(){
  *  (float et non int pour ne pas avoir d'erreur avec la fonction deplacement)
 */
 float directionCouleur(int c){
+    int i=0; //compteur pour éviter les blocages
     char current = detectColor();
+    //défini lorientation du robot au départ
     if (c == 0) {
-        while (current == 'E'){
+        while (current == 'E' && i < 40){
             current = detectColor();
+            i++;
         }
         if (current == 'R') {
             return 180.0;
@@ -205,7 +208,11 @@ float directionCouleur(int c){
         else if (current == 'V') {
             return 270.0;
         }
+        else{
+            return 180.0;
+        }
     }
+    //défini l'angle global à laquel la zone à traiter ce situe.
     else {
         if (c == 1) {
             return 0.0;
@@ -404,6 +411,7 @@ float decel(int pulse, float erreurAccumuleeDroite) {
  *  @param dist: distance (float)
 */
 void deplacement(float dist) {
+    dist *= -1; //inversion de la variable dist car le robot est
     float vd = 0.6;  // Vitesse désirée droite
     float vg = 0.6;  // Vitesse désirée gauche
     int pulse = dist * pulseParCM;  // Nombre de pulses pour la distance donnée
@@ -739,7 +747,7 @@ void positionnementLigne(){
 float distanceObjet(){
     float res=0.0;
     int current=0;
-    int test=5;
+    int test=20;
     int min=analogRead(A6);
     int max=analogRead(A6);
     for(int i=test;i>0;i--){
@@ -750,14 +758,14 @@ float distanceObjet(){
             max=current;
         }
         res+=current;
-        delay(5/test);
+        delay(0.2);
     }
     Serial.print("min : ");
     Serial.println(min);
     Serial.print("max : ");
     Serial.println(max);
     //Calcul traduisant la valeur analog en cm, document avec les calculs disponible sur Teams
-    return 10*(25-(sqrtf(10)*sqrtf(63*(res/((float)test))-2500)/sqrtf(res/((float)test))))-1.34445983;
+    return 10*(25-(sqrtf(10)*sqrtf(63*(res/((float)test))-2500)/sqrtf(res/((float)test))));
 }
 
 /** Place une donnée en lien à la détection d'objet dans un tableau
@@ -794,19 +802,24 @@ int getMemoireObjet(int firstValue){
 bool detectionObjet(){
     float capteurDisHaut=0;
     float capteurDisBas=0;
-    int test=2;
+    int test=25;
     for(int i=test;i>0;i--){
         capteurDisHaut+=analogRead(A7);
         capteurDisBas+=analogRead(A6);
         delay(0.1);
     }
-    float incertitudeMultiplicative=1.1495;
-    if(capteurDisBas*incertitudeMultiplicative > capteurDisHaut && capteurDisHaut*incertitudeMultiplicative > capteurDisBas){
-        setMemoireObjet(1);
-        return true;
+    capteurDisHaut/=test;
+    capteurDisBas/=test;
+    Serial.println("lecture:");
+    Serial.println(capteurDisHaut);
+    Serial.println(capteurDisBas);
+    float incertitude=8;
+    if(capteurDisBas+incertitude > capteurDisHaut && capteurDisHaut+incertitude > capteurDisBas){
+        setMemoireObjet(-1);
+        return false;
     }
-    setMemoireObjet(-1);
-    return false;
+    setMemoireObjet(1);
+    return true;
 }
 
 
@@ -827,12 +840,14 @@ float radar(){
     float RerreurAccumuleeDroite = 0;  // Somme des erreurs accumulées pour la roue droite
     float dirInit = direction;
 
-    while((tourneDroite == 0 || tourneGauche == 0) && (pulse > ((pulseDroite+pulseGauche)/2))){
+    while((tourneDroite == 0 || tourneGauche == 0) && (pulse > (((pulseDroite*-1)+pulseGauche)/2))){
         pulseGauche = ENCODER_Read(LEFT);
         pulseDroite = ENCODER_Read(RIGHT);
         direction = dirInit + (((pulseDroite*-1)+pulseGauche)/2)/pulseParDeg;
         detectionObjet();
         RerreurAccumuleeDroite = CorrigerVitesseRot(vitesseRotationNeg, vitesseRotationPos, tourneDroite, tourneGauche, RerreurAccumuleeDroite);
+        Serial.print("Direction acc:");
+        Serial.println(direction);
 
         if(getMemoireObjet(dirInit) != -1 ){
             pulse = (((pulseDroite*-1)+pulseGauche)/2) + 300.0;
@@ -840,11 +855,11 @@ float radar(){
                 pulseGauche = ENCODER_Read(LEFT);
                 pulseDroite = ENCODER_Read(RIGHT);
                 
-                if (pulseDroite  < ((pulse) * -1.0)){
+                if (pulseDroite  < (pulse) * -1.0){
                     MOTOR_SetSpeed(RIGHT, 0);
                     tourneGauche = 1;
                 }
-                if (pulseGauche > (pulse)){
+                if (pulseGauche > pulse){
                     MOTOR_SetSpeed(LEFT, 0);
                     tourneDroite = 1;
                 }
@@ -852,7 +867,9 @@ float radar(){
             }
         }
     }
-    direction = dirInit + (((pulseDroite*-1)+pulseGauche)/2)/pulseParDeg;
+    MOTOR_SetSpeed(RIGHT, 0);
+    MOTOR_SetSpeed(LEFT, 0);
+    direction = dirInit + ((((pulseDroite*-1)+pulseGauche)/2)/pulseParDeg);
     float angle = (float)getMemoireObjet(dirInit);
     return angle;
 }
@@ -898,12 +915,13 @@ void setup() {
     pinMode(A8, INPUT);
     pinMode(A9, INPUT);
     pinMode(A10, INPUT);
-    direction = directionCouleur(0);
+    //direction = directionCouleur(0);
     Serial.println("Setup finished");
 }
 
 /** Fonction de départ, se fait appeler à chaque fois qu'elle est terminée */
 void loop(){
+/*
     //Recherche du sifflet
     while(siffletActive == false){
         siffletActive = detectionSifflet();
@@ -927,4 +945,8 @@ void loop(){
 
     Serial.println("loop finished");
     delay(DT);
+*/
+    direction = 0;
+    Serial.println(radar());
+    delay(500);
 }
