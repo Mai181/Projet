@@ -805,7 +805,7 @@ int getMemoireObjet(int firstValue){
 
 /** Fonction qui permet de scanner et positionner le robot vers l'objet 
  * 
- * @return angle global à lequel l'object à été détecté dans la zone de 90 degrés suivant l'angle initial
+ * @return Angle global à lequel l'object à été détecté dans la zone de 90 degrés suivant l'angle initial
 */
 int radar(){
     // a = angle de rotation en degré
