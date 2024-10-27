@@ -27,17 +27,18 @@ const int DT=50;
 /** Boucle de débug */
 const bool DEBUGAGE = true;
 
-float cirCerRot = 58.0;  // circonferenceCercleRotation
+float cirCerRot = 60.056;  // circonferenceCercleRotation
 float cirRoue = 23.94;  // circonferenceRoue
 float tour = 360.0;
 float pulseTourRoue = 3200.0; 
-float vitesseRotationNeg = -0.17;  // vitesse négative du moteur 
-float vitesseRotationPos = 0.17;  // vitesse positive du moteur
+float vitesseRotationNeg = -0.15;  // vitesse négative du moteur 
+float vitesseRotationPos = 0.15;  // vitesse positive du moteur
 int ptr = 3200;  // Nombre de pulses par rotation
 float circRoue = 23.94;  // Circonférence de la roue en cm
 float pulseParCM = ptr / circRoue;  // Calcul du nombre de pulses par cm
+float pulseParDeg = (cirCerRot/360)*pulseParCM;
 
-float direction; //direction actuel du robot dans l'espace (face à la zone rouge étant 0 degré)
+float direction = 0; //direction actuel du robot dans l'espace (face à la zone rouge étant 0 degré)
 bool siffletActive = false;
 float distLigne = 90.0;                             // À changer selon les pinces!!!!
 float distObj;
@@ -69,6 +70,7 @@ char detectColor() {
     float redAvg = redSum / (float)numTest;
     float greenAvg = greenSum / (float)numTest;
     float blueAvg = blueSum / (float)numTest;
+/*   
     Serial.println("Red");
     Serial.println(redAvg);
     Serial.println("green");
@@ -77,6 +79,7 @@ char detectColor() {
     Serial.println(blueAvg);
     Serial.println("clear");
     Serial.println(clear);
+*/
 
     // Determine color based on avg
     if (redSum>10 && greenSum>10 &&blueSum>10){
@@ -298,7 +301,7 @@ float lireVitesseGauche() {
 float CorrigerVitesse(float vd, float vg, float erreurAccumuleeDroite) {
     //Parametre du PI
     float Ki1 = 0.0006;  // Gain intégral pour B elever 200 pulse pour la fin
-    float Kp1 = 0.0017;  // Gain proportionnel pour B
+    float Kp1 = 0.0012;  // Gain proportionnel pour B
     float totalpulseDroit = ENCODER_Read(RIGHT);
     float totalpulseGauche = ENCODER_Read(LEFT);
     float ecartDroit;
@@ -549,7 +552,7 @@ float lireVitesseGaucheRot() {
 float CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, float RerreurAccumuleeDroite) {
     float vitesseDroit = ENCODER_Read(RIGHT);
     float vitesseGauche = ENCODER_Read(LEFT);
-    float RKi1 = 0.006;  // Gain intégral
+    float RKi1 = 0.0006;  // Gain intégral
     float RKp1 = 0.0017;  // Gain proportionnel pour A
     float ecartDroit;
 
@@ -569,7 +572,7 @@ float CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, 
     float termePropDroit = ecartDroit * RKp1;
 
     // Mise à jour des erreurs accumulées pour l'intégrale
-    RerreurAccumuleeDroite += ecartDroit * 0.01;
+    RerreurAccumuleeDroite += ecartDroit * 0.02;
 
     //calcul de erreur position total
     
@@ -579,10 +582,6 @@ float CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, 
 
     // Calcul des corrections finales en limitant la vitesse pour éviter des valeurs trop élevées
     float correctionDroit = limiterRot(vd + termePropDroit + termeIntDroit, -1.0, 1.0);
-    Serial.print("vitesse droit:");
-    Serial.println(vitesseDroit);
-    Serial.print("vitesse gauche:");
-    Serial.println(vitesseGauche);
 
     // Application des corrections aux moteurs
     if (tourneDroit == 0){
@@ -624,7 +623,9 @@ void rotationGauche(float a) {
             }
             delay(10);
         }
+        delay(20);
     }
+    direction += ((pulseDroite+(pulseGauche*-1))/2)/pulseParDeg;
 }
 
 /** Fonction qui fait tourner le robot à droite*/
@@ -658,19 +659,21 @@ void rotationDroite(float a) {
             delay(10);
         }
     }
+    direction += (((pulseDroite*-1)+pulseGauche)/2)/pulseParDeg;
 }
 
 /** Fonction qui permet de faire un rotation de manière globale (pas de 
  * gauche ou droite, plutot -90 et 90 degrés)*/
 void positionnementGlobal(float directionCible){
     float angle = directionCible - direction;
+    Serial.print("angle:");
+    Serial.println(angle);
     if(angle > 0){
         rotationDroite(angle);
     }
     else if(angle < 0){
         rotationGauche((angle * -1.0));
     }
-    direction = directionCible;
 }
 
 /** Fonction qui repositionne le robot sur la ligne en avant de lui */
@@ -791,7 +794,7 @@ void setup() {
 
 /** Fonction de départ, se fait appeler à chaque fois qu'elle est terminée */
 void loop(){
-    //boucle de test : code temporaire qui peut être remplacé et effacé
+/*    //boucle de test : code temporaire qui peut être remplacé et effacé
     Serial.println("loop started");
     while(DEBUGAGE){
         //code temporaire qui peut être remplacé et effacé
@@ -820,4 +823,13 @@ void loop(){
 
     Serial.println("loop finished");
     delay(DT);
+    */
+   direction = 0;
+   float x =0;
+    while(direction < 350){
+        positionnementGlobal(x+=30);
+        delay(500);
+        Serial.println(direction);
+    }
+    delay(5000);
 }
