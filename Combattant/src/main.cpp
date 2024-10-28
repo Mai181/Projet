@@ -786,8 +786,8 @@ int getMemoireObjet(int firstValue){
     for(int i=0;i<90;i++){
         if(mapObjet[(firstValue+i)%360]==1){
             for(int k=i;k<90;k++){
-                if(mapObjet[(firstValue+k)%360]==-1){
-                    return (firstValue+(i-1)+((k-i)/2));
+                if(mapObjet[(firstValue+k)%360]==-1 || mapObjet[(firstValue+k)%360]>0){
+                    return (firstValue+(k-1));
                 }
             }
         }
@@ -870,10 +870,7 @@ float radar(){
         direction = dirInit + (((pulseDroite*-1)+pulseGauche)/2)/pulseParDeg;
         detectionObjet();
         RerreurAccumuleeDroite = CorrigerVitesseRot(vitesseRotationNeg, vitesseRotationPos, tourneDroite, tourneGauche, RerreurAccumuleeDroite);
-        delay(1);
-        Serial.print("Direction acc:");
-        Serial.println(direction);
-        Serial.println(getMemoireObjet((int)dirInit));
+        delay(10);
 
         if(getMemoireObjet((int)dirInit) != -1 ){
             pulse = (((pulseDroite*-1)+pulseGauche)/2) + 30.0;
@@ -892,7 +889,6 @@ float radar(){
                 delay(10);
             }
         }
-        delay(19);
     }
     MOTOR_SetSpeed(RIGHT, 0);
     MOTOR_SetSpeed(LEFT, 0);
