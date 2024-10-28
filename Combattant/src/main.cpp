@@ -787,7 +787,7 @@ int getMemoireObjet(int firstValue){
         if(mapObjet[(firstValue+i)%360]==1){
             for(int k=i;k<90;k++){
                 if(mapObjet[(firstValue+k)%360]==-1){
-                    return firstValue+(i-1)+((k-i)/2);
+                    return (firstValue+(i-1)+((k-i)/2));
                 }
             }
         }
