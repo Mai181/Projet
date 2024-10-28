@@ -23,7 +23,7 @@ int numTest = 5;
 /** Données collectés du suiveur de ligne */
 int dataSuiveurLigne[3];
 /** Tableau mémorisant la position des objets */
-int mapObjet[360];
+int mapObjet[360] = {0};
 
 /** Délai en ms entre chaque itération du loop */
 const int DT=50;
@@ -581,13 +581,13 @@ float CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, 
     float ecartDroit;
 
     if (vitesseGauche < 0){
-        vitesseGauche *= -1.0;
+        vitesseGauche *= -1.0000;
         ecartDroit = vitesseGauche - vitesseDroit;
     }
     if (vitesseDroit < 0){
-        vitesseDroit *= -1.0;
+        vitesseDroit *= -1.0000;
         ecartDroit = vitesseGauche - vitesseDroit;
-        ecartDroit *= (-1);
+        ecartDroit *= (-1.000);
     }
     // Calcul des écarts entre la consigne et la mesure
      
@@ -596,7 +596,7 @@ float CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, 
     float termePropDroit = ecartDroit * RKp1;
 
     // Mise à jour des erreurs accumulées pour l'intégrale
-    RerreurAccumuleeDroite += ecartDroit * 0.02;
+    RerreurAccumuleeDroite += ecartDroit * 0.02000;
 
     //calcul de erreur position total
     
@@ -605,7 +605,7 @@ float CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, 
     float termeIntDroit = RerreurAccumuleeDroite * RKi1;
 
     // Calcul des corrections finales en limitant la vitesse pour éviter des valeurs trop élevées
-    float correctionDroit = limiter(vd + termePropDroit + termeIntDroit, -1.0, 1.0);
+    float correctionDroit = limiter(vd + termePropDroit + termeIntDroit, -1.000, 1.000);
 
     // Application des corrections aux moteurs
     if (tourneDroit == 0){
@@ -652,7 +652,7 @@ void rotationGauche(float a) {
         }
         delay(20);
     }
-    direction += ((pulseDroite+(pulseGauche*-1))/2)/pulseParDeg;
+    direction -= ((pulseDroite+(pulseGauche*-1))/2)/pulseParDeg;
 }
 
 /** Fonction qui fait tourner le robot à droite
@@ -786,8 +786,8 @@ int getMemoireObjet(int firstValue){
     for(int i=0;i<90;i++){
         if(mapObjet[(firstValue+i)%360]==1){
             for(int k=i;k<90;k++){
-                if(mapObjet[(firstValue+i)%360]==-1){
-                    return firstValue+(i+k-1)/2;
+                if(mapObjet[(firstValue+k)%360]==-1){
+                    return firstValue+(i-1)+((k-i)/2);
                 }
             }
         }
@@ -800,16 +800,18 @@ int getMemoireObjet(int firstValue){
  * @return valeur bouléenne : true=objet, false=mur
  */
 bool detectionObjet(){
+/*
     float capteurDisHaut=0;
     float capteurDisBas=0;
-    int test=25;
+    int test=15;
     for(int i=test;i>0;i--){
         capteurDisHaut+=analogRead(A7);
         capteurDisBas+=analogRead(A6);
-        delay(0.1);
+        delay(0.2);
     }
     capteurDisHaut/=test;
     capteurDisBas/=test;
+
     Serial.println("lecture:");
     Serial.println(capteurDisHaut);
     Serial.println(capteurDisBas);
@@ -820,6 +822,28 @@ bool detectionObjet(){
     }
     setMemoireObjet(1);
     return true;
+*/
+
+
+    float capteurDisBas=0;
+    int test=1;
+
+    for(int i=test;i>0;i--){
+        capteurDisBas+=analogRead(A6);
+        delay(0.1);
+    }
+
+    capteurDisBas/=test;
+    Serial.println(capteurDisBas);
+    if(capteurDisBas < 85){
+        setMemoireObjet(-1);
+        return false;        
+    }
+    else{
+        setMemoireObjet(1);
+        return true;
+    }
+
 }
 
 
@@ -846,11 +870,13 @@ float radar(){
         direction = dirInit + (((pulseDroite*-1)+pulseGauche)/2)/pulseParDeg;
         detectionObjet();
         RerreurAccumuleeDroite = CorrigerVitesseRot(vitesseRotationNeg, vitesseRotationPos, tourneDroite, tourneGauche, RerreurAccumuleeDroite);
+        delay(20);
         Serial.print("Direction acc:");
         Serial.println(direction);
+        Serial.println(getMemoireObjet((int)dirInit));
 
-        if(getMemoireObjet(dirInit) != -1 ){
-            pulse = (((pulseDroite*-1)+pulseGauche)/2) + 300.0;
+        if(getMemoireObjet((int)dirInit) != -1 ){
+            pulse = (((pulseDroite*-1)+pulseGauche)/2) + 30.0;
             while(tourneDroite == 0 || tourneGauche == 0){
                 pulseGauche = ENCODER_Read(LEFT);
                 pulseDroite = ENCODER_Read(RIGHT);
@@ -869,8 +895,10 @@ float radar(){
     }
     MOTOR_SetSpeed(RIGHT, 0);
     MOTOR_SetSpeed(LEFT, 0);
+    pulseGauche = ENCODER_Read(LEFT);
+    pulseDroite = ENCODER_Read(RIGHT);
     direction = dirInit + ((((pulseDroite*-1)+pulseGauche)/2)/pulseParDeg);
-    float angle = (float)getMemoireObjet(dirInit);
+    float angle = (float)getMemoireObjet((int)dirInit);
     return angle;
 }
 
@@ -947,6 +975,8 @@ void loop(){
     delay(DT);
 */
     direction = 0;
-    Serial.println(radar());
-    delay(500);
+    positionnementGlobal(radar());
+    Serial.print("fin seq, direction:");
+    Serial.println(direction);
+    delay(10000);
 }
