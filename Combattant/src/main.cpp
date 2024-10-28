@@ -870,7 +870,7 @@ float radar(){
         direction = dirInit + (((pulseDroite*-1)+pulseGauche)/2)/pulseParDeg;
         detectionObjet();
         RerreurAccumuleeDroite = CorrigerVitesseRot(vitesseRotationNeg, vitesseRotationPos, tourneDroite, tourneGauche, RerreurAccumuleeDroite);
-        delay(20);
+        delay(1);
         Serial.print("Direction acc:");
         Serial.println(direction);
         Serial.println(getMemoireObjet((int)dirInit));
@@ -892,6 +892,7 @@ float radar(){
                 delay(10);
             }
         }
+        delay(19);
     }
     MOTOR_SetSpeed(RIGHT, 0);
     MOTOR_SetSpeed(LEFT, 0);
