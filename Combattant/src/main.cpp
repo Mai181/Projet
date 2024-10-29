@@ -389,7 +389,7 @@ float decel(float pulse, float erreurAccumuleeDroite) {
             Serial.println("sortie boucle decel1");
             if (i >= 2.0){
             erreurAccumuleeDroite = CorrigerVitesse(i * (RealSpeedDroit / 8.0), i * (RealSpeedGauche / 8.0), erreurAccumuleeDroite);
-            delay(75);  // Attendre un peu entre chaque étape d'accélération
+            delay(75);  // Attendre un peu entre chaque étape de décélération
             i--;
             }
             pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2.0);
@@ -401,7 +401,7 @@ float decel(float pulse, float erreurAccumuleeDroite) {
             Serial.println("sortie boucle decel2");
             if (i >= 2.0){
             erreurAccumuleeDroite = CorrigerVitesse(i * (RealSpeedDroit / 8.0), i * (RealSpeedGauche / 8.0), erreurAccumuleeDroite);
-            delay(75);  // Attendre un peu entre chaque étape d'accélération
+            delay(75);  // Attendre un peu entre chaque étape de décélération
             i--;
             }
             pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2.0);
@@ -979,7 +979,6 @@ void setup() {
     MOTOR_SetSpeed(RIGHT, 0);
     ENCODER_Reset(LEFT);
     ENCODER_Reset(RIGHT);
-    //direction = directionCouleur(0);
     Serial.println("Setup finished");
 }
 
@@ -1011,7 +1010,7 @@ void loop(){
     delay(DT);
 */
     delay(500);
-    positionnementGlobal(radar()+2);
+    positionnementGlobal(radar()+2.0);
     delay(50);
     distObj=distanceObjet();
     while(distObj > 30.0){
