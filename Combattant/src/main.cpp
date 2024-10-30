@@ -60,6 +60,8 @@ float pulseParDeg = (cirCerRot/360)*pulseParCM;
 
 float position = 0.0;
 
+float distObjParcouru = 0.0;
+
 /********** FIN de la zone des variables et constantes
  
  * Début de la zone des fonctions */
@@ -726,10 +728,10 @@ float distanceObjet(){
  * 
  *  @param dist: distance (float)
 */
-void deplacement(float dist) {
+void deplacement(float dist, float vd, float vg) {
     dist *= -1; //inversion de la variable dist car le robot est
-    float vd = 0.3;  // Vitesse désirée droite
-    float vg = 0.3;  // Vitesse désirée gauche
+    //float vd = 0.3;  // Vitesse désirée droite
+    //float vg = 0.3;  // Vitesse désirée gauche
     float pulse = dist * pulseParCM;  // Nombre de pulses pour la distance donnée
     float pulseArret = 10 * pulseParCM;  // Distance nécessaire pour arrêter (en pulses)
     float erreurAccumuleeDroite =0; //erreur accumuler de la roue droite pi le I du PI
@@ -771,7 +773,6 @@ void deplacement(float dist) {
     // Décélération progressive
     Serial.println("sortie boucle deplacement 2");
     erreurAccumuleeDroite = decel(pulse, erreurAccumuleeDroite);
-    position += ((((ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2.0)/pulseParCM)*-1.0);
     Serial.println("sortie boucle deplacement");
 }
 
@@ -872,6 +873,58 @@ bool detectionObjet(){
     else{
         setMemoireObjet(1);
         return true;
+    }
+
+}
+
+float radarRevolution(){
+    float dist = -80.0; //distance max entre centre et zone
+    float vd = 0.15;  // Vitesse désirée droite
+    float vg = 0.15;  // Vitesse désirée gauche
+    float pulse = dist * pulseParCM;  // Nombre de pulses pour la distance donnée
+    float pulseArret = 10 * pulseParCM;  // Distance nécessaire pour arrêter (en pulses)
+    float erreurAccumuleeDroite =0; //erreur accumuler de la roue droite pi le I du PI
+    int objDetec = 0;
+    float debutObj = 0.0;
+    float finObj = 0.0;
+    float posObj = 0.0;
+    position = 0;
+
+    // Accélération progressive
+    erreurAccumuleeDroite = accel((vd*-1), (vg*-1), erreurAccumuleeDroite);
+    delay(50);
+    float pulseDroit = ENCODER_Read(LEFT);
+    float pulseGauche = ENCODER_Read(RIGHT);
+
+    // Avancer jusqu'à presque atteindre la distance cible
+    while (((pulseDroit + pulseGauche) / 2 > (pulse + pulseArret))) {
+        position += (((pulseDroit + pulseGauche)/2.0)/pulseParCM)*-1.0;
+        // Correction des vitesses en fonction de la distance parcourue
+        erreurAccumuleeDroite = CorrigerVitesse((vd*-1), (vg*-1), erreurAccumuleeDroite);
+
+        // Pause pour laisser le temps aux corrections
+        delay(50);
+
+        if(detectionObjet() == 1){
+            if(objDetec == 0){
+                objDetec == 1;
+                debutObj = position;
+            }
+            finObj = position;
+        }
+        if(objDetec == 1 && detectionObjet() == -1){
+            posObj = (finObj-debutObj)/2;
+            dist = ((pulseDroit + pulseGauche) / 2)-100.0;
+            objDetec = 2;
+        }
+
+        pulseDroit = ENCODER_Read(LEFT);
+        pulseGauche = ENCODER_Read(RIGHT);
+        position += (((pulseDroit + pulseGauche)/2.0)/pulseParCM)*-1.0;
+        return(posObj);
+    }
+    if(position > (dist -5.0)){
+        return -1;
     }
 
 }
@@ -1009,22 +1062,33 @@ void loop(){
     Serial.println("loop finished");
     delay(DT);
 */
+
     delay(500);
-    positionnementGlobal(radar()+2.0);
-    delay(50);
-    distObj=distanceObjet();
-    while(distObj > 30.0){
-        deplacement(15.0);
+    distObjParcouru = 0.0;
+    if(radarRevolution() != -1){ //avance vers la zone a détectant l'objet a ca droite
+        positionnementGlobal(0.0+90.0); //tourne de 90deg soit vers lobjet détecté
+        delay(50);
+        distObj = distanceObjet();
+        delay(50);
+        while(distObj > 30.0){
+            deplacement(20.0, 0.3, 0.3); //avance de 20cm car l'objet est trop long et distance imprécise
+            delay(100);
+            distObjParcouru += ((((ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2.0)/pulseParCM)*-1.0);
+            distObj=distanceObjet();
+            Serial.print("distance objet boucle while:");
+            Serial.println(distObj);
+        }
+        deplacement(distObj-3.0, 0.15, 0.15); //avance vers l'objet quant il a a moin de 30cm et arrete 3cm avant
+        delay(20);
+        distObjParcouru += ((((ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2.0)/pulseParCM)*-1.0);
         delay(100);
-        distObj=distanceObjet();
-        Serial.print("distance objet boucle while:");
-        Serial.println(distObj);
+        deplacement(distObjParcouru*-1, 0.3, 0.3); //recule de la distance entre l'axe depart-zone et l'objet
+        delay(200);
+        positionnementGlobal(0.0); // se repositionne vers la zone
+        deplacement(80.0-distObj, 0.3, 0.3); //avance de la distance restante jusqua la zone
+        delay(100);
     }
-    deplacement(distObj-3.0);
-    delay(500);
-    deplacement(position*-1.0);
-    delay(200);
-    positionnementGlobal(0.0);
+    deplacement(-80.0, 0.3, 0.3);//retour au centre
     Serial.print("distance objet:");
     Serial.println(distObj);
     delay(10000);
