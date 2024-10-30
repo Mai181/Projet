@@ -52,7 +52,7 @@ float direction = 0.0;
 /** Booléen pour la détection du sifflet */
 bool siffletActive = false;
 /** Longueur d'un tape (du milieu à une zone de couleur) */
-float distLigne = 90.0;                                               //***À changer selon les pinces!!!!
+float distLigne = 83.68;                                               
 /** Distance entre le robot et un objet */
 float distObj;
 /** Calcul du nombre de pulses par degré */
@@ -133,14 +133,15 @@ char detectColor() {
  * @param ouvert: true = ouverts, false = fermés (bool)
 */
 void SERVO_ouvert(bool ouvert) {
-    
-    uint8_t servoAngle = 45;	// angle servomoteur lorsque fermé
-        if (ouvert){
-            servoAngle = 135;   // angle servomoteur lorsque ouvert
-        }
-
-    SERVO_SetAngle(1, servoAngle);  // Servomoteur gauche
-    SERVO_SetAngle(0, 180 - servoAngle); // Servomoteur droit
+    // Variables
+    if (ouvert){
+        SERVO_SetAngle(1, 70);  // Servomoteur droit
+        SERVO_SetAngle(0, 75); // Servomoteur gauche
+    }
+    else {
+        SERVO_SetAngle(1, 115);  // Servomoteur droit
+        SERVO_SetAngle(0, 30); // Servomoteur gauche
+    }
 }
 
 /** Fonction initialise servomoteurs
@@ -148,6 +149,7 @@ void SERVO_ouvert(bool ouvert) {
 void INIT_servos(){
     SERVO_Enable(0);
     SERVO_Enable(1);
+    delay(100);
     SERVO_ouvert(true);
 }
 
@@ -476,8 +478,8 @@ void suivreligne(float dist){
 /** Fonction de positionement du robot au centre lors du départ 
  * (le robot est considéré comme étant dos au centre)*/
 void retourCentre(){
-    int dist = 100; //arbitraire, le centre est a moin de 100cm d'une zone
-    float distBordCentre = 20; //Distance à parcourire entre le bord de la zone noir du centre et le centre de la zone noir par rapport au centre de l'essieux
+    int dist = 106.68; //arbitraire, le centre est a moin de 100cm d'une zone
+    float distBordCentre = 22; //Distance à parcourire entre le bord de la zone noir du centre et le centre de la zone noir par rapport au centre de l'essieux
     float vd = -0.6;  // Vitesse désirée droite
     float vg = -0.6;  // Vitesse désirée gauche
     int pulse = dist * pulseParCM;  // Nombre de pulses pour la distance donnée
@@ -582,7 +584,6 @@ float CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, 
  *  @param a: angle de rotation (float)
 */
 void rotationGauche(float a) {
-    // a = angle de rotation en degré
     ENCODER_Reset(RIGHT);
     ENCODER_Reset(LEFT);
     float pulse = (cirCerRot)/((tour/a)*circRoue)*pulseTourRoue;
@@ -620,7 +621,6 @@ void rotationGauche(float a) {
  *  @param a: angle de rotation (float)
 */
 void rotationDroite(float a) {
-    // a = angle de rotation en degré
     ENCODER_Reset(RIGHT);
     ENCODER_Reset(LEFT);
     float pulse = (cirCerRot)/((tour/a)*circRoue)*pulseTourRoue;
@@ -720,18 +720,22 @@ float distanceObjet(){
         res+=current;
         delay(0.1);
     }
+    //Serial.println(res/(float)test);
+    //Serial.println(min);
+    //Serial.println(max);
+    return (((1/(res/((float)test))-0.0008)/0.0002)*(4.0/3.0))-7.5;
     //Calcul traduisant la valeur analog en cm, document avec les calculs disponible sur Teams
-    return 10*(25-(sqrtf(10)*sqrtf(63*(res/((float)test))-2500)/sqrtf(res/((float)test))));
+    // return 10*(25-(sqrtf(10)*sqrtf(63*(res/((float)test))-2500)/sqrtf(res/((float)test))));
 }
 
 /** Fonction pour faire avancer le robot sur une distance donnée
  * 
  *  @param dist: distance (float)
 */
-void deplacement(float dist, float vd, float vg) {
+void deplacement(float dist) {
     dist *= -1; //inversion de la variable dist car le robot est
-    //float vd = 0.3;  // Vitesse désirée droite
-    //float vg = 0.3;  // Vitesse désirée gauche
+    float vd = 0.3;  // Vitesse désirée droite
+    float vg = 0.3;  // Vitesse désirée gauche
     float pulse = dist * pulseParCM;  // Nombre de pulses pour la distance donnée
     float pulseArret = 10 * pulseParCM;  // Distance nécessaire pour arrêter (en pulses)
     float erreurAccumuleeDroite =0; //erreur accumuler de la roue droite pi le I du PI
@@ -846,7 +850,7 @@ bool detectionObjet(){
     Serial.println("lecture:");
     Serial.println(capteurDisHaut);
     Serial.println(capteurDisBas);
-    float incertitude=8;
+    float incertitude=10;
     if(capteurDisBas+incertitude > capteurDisHaut && capteurDisHaut+incertitude > capteurDisBas){
         setMemoireObjet(-1);
         return false;
@@ -878,7 +882,7 @@ bool detectionObjet(){
 }
 
 float radarRevolution(){
-    float dist = -80.0; //distance max entre centre et zone
+    float dist = -106.68; //distance max entre centre et zone
     float vd = 0.12;  // Vitesse désirée droite
     float vg = 0.12;  // Vitesse désirée gauche
     float pulse = dist * pulseParCM;  // Nombre de pulses pour la distance donnée
@@ -907,7 +911,7 @@ float radarRevolution(){
 
         if(detectionObjet() == 1){
             if(objDetec == 0){
-                objDetec == 1;
+                objDetec = 1;
                 debutObj = position;
             }
             finObj = position;
@@ -922,7 +926,7 @@ float radarRevolution(){
         pulseGauche = ENCODER_Read(RIGHT);
     }
     erreurAccumuleeDroite = decel(pulse, erreurAccumuleeDroite);
-    position += (((pulseDroit + pulseGauche)/2.0)/pulseParCM)*-1.0;
+        position += (((pulseDroit + pulseGauche)/2.0)/pulseParCM)*-1.0;
     if(position > (dist -5.0)){
         return -1;
     }
@@ -990,9 +994,12 @@ float radar(){
 
 /** Fonction décisionnelle pour le défi (programme principal) */
 void decisions(){
-    /*
-    positionnementGlobal(direction);
-    positionnementGlobal(radar());
+    int i = 0;
+    //positionnementGlobal(direction);
+    do {
+        positionnementGlobal(radar());
+        i++;
+    } while(!detectionObjet() || i < 5);
     distObj = distanceObjet();
     // Double vérification de la distance si elle est supérieure à 15 cm
     if (distObj > 15.0){
@@ -1010,7 +1017,6 @@ void decisions(){
     deplacement(distLigne);               
     SERVO_ouvert(true);
     deplacement(distLigne * -1.0);
-    */
 }
 
 /************************************ FIN de la zone des fonctions - Début du main **************************************/
@@ -1035,21 +1041,27 @@ void setup() {
     MOTOR_SetSpeed(RIGHT, 0);
     ENCODER_Reset(LEFT);
     ENCODER_Reset(RIGHT);
+    direction = directionCouleur(0);
     Serial.println("Setup finished");
+    delay(2000);
 }
 
 /** Fonction de départ, se fait appeler à chaque fois qu'elle est terminée */
 void loop(){
-/*
+    while(true){
+        decisions();
+        delay(10000);
+    }
+
     //Recherche du sifflet
     while(siffletActive == false){
         siffletActive = detectionSifflet();
-        if (ROBUS_IsBumper(REAR) == 1){
+        if (ROBUS_IsBumper(FRONT) == 1 || ROBUS_IsBumper(REAR) == 1){
             siffletActive = true;
         }
     }
 
-    // Avance vers le milieu
+    // Positionnement centre
     retourCentre();
 
     // Positionnement initial
@@ -1061,11 +1073,7 @@ void loop(){
         // Augmente la direction en fonction des couleurs
         direction = directionCouleur(i+1);
     }
-
-    Serial.println("loop finished");
-    delay(DT);
-*/
-
+    /*
     delay(500);
     distObjParcouru = 0.0;
     int resFctRadar = radarRevolution();
@@ -1073,7 +1081,7 @@ void loop(){
         delay(100);
         deplacement(position - resFctRadar, 0.12, 0.12);
         position -= ((((ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2.0)/pulseParCM)*-1.0);
-        positionnementGlobal(0.0+90.0); //tourne de 90deg soit vers lobjet détecté
+        positionnementGlobal(0.0+90.0); //tourne de 90deg soit vers lobjet détecté                !!!!!!!
         delay(50);
         distObj = distanceObjet();
         delay(50);
@@ -1081,10 +1089,10 @@ void loop(){
             deplacement(20.0, 0.3, 0.3); //avance de 20cm car l'objet est trop long et distance imprécise
             delay(100);
             distObjParcouru += ((((ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2.0)/pulseParCM)*-1.0);
-            positionnementGlobal(0.0);
+            positionnementGlobal(0.0);                                                              // !!!!!!
             delay(100);
             distObj = distanceObjet();
-            positionnementGlobal(90.0);
+            positionnementGlobal(90.0);                                                             // !!!!!
             delay(100);
         }
         deplacement(distObj-3.0, 0.15, 0.15); //avance vers l'objet quant il a a moin de 30cm et arrete 3cm avant
@@ -1100,5 +1108,8 @@ void loop(){
     deplacement(-80.0, 0.3, 0.3);//retour au centre
     Serial.print("distance objet:");
     Serial.println(distObj);
-    delay(10000);
+    */
+    
+    Serial.println("loop finished");
+    delay(DT);
 }
