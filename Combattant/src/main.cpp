@@ -879,8 +879,8 @@ bool detectionObjet(){
 
 float radarRevolution(){
     float dist = -80.0; //distance max entre centre et zone
-    float vd = 0.15;  // Vitesse désirée droite
-    float vg = 0.15;  // Vitesse désirée gauche
+    float vd = 0.12;  // Vitesse désirée droite
+    float vg = 0.12;  // Vitesse désirée gauche
     float pulse = dist * pulseParCM;  // Nombre de pulses pour la distance donnée
     float pulseArret = 10 * pulseParCM;  // Distance nécessaire pour arrêter (en pulses)
     float erreurAccumuleeDroite =0; //erreur accumuler de la roue droite pi le I du PI
@@ -914,18 +914,19 @@ float radarRevolution(){
         }
         if(objDetec == 1 && detectionObjet() == -1){
             posObj = (finObj-debutObj)/2;
-            dist = ((pulseDroit + pulseGauche) / 2)-100.0;
+            dist = ((pulseDroit + pulseGauche) / 2);
             objDetec = 2;
         }
 
         pulseDroit = ENCODER_Read(LEFT);
         pulseGauche = ENCODER_Read(RIGHT);
-        position += (((pulseDroit + pulseGauche)/2.0)/pulseParCM)*-1.0;
-        return(posObj);
     }
+    erreurAccumuleeDroite = decel(pulse, erreurAccumuleeDroite);
+    position += (((pulseDroit + pulseGauche)/2.0)/pulseParCM)*-1.0;
     if(position > (dist -5.0)){
         return -1;
     }
+    return(posObj);
 
 }
 
@@ -1065,7 +1066,11 @@ void loop(){
 
     delay(500);
     distObjParcouru = 0.0;
-    if(radarRevolution() != -1){ //avance vers la zone a détectant l'objet a ca droite
+    int resFctRadar = radarRevolution();
+    if(resFctRadar != -1){ //avance vers la zone a détectant l'objet a ca droite
+        delay(100);
+        deplacement(position - resFctRadar, 0.12, 0.12);
+        position -= ((((ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2.0)/pulseParCM)*-1.0);
         positionnementGlobal(0.0+90.0); //tourne de 90deg soit vers lobjet détecté
         delay(50);
         distObj = distanceObjet();
@@ -1074,16 +1079,18 @@ void loop(){
             deplacement(20.0, 0.3, 0.3); //avance de 20cm car l'objet est trop long et distance imprécise
             delay(100);
             distObjParcouru += ((((ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2.0)/pulseParCM)*-1.0);
-            distObj=distanceObjet();
-            Serial.print("distance objet boucle while:");
-            Serial.println(distObj);
+            positionnementGlobal(0.0);
+            delay(100);
+            distObj = distanceObjet();
+            positionnementGlobal(90.0);
+            delay(100);
         }
         deplacement(distObj-3.0, 0.15, 0.15); //avance vers l'objet quant il a a moin de 30cm et arrete 3cm avant
         delay(20);
         distObjParcouru += ((((ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2.0)/pulseParCM)*-1.0);
         delay(100);
         deplacement(distObjParcouru*-1, 0.3, 0.3); //recule de la distance entre l'axe depart-zone et l'objet
-        delay(200);
+        delay(100);
         positionnementGlobal(0.0); // se repositionne vers la zone
         deplacement(80.0-distObj, 0.3, 0.3); //avance de la distance restante jusqua la zone
         delay(100);
