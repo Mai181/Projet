@@ -831,7 +831,7 @@ int getMemoireObjet(int firstValue){
  * @return valeur bouléenne : true=objet, false=mur
  */
 bool detectionObjet(){
-/*
+
     float capteurDisHaut=0;
     float capteurDisBas=0;
     int test=15;
@@ -853,8 +853,8 @@ bool detectionObjet(){
     }
     setMemoireObjet(1);
     return true;
-*/
 
+/*
 
     float capteurDisBas=0;
     int test=5;
@@ -874,7 +874,7 @@ bool detectionObjet(){
         setMemoireObjet(1);
         return true;
     }
-
+*/
 }
 
 float radarRevolution(){
@@ -1026,6 +1026,8 @@ void setup() {
     Wire.begin();
     // colorSensor.ledStatus = 1;
     INIT_servos();
+    pinMode(A6, INPUT);
+    pinMode(A7, INPUT);
     pinMode(A8, INPUT);
     pinMode(A9, INPUT);
     pinMode(A10, INPUT);
