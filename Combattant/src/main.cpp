@@ -203,6 +203,7 @@ float directionCouleur(int c){
         while (current == 'E'&&i<40){
             current = detectColor();
             i++;
+            delay(20);
         }
         if (current == 'R') {
             return 180.0;
@@ -922,8 +923,8 @@ float radar(){
     float dirInit = direction;
     
 
-        pulseGauche = ENCODER_Read(LEFT);
-        pulseDroite = ENCODER_Read(RIGHT);
+    pulseGauche = ENCODER_Read(LEFT);
+    pulseDroite = ENCODER_Read(RIGHT);
     delay(20);
     while((tourneDroite == 0 || tourneGauche == 0) && (pulse > (((pulseDroite*-1.0)+pulseGauche)/2.0))){
         pulseGauche = ENCODER_Read(LEFT);
@@ -972,17 +973,11 @@ void decisions(){
         i++;
         delay(200);
     }while(!detectionObjet());
-    distObj = distanceObjet();
-    // Double vérification de la distance si elle est supérieure à 15 cm
-    if (distObj > 15.0){
-        deplacement(distObj - 15.0);
-        float distanceRestante = distanceObjet();
-        distObj = (distObj-15.0)+distanceRestante;
-        deplacement(distanceRestante);
+    distObj = distanceObjet()+10.0;
+    if(distObj > 80.0) {
+        distObj = 80.0;
     }
-    else {
-        deplacement(distObj);
-    }
+    deplacement(distObj);
     SERVO_ouvert(false);
     deplacement(distObj * -1.0);
     Serial.println("direction : ");
@@ -1039,25 +1034,26 @@ void loop(){
 */
 
     //Recherche du sifflet
-    /*while(siffletActive == false){
+    while(siffletActive == false){
         siffletActive = detectionSifflet();
         if (ROBUS_IsBumper(REAR) == 1 || ROBUS_IsBumper(FRONT) == 1){
             siffletActive = true;
         }
     }
-    */
-   delay(10000); // sifflet marche pu
+    
+   delay(1000); // sifflet marche pu
 
     // Avance vers le milieu
     deplacement(distLigne-14.0);
 
-    direction = directionCouleur(1);
-
     // Déroulement du programme principal
     for (;compteur < 5; compteur++) {
-        decisions();
         // Augmente la direction en fonction des couleurs
-        direction = directionCouleur(compteur+1);
+        direction = directionCouleur(compteur);
+        decisions();
+        if (compteur == 4){
+            compteur = 1;
+        }
     }
 
     Serial.println("loop finished");
