@@ -24,7 +24,7 @@ int compteur = 1;
 /** Données collectés du suiveur de ligne */
 int dataSuiveurLigne[3];
 /** Tableau mémorisant la position des objets */
-int mapObjet[360] = {0};
+int mapObjet[400] = {0};
 
 /** Délai en ms entre chaque itération du loop */
 const int DT=50;
@@ -53,7 +53,7 @@ float direction=0.0;
 /** Booléen pour la détection du sifflet */
 bool siffletActive = false;
 /** Longueur d'un tape (du milieu à une zone de couleur) */
-float distLigne = 120.68;                                               
+float distLigne = 106.0;                                               
 /** Distance entre le robot et un objet */
 float distObj;
 /** Calcul du nombre de pulses par degré */
@@ -62,6 +62,8 @@ float position = 0.0;
 float distObjetParcouru = 0.0;
 
 float distObjParcouru = 0.0;
+
+float directionVoulu = 0.0;
 
 /********** FIN de la zone des variables et constantes
  
@@ -966,23 +968,23 @@ float radar(){
 
 /** Fonction décisionnelle pour le défi (programme principal) */
 void decisions(){
-    int i = 0;
-    positionnementGlobal(direction);
-    do {
-        positionnementGlobal(radar());
-        i++;
-        delay(200);
-    }while(!detectionObjet());
+    positionnementGlobal(directionVoulu);
+    delay(100);
+    positionnementGlobal(radar());
+    delay(100);
     distObj = distanceObjet()+10.0;
     if(distObj > 80.0) {
         distObj = 80.0;
     }
     deplacement(distObj);
     SERVO_ouvert(false);
+    delay(100);
     deplacement(distObj * -1.0);
-    Serial.println("direction : ");
-    Serial.println(direction);
-    positionnementGlobal(directionCouleur(compteur));
+    delay(100);
+    positionnementGlobal(directionVoulu);
+    delay(100);
+    positionnementLigne()
+    delay(100);
     deplacement(distLigne);               
     SERVO_ouvert(true);
     deplacement(distLigne * -1.0);
@@ -1041,18 +1043,24 @@ void loop(){
         }
     }
     
-   delay(1000); // sifflet marche pu
+   delay(8000); // sifflet marche pu
 
     // Avance vers le milieu
-    deplacement(distLigne-14.0);
+    deplacement(distLigne);
 
     // Déroulement du programme principal
     for (;compteur < 5; compteur++) {
         // Augmente la direction en fonction des couleurs
-        direction = directionCouleur(compteur);
+        directionVoulu = directionCouleur(compteur);
         decisions();
         if (compteur == 4){
             compteur = 1;
+        if(direction >= 360.0){
+            direction -=360.0;
+        }
+        if(direction < 0.0){
+            direction +=360.0;
+        }
         }
     }
 
