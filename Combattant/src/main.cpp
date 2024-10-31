@@ -19,6 +19,7 @@
 Adafruit_TCS34725 colorSensor;
 /** nbr of tests */
 int numTest = 5; 
+int compteur = 1;
 
 /** Données collectés du suiveur de ligne */
 int dataSuiveurLigne[3];
@@ -40,7 +41,7 @@ float circRoue = 23.94;
 /** Circonference cercle rotation */ 
 float cirCerRot = 60.056;   
 /** Calcul du nombre de pulses par cm */
-float pulseParCM = ptr / circRoue;
+float pulseParCM = pulseTourRoue / circRoue;
 
 /** Vitesse négative du moteur */
 float vitesseRotationNeg = -0.10;  
@@ -48,15 +49,25 @@ float vitesseRotationNeg = -0.10;
 float vitesseRotationPos = 0.10;  
 
 /** Direction actuel du robot dans l'espace (face à la zone rouge étant 0 degré) */
+<<<<<<< HEAD
 float direction = 0.0; 
 /** Booléen pour la détection du sifflet */
 bool siffletActive = false;
 /** Longueur d'un tape (du milieu à une zone de couleur) */
 float distLigne = 83.68;                                               
+=======
+float direction=0.0; 
+/** Booléen pour la détection du sifflet */
+bool siffletActive = false;
+/** Longueur d'un tape (du milieu à une zone de couleur) */
+float distLigne = 120.68;                                               
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
 /** Distance entre le robot et un objet */
 float distObj;
 /** Calcul du nombre de pulses par degré */
-float pulseParDeg = (cirCerRot/360)*pulseParCM;
+float pulseParDeg = (cirCerRot / 360.0) * pulseParCM;
+float position = 0.0;
+float distObjetParcouru = 0.0;
 
 float position = 0.0;
 
@@ -133,6 +144,7 @@ char detectColor() {
  * @param ouvert: true = ouverts, false = fermés (bool)
 */
 void SERVO_ouvert(bool ouvert) {
+<<<<<<< HEAD
     // Variables
     if (ouvert){
         SERVO_SetAngle(1, 70);  // Servomoteur droit
@@ -142,6 +154,16 @@ void SERVO_ouvert(bool ouvert) {
         SERVO_SetAngle(1, 115);  // Servomoteur droit
         SERVO_SetAngle(0, 30); // Servomoteur gauche
     }
+=======
+        if (ouvert){
+    SERVO_SetAngle(1, 70); // Servomoteur droit 
+    SERVO_SetAngle(0, 75); // Servomoteur gauche
+        }else{
+    SERVO_SetAngle(1, 115); // Servomoteur droit 
+    SERVO_SetAngle(0, 30); // Servomoteur gauche
+        }
+
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
 }
 
 /** Fonction initialise servomoteurs
@@ -196,11 +218,19 @@ void detecteurligne(){
  *  (float et non int pour ne pas avoir d'erreur avec la fonction deplacement)
 */
 float directionCouleur(int c){
+<<<<<<< HEAD
     int i=0; //compteur pour éviter les blocages
+=======
+    int i=0;
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
     char current = detectColor();
     //défini lorientation du robot au départ
     if (c == 0) {
+<<<<<<< HEAD
         while (current == 'E' && i < 40){
+=======
+        while (current == 'E'&&i<40){
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
             current = detectColor();
             i++;
         }
@@ -215,6 +245,8 @@ float directionCouleur(int c){
         }
         else if (current == 'V') {
             return 270.0;
+        }else{
+            return 180.0;
         }
         else{
             return 180.0;
@@ -246,12 +278,13 @@ bool detectionSifflet(){
     bool sifflet = false; //par défaut, il n'y a pas de sifflet
 
     int bruitAmbiant = analogRead(A14); //l'information lue à la pin 10 se trouve entre 0 et 1023
+    // Serial.println(bruitAmbiant);
     float voltageBruitAmbiant = bruitAmbiant * (5.0 / 1023.0); //produit croisé pour ramener sur 5V (l'alim du circuit)
-    //Serial.println(voltageBruitAmbiant);
+    // Serial.println(voltageBruitAmbiant);
 
     int cinqkH = analogRead(A15);
     float voltage5kH = cinqkH * (5.0 / 1023.0);
-    //Serial.println(voltage5kH);
+    // Serial.println(voltage5kH);
 
     if (voltage5kH > voltageBruitAmbiant){
         sifflet = true;
@@ -343,6 +376,10 @@ float CorrigerVitesse(float vd, float vg, float erreurAccumuleeDroite) {
     // Application des corrections aux moteurs
     MOTOR_SetSpeed(RIGHT, correctionDroit);
     MOTOR_SetSpeed(LEFT, vg);
+<<<<<<< HEAD
+=======
+    // Serial.println(correctionDroit);
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
 
     return erreurAccumuleeDroite;
 }
@@ -388,12 +425,20 @@ float decel(float pulse, float erreurAccumuleeDroite) {
 
     float i = 7.0;
 
+<<<<<<< HEAD
     if(pulse > 0.0){
         while (pulsesRestants > 20.0) {
             Serial.println("sortie boucle decel1");
             if (i >= 2.0){
             erreurAccumuleeDroite = CorrigerVitesse(i * (RealSpeedDroit / 8.0), i * (RealSpeedGauche / 8.0), erreurAccumuleeDroite);
             delay(75);  // Attendre un peu entre chaque étape de décélération
+=======
+    if(pulse > 0){
+        while (pulsesRestants > 20) {
+            if (i >= 2.0){
+            erreurAccumuleeDroite = CorrigerVitesse(i * (RealSpeedDroit / 8.0), i * (RealSpeedGauche / 8.0), erreurAccumuleeDroite);
+            delay(75);  // Attendre un peu entre chaque étape d'accélération
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
             i--;
             }
             pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2.0);
@@ -401,11 +446,17 @@ float decel(float pulse, float erreurAccumuleeDroite) {
     }
     else{
         while (pulsesRestants < -20.0) {
+<<<<<<< HEAD
             Serial.println(pulsesRestants);
             Serial.println("sortie boucle decel2");
             if (i >= 2.0){
             erreurAccumuleeDroite = CorrigerVitesse(i * (RealSpeedDroit / 8.0), i * (RealSpeedGauche / 8.0), erreurAccumuleeDroite);
             delay(75);  // Attendre un peu entre chaque étape de décélération
+=======
+            if (i >= 2.0){
+            erreurAccumuleeDroite = CorrigerVitesse(i * (RealSpeedDroit / 8.0), i * (RealSpeedGauche / 8.0), erreurAccumuleeDroite);
+            delay(75);  // Attendre un peu entre chaque étape d'accélération
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
             i--;
             }
             pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2.0);
@@ -417,6 +468,58 @@ float decel(float pulse, float erreurAccumuleeDroite) {
     return erreurAccumuleeDroite;
 }
 
+<<<<<<< HEAD
+=======
+/** Fonction pour faire avancer le robot sur une distance donnée
+ * 
+ *  @param dist: distance (float)
+*/
+void deplacement(float dist) {
+    dist *= -1.0;
+    float vd = 0.4;  // Vitesse désirée droite
+    float vg = 0.4;  // Vitesse désirée gauche
+    float pulse = dist * pulseParCM;  // Nombre de pulses pour la distance donnée
+    float pulseArret = 10 * pulseParCM;  // Distance nécessaire pour arrêter (en pulses)
+    float erreurAccumuleeDroite =0; //erreur accumuler de la roue droite pi le I du PI
+
+    // Réinitialisation des encodeurs
+    ENCODER_Reset(RIGHT);
+    ENCODER_Reset(LEFT);
+
+    if(dist > 0){
+        // Accélération progressive
+        erreurAccumuleeDroite = accel(vd, vg, erreurAccumuleeDroite);
+        delay(50);
+        // Avancer jusqu'à presque atteindre la distance cible
+        while (((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2.0) < (pulse - pulseArret)) {
+
+            // Correction des vitesses en fonction de la distance parcourue
+            erreurAccumuleeDroite = CorrigerVitesse(vd, vg, erreurAccumuleeDroite);
+
+            // Pause pour laisser le temps aux corrections
+            delay(50);
+        }
+    }
+    else{
+        // Accélération progressive
+        erreurAccumuleeDroite = accel((vd*-1.0), (vg*-1.0), erreurAccumuleeDroite);
+        delay(50);
+                // Avancer jusqu'à presque atteindre la distance cible
+        while (((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2.0) > (pulse + pulseArret)) {
+
+            // Correction des vitesses en fonction de la distance parcourue
+            erreurAccumuleeDroite = CorrigerVitesse((vd*-1.0), (vg*-1.0), erreurAccumuleeDroite);
+
+            // Pause pour laisser le temps aux corrections
+            delay(50);
+        }
+    }
+
+    // Décélération progressive
+    erreurAccumuleeDroite = decel(pulse, erreurAccumuleeDroite);
+}
+
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
 /** Fonction qui permet au robot de suivre une ligne sur une distance donnée
  *  
  *  @param dist: distance (float)
@@ -440,7 +543,7 @@ void suivreligne(float dist){
     if(dataSuiveurLigne[0] == 0 && dataSuiveurLigne[1] == 1 && dataSuiveurLigne[2] == 0){
 
         erreurAccumuleeDroite = accel(vitesseBaseDroit, vitesseBaseGauche, erreurAccumuleeDroite);
-        int pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2);
+        int pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2.0);
 
         while(pulsesRestants > pulseArret && perteLigne < 15){
 
@@ -454,20 +557,20 @@ void suivreligne(float dist){
             
             //détermine qu'il est trop à gauche
             if(dataSuiveurLigne[0] == 1 && dataSuiveurLigne[1] == 0 && dataSuiveurLigne[2] == 0){
-                vitesseDroit = vitesseBaseDroit - (correction * -1);
-                vitesseGauche = vitesseBaseGauche - (correction * 1);
+                vitesseDroit = vitesseBaseDroit - (correction * -1.0);
+                vitesseGauche = vitesseBaseGauche - (correction * 1.0);
             }
             //détermine qu'il est trop à droite
             else if(dataSuiveurLigne[0] == 0 && dataSuiveurLigne[1] == 0 && dataSuiveurLigne[2] == 1){
-                vitesseDroit = vitesseBaseDroit - (correction * 1);
-                vitesseGauche = vitesseBaseGauche - (correction * -1);
+                vitesseDroit = vitesseBaseDroit - (correction * 1.0);
+                vitesseGauche = vitesseBaseGauche - (correction * -1.0);
             }
             else{
                 erreurAccumuleeDroite = CorrigerVitesse(vitesseBaseDroit, vitesseBaseGauche, erreurAccumuleeDroite);
             }
             MOTOR_SetSpeed(LEFT, vitesseGauche);
             MOTOR_SetSpeed(RIGHT, vitesseDroit);
-            pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2);
+            pulsesRestants = pulse - ((ENCODER_Read(RIGHT) + ENCODER_Read(LEFT)) / 2.0);
             delay(100);
         }
 
@@ -477,9 +580,16 @@ void suivreligne(float dist){
 
 /** Fonction de positionement du robot au centre lors du départ 
  * (le robot est considéré comme étant dos au centre)*/
+<<<<<<< HEAD
 /*void retourCentre(){
     int dist = 106.68; // Distance de la zone de couleur au centre
     float distBordCentre = 22; //Distance à parcourire entre le bord de la zone noir du centre et le centre de la zone noir par rapport au centre de l'essieux
+=======
+/*
+void retourCentre(){
+    int dist = 100; //arbitraire, le centre est a moin de 100cm d'une zone
+    float distBordCentre = 20; //Distance à parcourire entre le bord de la zone noir du centre et le centre de la zone noir par rapport au centre de l'essieux
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
     float vd = -0.6;  // Vitesse désirée droite
     float vg = -0.6;  // Vitesse désirée gauche
     int pulse = dist * pulseParCM;  // Nombre de pulses pour la distance donnée
@@ -550,7 +660,11 @@ float CorrigerVitesseRot(float vd, float vg, int tourneDroit, int tourneGauche, 
     if (vitesseDroit < 0){
         vitesseDroit *= -1.0000;
         ecartDroit = vitesseGauche - vitesseDroit;
+<<<<<<< HEAD
         ecartDroit *= (-1.000);
+=======
+        ecartDroit *= (-1.0);
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
     }
     // Calcul des écarts entre la consigne et la mesure
      
@@ -592,7 +706,11 @@ void rotationGauche(float a) {
     float pulseDroite;
     int tourneGauche =0;
     int tourneDroite =0;
+<<<<<<< HEAD
     float RerreurAccumuleeDroite = 0;  // Somme des erreurs accumulées pour la roue droite
+=======
+    float RerreurAccumuleeDroite = 0.0;  // Somme des erreurs accumulées pour la roue droite
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
 
     while(tourneDroite == 0 || tourneGauche == 0){
         pulseGauche = ENCODER_Read(LEFT);
@@ -629,7 +747,7 @@ void rotationDroite(float a) {
     float pulseDroite;
     int tourneGauche =0;
     int tourneDroite =0;
-    float RerreurAccumuleeDroite = 0;  // Somme des erreurs accumulées pour la roue droite
+    float RerreurAccumuleeDroite = 0.0;  // Somme des erreurs accumulées pour la roue droite
 
     while(tourneDroite == 0 || tourneGauche == 0){
         pulseGauche = ENCODER_Read(LEFT);
@@ -650,7 +768,7 @@ void rotationDroite(float a) {
             delay(10);
         }
     }
-    direction += (((pulseDroite*-1)+pulseGauche)/2)/pulseParDeg;
+    direction += (((pulseDroite*-1.0)+pulseGauche)/2.0)/pulseParDeg;
 }
 
 /** Fonction qui permet de faire un rotation de manière globale (pas de 
@@ -721,6 +839,7 @@ float distanceObjet(){
         res+=current;
         delay(0.1);
     }
+<<<<<<< HEAD
     //Serial.println(res/(float)test);
     //Serial.println(min);
     //Serial.println(max);
@@ -779,6 +898,13 @@ void deplacement(float dist) {
     Serial.println("sortie boucle deplacement 2");
     erreurAccumuleeDroite = decel(pulse, erreurAccumuleeDroite);
     Serial.println("sortie boucle deplacement");
+=======
+    Serial.print("distObjet : ");
+    Serial.println(((((1/(res/(float)test))-0.0008)/0.0002)*(4.0/3.0)));
+    return ((((1/(res/(float)test))-0.0008)/0.0002)*(4.0/3.0));
+    //Calcul traduisant la valeur analog en cm, document avec les calculs disponible sur Teams
+    // return 10*(25-(sqrtf(10)*sqrtf(63*(res/((float)test))-2500)/sqrtf(res/((float)test))))-1.34445983;
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
 }
 
 /** Place une donnée en lien à la détection d'objet dans un tableau
@@ -799,6 +925,7 @@ int getMemoireObjet(int firstValue){
     int res =0;
     for(int i=0;i<90;i++){
         if(mapObjet[(firstValue+i)%360]==1){
+<<<<<<< HEAD
             for(int k=i+1;k<90;k++){
 
                 if(mapObjet[(firstValue+k)%360]==-1){
@@ -806,6 +933,13 @@ int getMemoireObjet(int firstValue){
                 }
                 else if(mapObjet[(firstValue+k)%360]==1){
                     res = k;
+=======
+            for(int k=i;k<90;k++){
+                if(mapObjet[(firstValue+k)%360]==-1){
+                    return firstValue+1+(i+res)/2;
+                }else if (mapObjet[(firstValue+k)%360]==1){
+                    res=k;
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
                 }
             }
                 
@@ -844,6 +978,7 @@ bool detectionObjet(){
         capteurDisHaut+=analogRead(A7);
         capteurDisBas+=analogRead(A6);
         delay(0.2);
+<<<<<<< HEAD
     }
     capteurDisHaut/=test;
     capteurDisBas/=test;
@@ -880,6 +1015,18 @@ bool detectionObjet(){
         return true;
     }
 */
+=======
+    }
+    capteurDisBas/=(float)test;
+    capteurDisHaut/=(float)test;
+    float incertitude=12;
+    if(distanceObjet()>50){
+        setMemoireObjet(-1);
+        return false;
+    }
+    setMemoireObjet(1);
+    return true;
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
 }
 
 float radarRevolution(){
@@ -955,16 +1102,27 @@ float radar(){
     float dirInit = direction;
     
 
+<<<<<<< HEAD
     while((tourneDroite == 0 || tourneGauche == 0) && (pulse > (((pulseDroite*-1)+pulseGauche)/2))){
+=======
+    pulseGauche = ENCODER_Read(LEFT);
+    pulseDroite = ENCODER_Read(RIGHT);
+    delay(20);
+    while((tourneDroite == 0 || tourneGauche == 0) && (pulse > (((pulseDroite*-1.0)+pulseGauche)/2.0))){
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
         pulseGauche = ENCODER_Read(LEFT);
         pulseDroite = ENCODER_Read(RIGHT);
-        direction = dirInit + (((pulseDroite*-1)+pulseGauche)/2)/pulseParDeg;
+        direction = dirInit + (((pulseDroite*-1.0)+pulseGauche)/2.0)/pulseParDeg;
         detectionObjet();
         RerreurAccumuleeDroite = CorrigerVitesseRot(vitesseRotationNeg, vitesseRotationPos, tourneDroite, tourneGauche, RerreurAccumuleeDroite);
         delay(20);
 
         if(getMemoireObjet((int)dirInit) != -1 ){
+<<<<<<< HEAD
             pulse = (((pulseDroite*-1)+pulseGauche)/2) + 50.0;
+=======
+            pulse = (((pulseDroite*-1.0)+pulseGauche)/2.0) + 50.0;
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
             while(tourneDroite == 0 || tourneGauche == 0){
                 pulseGauche = ENCODER_Read(LEFT);
                 pulseDroite = ENCODER_Read(RIGHT);
@@ -986,9 +1144,14 @@ float radar(){
     delay(50);
     pulseGauche = ENCODER_Read(LEFT);
     pulseDroite = ENCODER_Read(RIGHT);
+<<<<<<< HEAD
     direction = dirInit + ((((pulseDroite*-1)+pulseGauche)/2)/pulseParDeg);
     float angle = (float)getMemoireObjet((int)dirInit);
     Serial.println("sortie boucle radar");
+=======
+    direction = dirInit + (((pulseDroite*-1.0)+pulseGauche)/2.0)/pulseParDeg;
+    float angle = (float)getMemoireObjet(dirInit);
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
     return angle;
 }
 
@@ -1001,7 +1164,12 @@ void decisions(){
     do {
         positionnementGlobal(radar());
         i++;
+<<<<<<< HEAD
     } while(!detectionObjet() || i < 5);
+=======
+        delay(200);
+    }while(!detectionObjet());
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
     distObj = distanceObjet();
     // Double vérification de la distance si elle est supérieure à 15 cm
     if (distObj > 15.0){
@@ -1014,8 +1182,10 @@ void decisions(){
         deplacement(distObj);
     }
     SERVO_ouvert(false);
-    deplacement(distObj*-1.0);
-    positionnementGlobal(direction);
+    deplacement(distObj * -1.0);
+    Serial.println("direction : ");
+    Serial.println(direction);
+    positionnementGlobal(directionCouleur(compteur));
     deplacement(distLigne);               
     SERVO_ouvert(true);
     deplacement(distLigne * -1.0);
@@ -1027,7 +1197,11 @@ void decisions(){
 void setup() {
 	BoardInit();
     Serial.begin(9600); //Communication à 9600 bits/sec
+<<<<<<< HEAD
     delay(200); //pour laisser le temps au instrument de s'initialiser
+=======
+    delay(200);
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
     Serial.println("");
     Serial.println("Setup started");
     delay(100);
@@ -1039,6 +1213,11 @@ void setup() {
     pinMode(A8, INPUT);
     pinMode(A9, INPUT);
     pinMode(A10, INPUT);
+<<<<<<< HEAD
+=======
+    pinMode(A14, INPUT);
+    pinMode(A15, INPUT);
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
     MOTOR_SetSpeed(LEFT, 0);
     MOTOR_SetSpeed(RIGHT, 0);
     ENCODER_Reset(LEFT);
@@ -1050,26 +1229,55 @@ void setup() {
 
 /** Fonction de départ, se fait appeler à chaque fois qu'elle est terminée */
 void loop(){
+<<<<<<< HEAD
     
     while(true) {
         decisions();
         delay(2000);
     }
     
+=======
+
+/* 
+    while(true){
+        radar();
+        delay(1000);
+        deplacement(30);
+        delay(2000);
+        deplacement(-30);
+        delay(2000);
+        rotationDroite(30);
+        delay(2000);
+    }
+*/
+
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
     //Recherche du sifflet
-    while(siffletActive == false){
+    /*while(siffletActive == false){
         siffletActive = detectionSifflet();
+<<<<<<< HEAD
         Serial.println(siffletActive);
         if (ROBUS_IsBumper(FRONT) == 1 || ROBUS_IsBumper(REAR) == 1){
+=======
+        if (ROBUS_IsBumper(REAR) == 1 || ROBUS_IsBumper(FRONT) == 1){
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
             siffletActive = true;
         }
     }
+    */
+   //delay(10000); // sifflet marche pu
 
+<<<<<<< HEAD
     deplacement(distLigne);
+=======
+    // Avance vers le milieu
+    deplacement(distLigne-14.0);
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
 
     direction = directionCouleur(1);
 
     // Déroulement du programme principal
+<<<<<<< HEAD
     for (int i = 1; i < 5; i++) {
         /*delay(500);
         distObjParcouru = 0.0;
@@ -1109,6 +1317,14 @@ void loop(){
        direction = directionCouleur(i++);
     }    
     
+=======
+    for (;compteur < 5; compteur++) {
+        decisions();
+        // Augmente la direction en fonction des couleurs
+        direction = directionCouleur(compteur+1);
+    }
+
+>>>>>>> 09656b8699bab077fabdcc5400208458ddfc54f3
     Serial.println("loop finished");
     delay(DT);
 }
