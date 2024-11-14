@@ -7,71 +7,89 @@
 *                dans des fichiers différents du main)
 */
 
-/*
+#define RIEN 0
+#define MARCHE 1
+#define METAL 2
+#define TERMINER 3
+#define OBSTACLE 4
+#define DROITE 1
+#define GAUCHE 0
+#define RESET 0
+#define AVANCER 1
+#define TOURNER 2
+
+
+/** 
 * Fonction afficheur LCD
+* @param texte: (String) texte à afficher 
+* @return true si c'est exécutable
+*/
+bool affichageLCD(String texte);
+
+/**
+* Fonction bouton sélectionné (à déterminer)
 * @param 
 * @return 
 */
 
 
-/*
-* Fonction bouton de sélection
-* @param 
-* @return 
+/**
+* Fonction pour allumer DEL couleur
+* @param etat: (int) état du robot 
+* @param actif: (bool) true si l'état est actif
+* @return true si c'est exécutable
 */
+bool allumerDEL(int etat, bool actif);
 
-
-/*
-* Fonction DEL couleur
-* @param 
-* @return 
+/**
+* Fonction détection métaux
+* @return true si un métal est détecté
 */
+bool detectionMetaux();
 
-
-/*
-* Fonction détecteur de métaux 
-* @param 
-* @return 
-*/
-
-
-/*
+/**
 * Fonction distributeur d'objet
-* @param 
-* @return 
+* @return true si l'objet est déposé
 */
+bool distributeur();
 
-
-/*
+/**
 * Fonction avancement
-* @param 
-* @return 
 */
+void avancer();
 
-
-/*
-* Fonction détection
-* @param 
-* @return 
+/**
+* Fonction arret
 */
+void arreter();
 
-
-/*
-* Fonction repérage dans l'espace
-* @param 
-* @return 
+/**
+* Fonction ajustement vitesse
 */
+void ajustementVitesse();
 
-
-/*
+/**
 * Fonction rotation
+* @param direction: (int) tourner à gauche ou à droite
+*/
+void rotation(int direction);
+
+/**
+* Fonction détection obstacle (facultatif)
 * @param 
 * @return 
 */
 
 
-/*
-* Fonction map de détection 
-* @param 
-* @return 
+/**
+* Fonction repérage dans l'espace
+* @param action: (int) action effectuée par le robot
+* @return la distance ou l'angle parcouru
 */
+float reperage(int action);
+
+/**
+* Fonction écris la carte des positions des métaux
+* @param detection: (int) ce que le robot a détecter
+*/
+void memoireCarte(int detection);

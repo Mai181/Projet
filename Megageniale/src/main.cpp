@@ -9,6 +9,9 @@
 #include <librobus.h>
 #include "header.h"
 
+// Variables globales
+const int delais = 20;
+
 int main(){
     return 0;
 }
