@@ -7,3 +7,71 @@
 *                dans des fichiers différents du main)
 */
 
+/*
+* Fonction afficheur LCD
+* @param 
+* @return 
+*/
+
+
+/*
+* Fonction bouton de sélection
+* @param 
+* @return 
+*/
+
+
+/*
+* Fonction DEL couleur
+* @param 
+* @return 
+*/
+
+
+/*
+* Fonction détecteur de métaux 
+* @param 
+* @return 
+*/
+
+
+/*
+* Fonction distributeur d'objet
+* @param 
+* @return 
+*/
+
+
+/*
+* Fonction avancement
+* @param 
+* @return 
+*/
+
+
+/*
+* Fonction détection
+* @param 
+* @return 
+*/
+
+
+/*
+* Fonction repérage dans l'espace
+* @param 
+* @return 
+*/
+
+
+/*
+* Fonction rotation
+* @param 
+* @return 
+*/
+
+
+/*
+* Fonction map de détection 
+* @param 
+* @return 
+*/
