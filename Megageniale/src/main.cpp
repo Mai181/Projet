@@ -8,9 +8,6 @@
 #include "header.h"
 
 // Variables globales
-const int delais = 20;
-float tempAccumule = 0;
-float tempRequis = 1000;
 bool verif;
 
 void setup(){
@@ -30,12 +27,5 @@ void loop(){
     char str_array[message.length()];
     message.toCharArray(str_array, message.length());
     char* token = strtok(str_array, " ");
-
-    if(tempAccumule > tempRequis){
-        tempAccumule -= tempRequis;
-        allumerDEL(1, true);
-    }
-    else {
-        tempAccumule += delais;
-    }
+    
 }
