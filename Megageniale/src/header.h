@@ -53,9 +53,10 @@ bool detectionMetaux();
 
 /**
 * Fonction distributeur d'objet
+* @param actif: (bool) met en action si égale à TRUE
 * @return true si l'objet est déposé
 */
-bool distributeur();
+bool distributeur(bool actif);
 
 /**
 * Fonction avancement
@@ -97,3 +98,9 @@ float reperage(int action);
 * @param detection: (int) ce que le robot a détecter
 */
 void memoireCarte(int detection);
+
+/**
+ * Fonction d'arbre de décision
+ * @return true si exécuté correctement
+ */
+bool arbreDecision();
