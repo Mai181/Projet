@@ -9,7 +9,7 @@
 
 // Variables globales
 const float distanceDecalage = 40.0;  // À reprendre avec le distributeur<
-int carte[][]; 
+int carte[2][2]; 
 
 /**
 * Fonction distributeur d'objet

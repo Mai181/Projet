@@ -7,6 +7,10 @@
 *                dans des fichiers différents du main)
 */
 
+#include <string.h>
+#include <Arduino.h>
+#include <librobus.h>
+
 #define RIEN 0
 #define MARCHE 1
 #define METAL 2
@@ -18,13 +22,12 @@
 #define AVANCER 1
 #define TOURNER 2
 
-
 /** 
 * Fonction afficheur LCD
 * @param texte: (String) texte à afficher 
 * @return true si c'est exécutable
 */
-bool affichageLCD(String texte);
+bool affichageLCD(char texte[]);
 
 /**
 * Fonction bouton sélectionné (à déterminer)
