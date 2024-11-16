@@ -23,6 +23,12 @@
 #define AVANCER 1
 #define TOURNER 2
 
+// Variables
+const int delais = 20;
+float tempAccumuleAffichage = 0;
+float tempRequisAffichage = 1000;
+bool allume = true;
+
 /**
 * Fonction bouton sélectionné (à déterminer)
 * @param texte: (String) message à afficher
