@@ -5,8 +5,6 @@
 *   Description: code PRINCIPAL du robot
 */
 
-#include <Arduino.h>
-#include <librobus.h>
 #include "header.h"
 
 // Variables globales
