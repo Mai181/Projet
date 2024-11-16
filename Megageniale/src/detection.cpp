@@ -12,6 +12,9 @@
 * @return true si un métal est détecté
 */
 bool detectionMetaux(){
-    return true;
+    if(analogRead(7)>300)//à redéterminer la pin et tester la sensibilité (si 300 est trop élevé ou pas assez)
+        return true;
+    else
+        return false;
 }
 
