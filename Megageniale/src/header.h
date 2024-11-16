@@ -7,10 +7,11 @@
 *                dans des fichiers différents du main)
 */
 
+#pragma once
 #include <stdio.h>
 #include <string.h>
 #include <Arduino.h>
-#include <Librobus.h>
+#include <LibRobus.h>
 
 #define RIEN 0
 #define MARCHE 1
@@ -22,8 +23,10 @@
 #define RESET 0
 #define AVANCER 1
 #define TOURNER 2
-
-
+#define DELAIS 20
+#define PINORANGE 40
+#define PINVERT 42
+#define PINROUGE 44
 
 /**
 * Fonction bouton sélectionné (à déterminer)

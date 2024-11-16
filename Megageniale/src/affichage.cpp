@@ -11,7 +11,7 @@
 float tempAccumuleAffichage = 0;
 float tempRequisAffichage = 1000;
 bool allume = true;
-const int delaisAffichage = 20;
+
 
 /** 
 * Fonction afficheur LCD
@@ -30,18 +30,7 @@ bool affichageLCD(String texte){
     DISPLAY_SetCursor(0, 0);
 
     // Écriture du message
-    if (texte.length() > 16) {
-        /*for (int i = 0; i < 16; i++){
-            DISPLAY_Printf(texte[i]);
-        }
-        void DISPLAY_NewLine();
-        for (int j = 16; j < texte.length(); j++){
-            DISPLAY_Printf(texte[j]);
-        }
-        */
-       DISPLAY_Printf(texte);
-    }
-    else DISPLAY_Printf(texte);
+    DISPLAY_Printf(texte);
 
     return true;
 }
@@ -53,81 +42,78 @@ bool affichageLCD(String texte){
 * @return true si c'est exécutable
 */
 bool allumerDEL(int etat, bool actif){
-    
     if(etat == 1 && actif == true) {
-        digitalWrite(48, HIGH);
-    }
-    if (etat == 1 && actif == false){
-        digitalWrite(48, LOW);
+        digitalWrite(PINVERT, HIGH);
+        return true;
+    }else if(etat == 1){
+        digitalWrite(PINVERT, LOW);
+        return true;
     }
     if(etat == 2 && actif == true) {
         if(tempAccumuleAffichage > tempRequisAffichage){
-            tempAccumuleAffichage -= tempRequisAffichage;
-            switch (allume){
-                case 0:
-                    digitalWrite(50, HIGH);
-                    allume = 1;
-                    break;
-                case 1:
-                    digitalWrite(50, LOW);
-                    allume = 0;
-                    break;
+            if(!allume){
+                digitalWrite(PINROUGE, HIGH);
+                allume = 1;
             }
+            else{
+                digitalWrite(PINROUGE, LOW);
+                allume = 0;
+            }
+            tempAccumuleAffichage -= tempRequisAffichage;
         }
         else {
-            tempAccumuleAffichage += delaisAffichage;
+            tempAccumuleAffichage += DELAIS;
         }
-    }
-    if (etat == 2 && actif == false){
-        digitalWrite(50, LOW);
+        return true;
+    } else if (etat == 2){
+        digitalWrite(PINROUGE, LOW);
+        return true;
     }
     if (etat == 3 && actif == true) {
         if(tempAccumuleAffichage > tempRequisAffichage){
-            tempAccumuleAffichage -= tempRequisAffichage;
-            switch (allume){
-                case 0:
-                    digitalWrite(48, HIGH);
-                    allume = 1;
-                    break;
-                case 1:
-                    digitalWrite(48, LOW);
-                    allume = 0;
-                    break;
+            if(!allume){
+                digitalWrite(PINVERT, HIGH);
+                allume = 1;
             }
+            else{
+                digitalWrite(PINVERT, LOW);
+                allume = 0;
+            }
+            tempAccumuleAffichage -= tempRequisAffichage;
         }
         else {
-            tempAccumuleAffichage += delaisAffichage;
+            tempAccumuleAffichage += DELAIS;
         }
-    }
-    if (etat == 3 && actif == false){
-        digitalWrite(48, LOW);
+        return true;
+    }else if (etat == 3){
+        digitalWrite(PINVERT, LOW);
+        return true;
     }
     if (etat == 4 && actif == true) {
         if(tempAccumuleAffichage > tempRequisAffichage){
-            tempAccumuleAffichage -= tempRequisAffichage;
-            switch (allume){
-                case 0:
-                    digitalWrite(46, HIGH);
-                    allume = 1;
-                    break;
-                case 1:
-                    digitalWrite(46, LOW);
-                    allume = 0;
-                    break;
+            if(!allume){
+                digitalWrite(PINORANGE, HIGH);
+                allume = 1;
             }
+            else{
+                digitalWrite(PINORANGE, LOW);
+                allume = 0;
+            }
+            tempAccumuleAffichage -= tempRequisAffichage;
         }
         else {
-            tempAccumuleAffichage += delaisAffichage;
+            tempAccumuleAffichage += DELAIS;
         }
+        return true;
+    } else if (etat == 4){
+        digitalWrite(PINORANGE, LOW);
+        return true;
     }
-    if (etat == 4 && actif == false){
-        digitalWrite(46, LOW);
+    else if (etat == 0) {
+        digitalWrite(PINVERT, LOW);
+        digitalWrite(PINROUGE, LOW);
+        digitalWrite(PINORANGE, LOW);
+        return true;
     }
-    else{
-        digitalWrite(50, LOW);
-        digitalWrite(48, LOW);
-        digitalWrite(46, LOW);
-    }
-
-    return true;
+    return false;
 }
