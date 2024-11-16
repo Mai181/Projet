@@ -11,7 +11,7 @@
 float tempAccumuleAffichage = 0;
 float tempRequisAffichage = 1000;
 bool allume = true;
-const int delais = 20;
+const int delaisAffichage = 20;
 
 /** 
 * Fonction afficheur LCD
@@ -75,7 +75,7 @@ bool allumerDEL(int etat, bool actif){
             }
         }
         else {
-            tempAccumuleAffichage += delais;
+            tempAccumuleAffichage += delaisAffichage;
         }
     }
     if (etat == 2 && actif == false){
@@ -96,7 +96,7 @@ bool allumerDEL(int etat, bool actif){
             }
         }
         else {
-            tempAccumuleAffichage += delais;
+            tempAccumuleAffichage += delaisAffichage;
         }
     }
     if (etat == 3 && actif == false){
@@ -117,7 +117,7 @@ bool allumerDEL(int etat, bool actif){
             }
         }
         else {
-            tempAccumuleAffichage += delais;
+            tempAccumuleAffichage += delaisAffichage;
         }
     }
     if (etat == 4 && actif == false){
