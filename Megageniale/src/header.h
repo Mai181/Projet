@@ -23,10 +23,15 @@
 #define AVANCER 1
 #define TOURNER 2
 
-// Variables
+
 
 /**
 * Fonction bouton sélectionné (à déterminer)
+*/
+
+
+/**
+* Fonction afficheur LCD
 * @param texte: (String) message à afficher
 * @return true si l'affichage est possible
 */
