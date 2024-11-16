@@ -7,6 +7,7 @@
 *                dans des fichiers différents du main)
 */
 
+#include <stdio.h>
 #include <string.h>
 #include <Arduino.h>
 #include <Librobus.h>
@@ -22,19 +23,18 @@
 #define AVANCER 1
 #define TOURNER 2
 
-/** 
-* Fonction afficheur LCD
-* @param texte: (String) texte à afficher 
-* @return true si c'est exécutable
-*/
-bool affichageLCD(String texte);
 
 /**
 * Fonction bouton sélectionné (à déterminer)
-* @param 
-* @return 
 */
 
+
+/**
+* Fonction afficheur LCD
+* @param texte: (String) message à afficher
+* @return true si l'affichage est possible
+*/
+bool affichageLCD(String texte);
 
 /**
 * Fonction pour allumer DEL couleur

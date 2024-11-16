@@ -33,6 +33,7 @@ bool affichageLCD(String texte){
             DISPLAY_Printf(texte[j]);
         }
         */
+       DISPLAY_Printf(texte);
     }
     else DISPLAY_Printf(texte);
 
@@ -46,5 +47,81 @@ bool affichageLCD(String texte){
 * @return true si c'est exécutable
 */
 bool allumerDEL(int etat, bool actif){
+    
+    if(etat == 1 && actif == true) {
+        digitalWrite(48, HIGH);
+    }
+    if (etat == 1 && actif == false){
+        digitalWrite(48, LOW);
+    }
+    if(etat == 2 && actif == true) {
+        if(tempAccumuleAffichage > tempRequisAffichage){
+            tempAccumuleAffichage -= tempRequisAffichage;
+            switch (allume){
+                case 0:
+                    digitalWrite(50, HIGH);
+                    allume = 1;
+                    break;
+                case 1:
+                    digitalWrite(50, LOW);
+                    allume = 0;
+                    break;
+            }
+        }
+        else {
+            tempAccumuleAffichage += delais;
+        }
+    }
+    if (etat == 2 && actif == false){
+        digitalWrite(50, LOW);
+    }
+    if (etat == 3 && actif == true) {
+        if(tempAccumuleAffichage > tempRequisAffichage){
+            tempAccumuleAffichage -= tempRequisAffichage;
+            switch (allume){
+                case 0:
+                    digitalWrite(48, HIGH);
+                    allume = 1;
+                    break;
+                case 1:
+                    digitalWrite(48, LOW);
+                    allume = 0;
+                    break;
+            }
+        }
+        else {
+            tempAccumuleAffichage += delais;
+        }
+    }
+    if (etat == 3 && actif == false){
+        digitalWrite(48, LOW);
+    }
+    if (etat == 4 && actif == true) {
+        if(tempAccumuleAffichage > tempRequisAffichage){
+            tempAccumuleAffichage -= tempRequisAffichage;
+            switch (allume){
+                case 0:
+                    digitalWrite(46, HIGH);
+                    allume = 1;
+                    break;
+                case 1:
+                    digitalWrite(46, LOW);
+                    allume = 0;
+                    break;
+            }
+        }
+        else {
+            tempAccumuleAffichage += delais;
+        }
+    }
+    if (etat == 4 && actif == false){
+        digitalWrite(46, LOW);
+    }
+    else{
+        digitalWrite(50, LOW);
+        digitalWrite(48, LOW);
+        digitalWrite(46, LOW);
+    }
+
     return true;
 }

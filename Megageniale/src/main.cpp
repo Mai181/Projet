@@ -8,22 +8,24 @@
 #include "header.h"
 
 // Variables globales
-const int delais = 20;
+bool verif;
 
 void setup(){
 
     void BoardInit();
     void DisplayInit();
+
+    pinMode(50, OUTPUT);  // LED rouge
+    pinMode(48, OUTPUT);  // LED verte
+    pinMode(46, OUTPUT);  // LED orange
 }
 
 void loop(){
 
+    // Convertion String en char
     String message = "Hello World!";
     char str_array[message.length()];
     message.toCharArray(str_array, message.length());
     char* token = strtok(str_array, " ");
-    bool verif;
-    verif = affichageLCD(token);
-    Serial.println(verif);
-    delay(delais);
+    
 }
