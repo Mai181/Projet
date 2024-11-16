@@ -6,16 +6,22 @@
 */
 
 #include "header.h"
+#include "LibRobus.h"
+
+const int SERVO_FERME = 15; //à redéterminer
+int distributeurTempsAction=0;
 
 // Variables globales
 const float distanceDecalage = 40.0;  // À reprendre avec le distributeur<
-int carte[2][2]; 
+int carte[20][20]; 
 
 /**
 * Fonction distributeur d'objet
 * @return true si l'objet est déposé
 */
-bool distributeur(){
+bool distributeur(bool actif){
+    if(distributeurTempsAction>0)
+    SERVO_SetAngle(1, SERVO_FERME);
     return true;
 }
 

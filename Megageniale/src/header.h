@@ -27,7 +27,7 @@
 * @param texte: (String) texte à afficher 
 * @return true si c'est exécutable
 */
-bool affichageLCD(char texte[]);
+bool affichageLCD(String texte);
 
 /**
 * Fonction bouton sélectionné (à déterminer)
