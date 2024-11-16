@@ -7,6 +7,11 @@
 
 #include "header.h"
 
+// Variables
+const int delais = 20;
+float tempAccumuleAffichage = 0;
+float tempRequisAffichage = 1000;
+bool allume = true;
 /** 
 * Fonction afficheur LCD
 * @param texte: texte à afficher (String)
