@@ -38,4 +38,5 @@ void loop(){
 
     allumerDEL(MARCHE, true);
     
+    arbreDecision();
 }
