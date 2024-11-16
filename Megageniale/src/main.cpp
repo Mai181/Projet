@@ -8,7 +8,7 @@
 #include "header.h"
 
 // Variables globales
-bool verif;
+// bool verif;
 
 void setup(){
 
@@ -23,9 +23,12 @@ void setup(){
 void loop(){
 
     // Convertion String en char
-    String message = "Hello World!";
+    /*String message = "Hello World!";
     char str_array[message.length()];
     message.toCharArray(str_array, message.length());
     char* token = strtok(str_array, " ");
+    */
+
+    allumerDEL(MARCHE, true);
     
 }
