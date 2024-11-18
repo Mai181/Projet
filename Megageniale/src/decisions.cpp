@@ -26,10 +26,10 @@ bool distributeur(bool actif){
         distributeurTempsAction=1500;
     if(distributeurTempsAction>0)
     {
-        SERVO_SetAngle(1, SERVO_OUVERT);//pin à redéterminer
+        SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_OUVERT);//pin à redéterminer
         distributeurTempsAction-=DELAIS;
     }else
-        SERVO_SetAngle(1, SERVO_FERME);//pin à redéterminer
+        SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_FERME);//pin à redéterminer
     return true;
 }
 

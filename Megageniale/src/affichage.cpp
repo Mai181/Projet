@@ -42,14 +42,14 @@ bool affichageLCD(String texte){
 * @return true si c'est exécutable
 */
 bool allumerDEL(int etat, bool actif){
-    if(etat == 1 && actif == true) {
+    if(etat == MARCHE && actif == true) {
         digitalWrite(PINVERT, HIGH);
         return true;
-    }else if(etat == 1){
+    }else if(etat == MARCHE){
         digitalWrite(PINVERT, LOW);
         return true;
     }
-    if(etat == 2 && actif == true) {
+    if(etat == METAL && actif == true) {
         if(tempAccumuleAffichage > tempRequisAffichage){
             if(!allume){
                 digitalWrite(PINROUGE, HIGH);
@@ -65,11 +65,11 @@ bool allumerDEL(int etat, bool actif){
             tempAccumuleAffichage += DELAIS;
         }
         return true;
-    } else if (etat == 2){
+    } else if (etat == METAL){
         digitalWrite(PINROUGE, LOW);
         return true;
     }
-    if (etat == 3 && actif == true) {
+    if (etat == TERMINER && actif == true) {
         if(tempAccumuleAffichage > tempRequisAffichage){
             if(!allume){
                 digitalWrite(PINVERT, HIGH);
@@ -85,11 +85,11 @@ bool allumerDEL(int etat, bool actif){
             tempAccumuleAffichage += DELAIS;
         }
         return true;
-    }else if (etat == 3){
+    }else if (etat == TERMINER){
         digitalWrite(PINVERT, LOW);
         return true;
     }
-    if (etat == 4 && actif == true) {
+    if (etat == OBSTACLE && actif == true) {
         if(tempAccumuleAffichage > tempRequisAffichage){
             if(!allume){
                 digitalWrite(PINORANGE, HIGH);
@@ -105,11 +105,11 @@ bool allumerDEL(int etat, bool actif){
             tempAccumuleAffichage += DELAIS;
         }
         return true;
-    } else if (etat == 4){
+    } else if (etat == OBSTACLE){
         digitalWrite(PINORANGE, LOW);
         return true;
     }
-    else if (etat == 0) {
+    else if (etat == RIEN) {
         digitalWrite(PINVERT, LOW);
         digitalWrite(PINROUGE, LOW);
         digitalWrite(PINORANGE, LOW);

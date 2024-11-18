@@ -24,9 +24,12 @@
 #define AVANCER 1
 #define TOURNER 2
 #define DELAIS 20
+
 #define PINORANGE 40
 #define PINVERT 42
 #define PINROUGE 44
+#define PIN_SERVO_DISTRIBUTEUR 1
+#define PIN_ANALOG_DETECTEUR_METAUX A7
 
 /**
 * Fonction bouton sélectionné (à déterminer)
