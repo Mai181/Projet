@@ -8,7 +8,6 @@
 #include "header.h"
 
 // Variables globales
-// bool verif;
 
 void setup(){
 
@@ -27,7 +26,7 @@ void setup(){
     ENCODER_Reset(LEFT);
     ENCODER_Reset(RIGHT);
     allumerDEL(RIEN, true);
-    affichageLCD(MENU_INI_Y);
+    // affichageLCD(MENU_INI_Y);
     delay(DELAIS);
 }
 
@@ -35,13 +34,9 @@ void loop(){
 
     // Test LCD
     // Convertion String en char
-    /*String message = "Hello World!";
-    char str_array[message.length()];
-    message.toCharArray(str_array, message.length());
-    char* token = strtok(str_array, "\n");
-    delay(DELAIS * 250);
-    affichageLCD(token);
-    Serial.println(token);
+    /*
+    affichageLCD("P-19 20/11/2024");
+    delay(DELAIS*100);
     */
 
     // Tests DEL couleurs
@@ -53,8 +48,22 @@ void loop(){
     delay(DELAIS);
     */
 
+    // Tests détecteurs métaux
+    /*bool verif;
+    verif = detectionMetaux();
+    if (verif) Serial.println("Metal detecte!");
+    else Serial.println("Aucun metal detecte!");
+    */
 
+    // Tests distributeur
+    /*distributeur(true);
+    delay(DELAIS*100);
+    distributeur(false);
+    */
+
+    /*
     boutonsUpdate();
     arbreDecision();
     delay(DELAIS);
+    */
 }

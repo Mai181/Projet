@@ -63,11 +63,15 @@ bool arbreDecision(){
     boutons=boutonsGet();
     if(enCours)
     {
-        if(detectionMetaux())
+        if(detectionMetaux()){
             distributeur(true);
-        else
-            distributeur(false);
+            allumerDEL(METAL, true);
+        }
 
+        else{
+            distributeur(false);
+            allumerDEL(METAL, false);
+        }
         
         if(boutons.select && menuSelection == 0)
         {

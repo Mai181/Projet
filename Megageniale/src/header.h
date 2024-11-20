@@ -34,9 +34,9 @@
 #define PIN_ANALOG_DETECTEUR_METAUX A7
 
 
-#define MENU_INI_Y "Débuter la      ////recherche: >Y  N"
-#define MENU_INI_N "Débuter la      ////recherche:  Y >N"
-#define MENU_INI_RECHERCHE_ARRETER "Arrêter la      ////recherche: >Y"
+#define MENU_INI_Y "Commencer la    ////recherche: >Y  N "
+#define MENU_INI_N "Commencer la    ////recherche:  Y >N "
+#define MENU_INI_RECHERCHE_ARRETER "Arreter la      ////recherche: >Y"
 
 
 struct Boutons
