@@ -38,7 +38,7 @@ void loop(){
     /*String message = "Hello World!";
     char str_array[message.length()];
     message.toCharArray(str_array, message.length());
-    char* token = strtok(str_array, " ");
+    char* token = strtok(str_array, "\n");
     delay(DELAIS * 250);
     affichageLCD(token);
     Serial.println(token);

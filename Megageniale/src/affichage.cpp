@@ -20,6 +20,9 @@ bool allume = true;
 */
 bool affichageLCD(String texte){
     
+    // Longueur initiale du texte
+    int longueurTexte = texte.length();
+
     // Vide l'écran
     DISPLAY_Clear();
 
@@ -30,7 +33,28 @@ bool affichageLCD(String texte){
     DISPLAY_SetCursor(0, 0);
 
     // Écriture du message
-    DISPLAY_Printf(texte);
+    if(texte.length() > 16){
+        char str[texte.length()];
+        texte.toCharArray(str, texte.length());
+        if(texte.indexOf(" ") > 16){
+            DISPLAY_Printf(strtok(str, &str[16]));
+            DISPLAY_SetCursor(1, 0);
+            DISPLAY_Printf(texte.substring(17));
+        }
+        else {
+            while (texte.length() > 0){
+                char* tok = strtok(str, " ");
+                if ((longueurTexte - texte.length()) > 16) {
+                    DISPLAY_SetCursor(1, 0);
+                }
+                DISPLAY_Printf(tok);
+                texte.substring(texte.indexOf(" ")+1);
+                texte.toCharArray(str, texte.length());
+            }
+        }
+    }
+    else DISPLAY_Printf(texte);
+
 
     return true;
 }
