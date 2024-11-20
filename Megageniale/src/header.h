@@ -28,13 +28,34 @@
 #define PINORANGE 40
 #define PINVERT 42
 #define PINROUGE 44
+#define PIN_BOUTON_SELECT 46
+#define PIN_BOUTON_CHANGE 48
 #define PIN_SERVO_DISTRIBUTEUR 1
 #define PIN_ANALOG_DETECTEUR_METAUX A7
 
-/**
-* Fonction bouton sélectionné (à déterminer)
-*/
 
+#define MENU_INI_Y "Débuter la      ////recherche: >Y  N"
+#define MENU_INI_N "Débuter la      ////recherche:  Y >N"
+#define MENU_INI_RECHERCHE_ARRETER "Arrêter la      ////recherche: >Y"
+
+
+struct Boutons
+{
+    bool select=0;
+    bool change=0;
+};
+
+/**
+* Fonction mise à jour des boutons sélectionnés 
+*/
+void boutonsUpdate();
+
+/**
+* Fonction retourne l'état des boutons
+*
+* @return une structure avec l'état de tous les boutons mis à jour
+*/
+struct Boutons boutonsGet();
 
 /**
 * Fonction afficheur LCD

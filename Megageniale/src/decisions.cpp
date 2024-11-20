@@ -12,6 +12,10 @@ const int SERVO_FERME = 15; //à redéterminer
 const int SERVO_OUVERT = 105; //à redéterminer
 int distributeurTempsAction=0;
 
+bool enCours = false;
+int menuSelection = 0;
+struct Boutons boutons;
+
 // Variables globales
 const float distanceDecalage = 40.0;  // À reprendre avec le distributeur<
 int carte[20][20]; 
@@ -56,9 +60,44 @@ void memoireCarte(int detection){
  * @return true si exécuté correctement
  */
 bool arbreDecision(){
-    if(detectionMetaux())
-        distributeur(true);
-    else
-        distributeur(false);
+    boutons=boutonsGet();
+    if(enCours)
+    {
+        if(detectionMetaux())
+            distributeur(true);
+        else
+            distributeur(false);
+
+        
+        if(boutons.select && menuSelection == 0)
+        {
+                affichageLCD(MENU_INI_Y);
+                enCours = 0;
+        }else if(boutons.change && menuSelection == 0)
+        {
+                affichageLCD(MENU_INI_Y);
+                menuSelection = 0;
+        }
+        
+    }else 
+    {
+        if(boutons.select && menuSelection == 0)
+        {
+                affichageLCD(MENU_INI_RECHERCHE_ARRETER);
+                enCours = 1;
+        }else if(boutons.select && menuSelection == 1)
+        {
+                affichageLCD(MENU_INI_N);
+                enCours = 0;
+        }else if(boutons.change && menuSelection == 0)
+        {
+                affichageLCD(MENU_INI_N);
+                menuSelection = 1;
+        }else if(boutons.change && menuSelection == 1)
+        {
+                affichageLCD(MENU_INI_Y);
+                menuSelection = 0;
+        }
+    }
     return true;
 }

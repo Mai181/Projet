@@ -7,6 +7,8 @@
 
 #include "header.h"
 
+struct Boutons boutonsDetection;
+
 /**
 * Fonction détection métaux
 * @return true si un métal est détecté
@@ -18,3 +20,20 @@ bool detectionMetaux(){
         return false;
 }
 
+
+/**
+* Fonction mise à jour des boutons sélectionnés 
+*/
+void boutonsUpdate(){
+    boutonsDetection.select=digitalRead(PIN_BOUTON_SELECT);
+    boutonsDetection.change=digitalRead(PIN_BOUTON_CHANGE);
+}
+
+/**
+* Fonction retourne l'état des boutons
+*
+* @return une structure avec l'état de tous les boutons mis à jour
+*/
+struct Boutons boutonsGet(){
+    return boutonsDetection;
+}
