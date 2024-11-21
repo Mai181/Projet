@@ -30,8 +30,12 @@
 #define PINROUGE 44
 #define PIN_BOUTON_SELECT 46
 #define PIN_BOUTON_CHANGE 48
-#define PIN_SERVO_DISTRIBUTEUR 1
-#define PIN_ANALOG_DETECTEUR_METAUX A7
+#define PIN_BOUTON_3 48
+#define PIN_BOUTON_4 48
+#define PIN_SERVO_DISTRIBUTEUR RIGHT
+#define PIN_ANALOG_DETECTEUR_METAUX_1 A4
+#define PIN_ANALOG_DETECTEUR_METAUX_2 A5
+#define PIN_ANALOG_DETECTEUR_METAUX_3 A6
 
 
 #define MENU_INI_Y "Commencer la    ////recherche: >Y  N "
@@ -84,6 +88,10 @@ bool detectionMetaux();
 * @return true si l'objet est déposé
 */
 bool distributeur(bool actif);
+
+/** Fonction initialise servomoteurs
+*/
+void INIT_servos();
 
 /**
 * Fonction avancement

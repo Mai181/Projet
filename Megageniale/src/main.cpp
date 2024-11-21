@@ -9,22 +9,29 @@
 
 // Variables globales
 
+int distributeurTempsAccumule=0;
+int distributeurTempsRequis=3000;
+
 void setup(){
 
     BoardInit();
     DisplayInit();
     Serial.begin(9600);
+    Wire.begin();
     pinMode(PINROUGE, OUTPUT);  
     pinMode(PINVERT, OUTPUT);  
     pinMode(PINORANGE, OUTPUT);  
     pinMode(PIN_BOUTON_SELECT, INPUT);  
     pinMode(PIN_BOUTON_CHANGE, INPUT);  
     pinMode(PIN_SERVO_DISTRIBUTEUR, INPUT);  
-    pinMode(PIN_ANALOG_DETECTEUR_METAUX, INPUT);  
+    pinMode(PIN_ANALOG_DETECTEUR_METAUX_1, INPUT);  
+    pinMode(PIN_ANALOG_DETECTEUR_METAUX_2, INPUT);  
+    pinMode(PIN_ANALOG_DETECTEUR_METAUX_3, INPUT);  
     MOTOR_SetSpeed(LEFT, 0);
     MOTOR_SetSpeed(RIGHT, 0);
     ENCODER_Reset(LEFT);
     ENCODER_Reset(RIGHT);
+    INIT_servos();
     allumerDEL(RIEN, true);
     // affichageLCD(MENU_INI_Y);
     delay(DELAIS);
@@ -56,14 +63,29 @@ void loop(){
     */
 
     // Tests distributeur
-    /*distributeur(true);
-    delay(DELAIS*100);
-    distributeur(false);
+    /*
+    if(distributeurTempsAccumule>distributeurTempsRequis)
+    {
+        distributeur(true);
+        distributeurTempsAccumule-=distributeurTempsRequis;
+    }else
+    {
+        distributeur(false);
+        distributeurTempsAccumule+=DELAIS;
+    }
+    delay(DELAIS);
     */
 
+    //Test detecteur métaux
     /*
+    */
+    Serial.print("detecteur metaux : ");
+    Serial.println(detectionMetaux());
+    delay(DELAIS);
+
     boutonsUpdate();
     arbreDecision();
     delay(DELAIS);
+    /*
     */
 }

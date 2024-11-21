@@ -8,8 +8,8 @@
 #include "header.h"
 #include "LibRobus.h"
 
-const int SERVO_FERME = 15; //à redéterminer
-const int SERVO_OUVERT = 105; //à redéterminer
+const int SERVO_FERME = 52; //à redéterminer
+const int SERVO_OUVERT = 4; //à redéterminer
 int distributeurTempsAction=0;
 
 bool enCours = false;
@@ -26,15 +26,30 @@ int carte[20][20];
 * @return true si l'objet est déposé
 */
 bool distributeur(bool actif){
+    
     if(actif)
-        distributeurTempsAction=1500;
+        distributeurTempsAction=700;
     if(distributeurTempsAction>0)
     {
+    Serial.println("servo distributeur ouvert");
         SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_OUVERT);//pin à redéterminer
         distributeurTempsAction-=DELAIS;
     }else
+    {
+    Serial.println("servo distributeur fermer");
         SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_FERME);//pin à redéterminer
+    }
     return true;
+}
+
+/** Fonction initialise servomoteurs
+*/
+void INIT_servos(){
+    Serial.println("servo initialisation");
+    SERVO_Enable(PIN_SERVO_DISTRIBUTEUR);
+    SERVO_Enable(1);
+    delay(100);
+    SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_FERME);
 }
 
 /**
@@ -61,7 +76,7 @@ void memoireCarte(int detection){
  */
 bool arbreDecision(){
     boutons=boutonsGet();
-    if(enCours)
+    if(true)//enCours)
     {
         if(detectionMetaux()){
             distributeur(true);

@@ -7,6 +7,7 @@
 
 #include "header.h"
 
+const int detectionMin=600;
 struct Boutons boutonsDetection;
 
 /**
@@ -14,7 +15,15 @@ struct Boutons boutonsDetection;
 * @return true si un métal est détecté
 */
 bool detectionMetaux(){
-    if(analogRead(PIN_ANALOG_DETECTEUR_METAUX)>300)//à redéterminer la pin et tester la sensibilité (si 300 est trop élevé ou pas assez)
+    /*
+    Serial.print("metaux 1 : ");
+    Serial.println(analogRead(PIN_ANALOG_DETECTEUR_METAUX_1));
+    Serial.print("metaux 2 : ");
+    Serial.println(analogRead(PIN_ANALOG_DETECTEUR_METAUX_2));
+    Serial.print("metaux 3 : ");
+    Serial.println(analogRead(PIN_ANALOG_DETECTEUR_METAUX_3));
+    */
+    if(analogRead(PIN_ANALOG_DETECTEUR_METAUX_1)>detectionMin || analogRead(PIN_ANALOG_DETECTEUR_METAUX_2)>detectionMin || analogRead(PIN_ANALOG_DETECTEUR_METAUX_3)>detectionMin)//à redéterminer la pin et tester la sensibilité (si 300 est trop élevé ou pas assez)
         return true;
     else
         return false;
