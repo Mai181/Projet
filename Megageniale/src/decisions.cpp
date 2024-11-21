@@ -26,7 +26,6 @@ int carte[20][20];
 * @return true si l'objet est déposé
 */
 bool distributeur(bool actif){
-    
     if(actif)
         distributeurTempsAction=700;
     if(distributeurTempsAction>0)
@@ -78,6 +77,7 @@ bool arbreDecision(){
     boutons=boutonsGet();
     if(true)//enCours)
     {
+        ajustementVitesse();
         if(detectionMetaux()){
             distributeur(true);
             allumerDEL(METAL, true);

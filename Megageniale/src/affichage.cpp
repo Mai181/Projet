@@ -9,8 +9,10 @@
 
 // Variables
 float tempAccumuleAffichage = 0;
-float tempRequisAffichage = 500;
-bool allume = true;
+float tempRequisAffichage = 1000;
+bool rougeAllume = false;
+bool orangeAllume = false;
+bool verteAllume = false;
 
 
 /** 
@@ -37,28 +39,30 @@ bool affichageLCD(String texte){
 }
 
 /**
-* Fonction pour allumer DEL couleur
+* Fonction pour allumer DEL couleur (logique inversée)
 * @param etat: (int) état du robot 
 * @param actif: (bool) true si l'état est actif
 * @return true si c'est exécutable
 */
 bool allumerDEL(int etat, bool actif){
     if(etat == MARCHE && actif == true) {
-        digitalWrite(PINVERT, HIGH);
+        digitalWrite(PINVERT, LOW);
+        verteAllume = true;
         return true;
     }else if(etat == MARCHE){
-        digitalWrite(PINVERT, LOW);
+        digitalWrite(PINVERT, HIGH);
+        verteAllume = false;
         return true;
     }
     if(etat == METAL && actif == true) {
         if(tempAccumuleAffichage > tempRequisAffichage){
-            if(!allume){
-                digitalWrite(PINROUGE, HIGH);
-                allume = 1;
+            if(!rougeAllume){
+                digitalWrite(PINROUGE, LOW);
+                rougeAllume = true;
             }
             else{
-                digitalWrite(PINROUGE, LOW);
-                allume = 0;
+                digitalWrite(PINROUGE, HIGH);
+                rougeAllume = false;
             }
             tempAccumuleAffichage -= tempRequisAffichage;
         }
@@ -67,18 +71,19 @@ bool allumerDEL(int etat, bool actif){
         }
         return true;
     } else if (etat == METAL){
-        digitalWrite(PINROUGE, LOW);
+        digitalWrite(PINROUGE, HIGH);
+        rougeAllume = false;
         return true;
     }
     if (etat == TERMINER && actif == true) {
         if(tempAccumuleAffichage > tempRequisAffichage){
-            if(!allume){
-                digitalWrite(PINVERT, HIGH);
-                allume = 1;
+            if(!verteAllume){
+                digitalWrite(PINVERT, LOW);
+                verteAllume = true;
             }
             else{
-                digitalWrite(PINVERT, LOW);
-                allume = 0;
+                digitalWrite(PINVERT, HIGH);
+                verteAllume = false;
             }
             tempAccumuleAffichage -= tempRequisAffichage;
         }
@@ -87,18 +92,19 @@ bool allumerDEL(int etat, bool actif){
         }
         return true;
     }else if (etat == TERMINER){
-        digitalWrite(PINVERT, LOW);
+        digitalWrite(PINVERT, HIGH);
+        verteAllume = false;
         return true;
     }
     if (etat == OBSTACLE && actif == true) {
         if(tempAccumuleAffichage > tempRequisAffichage){
-            if(!allume){
-                digitalWrite(PINORANGE, HIGH);
-                allume = 1;
+            if(!orangeAllume){
+                digitalWrite(PINORANGE, LOW);
+                orangeAllume = true;
             }
             else{
-                digitalWrite(PINORANGE, LOW);
-                allume = 0;
+                digitalWrite(PINORANGE, HIGH);
+                orangeAllume = false;
             }
             tempAccumuleAffichage -= tempRequisAffichage;
         }
@@ -107,13 +113,14 @@ bool allumerDEL(int etat, bool actif){
         }
         return true;
     } else if (etat == OBSTACLE){
-        digitalWrite(PINORANGE, LOW);
+        digitalWrite(PINORANGE, HIGH);
+        orangeAllume = false;
         return true;
     }
     else if (etat == RIEN) {
-        digitalWrite(PINVERT, LOW);
-        digitalWrite(PINROUGE, LOW);
-        digitalWrite(PINORANGE, LOW);
+        digitalWrite(PINVERT, HIGH);
+        digitalWrite(PINROUGE, HIGH);
+        digitalWrite(PINORANGE, HIGH);
         return true;
     }
     return false;

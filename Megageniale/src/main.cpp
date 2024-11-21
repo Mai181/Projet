@@ -47,14 +47,12 @@ void loop(){
     */
 
     // Tests DEL couleurs
-    /*
-    int test = 3;
-    allumerDEL(MARCHE, false);
+    int test = 2;
+    allumerDEL(MARCHE, true);
     if (test == 1) allumerDEL(METAL, true);
     else if (test == 2) allumerDEL(OBSTACLE, true);
     else if (test == 3) allumerDEL(TERMINER, true);
     delay(DELAIS);
-    */
 
     // Tests détecteurs métaux
     /*bool verif;
@@ -67,11 +65,11 @@ void loop(){
     /*
     if(distributeurTempsAccumule>distributeurTempsRequis)
     {
-        distributeur(true);
+    distributeur(true);
         distributeurTempsAccumule-=distributeurTempsRequis;
     }else
     {
-        distributeur(false);
+    distributeur(false);
         distributeurTempsAccumule+=DELAIS;
     }
     delay(DELAIS);
@@ -90,8 +88,8 @@ void loop(){
     //Serial
 
     /*
-    */
     boutonsUpdate();
     arbreDecision();
     delay(DELAIS);
+    */
 }
