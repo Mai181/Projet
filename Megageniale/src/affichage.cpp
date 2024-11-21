@@ -9,7 +9,7 @@
 
 // Variables
 float tempAccumuleAffichage = 0;
-float tempRequisAffichage = 1000;
+float tempRequisAffichage = 500;
 bool allume = true;
 
 
