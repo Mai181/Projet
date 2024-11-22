@@ -33,33 +33,10 @@ void setup(){
     ENCODER_Reset(RIGHT);
     INIT_servos();
     allumerDEL(RIEN, true);
-    affichageLCD("P-19 IronMinds");
     delay(DELAIS);
 }
 
 void loop(){
-
-    // Test LCD
-    // Convertion String en char
-    /*
-    affichageLCD("P-19 IronMinds");
-    delay(DELAIS*100);
-    */
-
-    // Tests DEL couleurs
-    int test = 2;
-    allumerDEL(MARCHE, true);
-    if (test == 1) allumerDEL(METAL, true);
-    else if (test == 2) allumerDEL(OBSTACLE, true);
-    else if (test == 3) allumerDEL(TERMINER, true);
-    delay(DELAIS);
-
-    // Tests détecteurs métaux
-    /*bool verif;
-    verif = detectionMetaux();
-    if (verif) Serial.println("Metal detecte!");
-    else Serial.println("Aucun metal detecte!");
-    */
 
     // Tests distributeur
     /*
@@ -74,22 +51,15 @@ void loop(){
     }
     delay(DELAIS);
     */
-
-    //Test detecteur métaux
-    /*
-    Serial.print("detecteur metaux : ");
-    Serial.println(detectionMetaux());
-    delay(DELAIS);
-    */
-
-    //Test boutons
-    /*
-    */
-    //Serial
-
+    
     /*
     boutonsUpdate();
     arbreDecision();
     delay(DELAIS);
     */
+
+    // Tests deplacement
+    Serial.println(pulse);
+    delay(DELAIS);
+
 }

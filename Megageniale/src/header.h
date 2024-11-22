@@ -115,11 +115,9 @@ void avancer();
 void arreter();
 
 /** Fonction pour limiter une valeur dans une plage donnée
- *  
  *  @param valeur: valeur (float)
  *  @param minVal: son minimum (float)
  *  @param maxVal: son maximum (float)
- *  
  *  @return minVal si < valeur, maxVal si > valeur ou valeur 
 */
 float limiter(float valeur, float minVal, float maxVal);

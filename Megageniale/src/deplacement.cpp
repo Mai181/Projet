@@ -9,8 +9,8 @@
 
 // Variables 
 float erreurAccumuleeDroite = 0.0;
-const float ki = 0.0005;
-const float kp = 0.0012;
+const float ki = 0.000525; // 0.0005
+const float kp = 0.001525; // 0.0012
 
 /**
 * Fonction avancement
