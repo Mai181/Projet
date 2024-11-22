@@ -27,7 +27,7 @@ int carte[20][20];
 */
 bool distributeur(bool actif){
     if(actif)
-        distributeurTempsAction=700;
+        distributeurTempsAction=11000; 
     if(distributeurTempsAction>0)
     {
     Serial.println("servo distributeur ouvert");
@@ -84,6 +84,7 @@ bool arbreDecision(){
         }
 
         else{
+            
             distributeur(false);
             allumerDEL(METAL, false);
         }

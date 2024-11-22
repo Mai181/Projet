@@ -37,29 +37,45 @@ void setup(){
 }
 
 void loop(){
-
+    
     // Tests distributeur
     /*
     if(distributeurTempsAccumule>distributeurTempsRequis)
     {
-    distributeur(true);
+        distributeur(true);
         distributeurTempsAccumule-=distributeurTempsRequis;
     }else
     {
-    distributeur(false);
+        distributeur(false);
         distributeurTempsAccumule+=DELAIS;
     }
     delay(DELAIS);
     */
     
     /*
-    boutonsUpdate();
-    arbreDecision();
-    delay(DELAIS);
+    int test = 3;
+    if (test == 1) {
+        allumerDEL(MARCHE, true);
+        allumerDEL(METAL, true);
+    }
+    else if(test == 2) {
+        allumerDEL(MARCHE, true);
+        allumerDEL(OBSTACLE, true);
+    }
+    else if(test == 3) {
+        allumerDEL(MARCHE, false);
+        allumerDEL(TERMINER, true);
+    }
     */
 
-    // Tests deplacement
-    Serial.println(pulse);
+    /*
+    */
+    // boutonsUpdate();
+    //arbreDecision();
     delay(DELAIS);
 
+    // Tests deplacement
+    /*ajustementVitesse();
+    delay(DELAIS);
+    */
 }
