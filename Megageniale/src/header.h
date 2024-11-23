@@ -169,3 +169,5 @@ void memoireCarte(int detection);
  * @return true si exécuté correctement
  */
 bool arbreDecision();
+
+void enCoursSet(bool enCoursTemp);

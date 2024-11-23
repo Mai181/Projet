@@ -125,3 +125,8 @@ bool arbreDecision(){
     }
     return true;
 }
+
+void enCoursSet(bool enCoursTemp)
+{
+    enCours=enCoursTemp;
+}
