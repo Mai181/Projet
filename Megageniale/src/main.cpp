@@ -21,8 +21,10 @@ void setup(){
     pinMode(PINROUGE, OUTPUT);  
     pinMode(PINVERT, OUTPUT);  
     pinMode(PINORANGE, OUTPUT);  
+    pinMode(PIN_BOUTON_1_CHANGE_GAUCHE, INPUT);  
+    pinMode(PIN_BOUTON_2_CHANGE_DROITE, INPUT);  
     pinMode(PIN_BOUTON_3_SELECT, INPUT);  
-    pinMode(PIN_BOUTON_2_CHANGE, INPUT);  
+    pinMode(PIN_BOUTON_4_RETOUR, INPUT);  
     pinMode(PIN_SERVO_DISTRIBUTEUR, INPUT);  
     pinMode(PIN_ANALOG_DETECTEUR_METAUX_1, INPUT);  
     pinMode(PIN_ANALOG_DETECTEUR_METAUX_2, INPUT);  
@@ -33,7 +35,8 @@ void setup(){
     ENCODER_Reset(RIGHT);
     INIT_servos();
     allumerDEL(RIEN, true);
-    affichageLCD("P-19 IronMinds");
+    //affichageLCD("P-19 IronMinds ");
+    affichageLCD("Menu principal  ////>Commencer  Regl ");
     delay(DELAIS);
 }
 
@@ -42,14 +45,14 @@ void loop(){
     // Test LCD
     // Convertion String en char
     /*
-    affichageLCD("P-19 IronMinds");
+    affichageLCD("P-19 IronMinds ");
     delay(DELAIS*100);
     */
 
     // Tests DEL couleurs
     /*
-    int test = 3;
-    allumerDEL(MARCHE, false);
+    int test = 2;
+    allumerDEL(MARCHE, true);
     if (test == 1) allumerDEL(METAL, true);
     else if (test == 2) allumerDEL(OBSTACLE, true);
     else if (test == 3) allumerDEL(TERMINER, true);
@@ -83,11 +86,6 @@ void loop(){
     Serial.println(detectionMetaux());
     delay(DELAIS);
     */
-
-    //Test boutons
-    /*
-    */
-    //Serial
 
     /*
     */

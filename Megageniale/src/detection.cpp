@@ -34,8 +34,10 @@ bool detectionMetaux(){
 * Fonction mise à jour des boutons sélectionnés 
 */
 void boutonsUpdate(){
+    boutonsDetection.change_gauche=digitalRead(PIN_BOUTON_1_CHANGE_GAUCHE);
+    boutonsDetection.change_droite=digitalRead(PIN_BOUTON_2_CHANGE_DROITE);
     boutonsDetection.select=digitalRead(PIN_BOUTON_3_SELECT);
-    boutonsDetection.change=digitalRead(PIN_BOUTON_2_CHANGE);
+    boutonsDetection.retour=digitalRead(PIN_BOUTON_4_RETOUR);
 }
 
 /**

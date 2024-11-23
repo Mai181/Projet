@@ -14,7 +14,7 @@ int distributeurTempsAction=0;
 
 bool enCours = false;
 int menuSelection = 0;
-struct Boutons boutons;
+struct Boutons boutons_decisions;
 
 // Variables globales
 const float distanceDecalage = 40.0;  // À reprendre avec le distributeur<
@@ -75,7 +75,8 @@ void memoireCarte(int detection){
  * @return true si exécuté correctement
  */
 bool arbreDecision(){
-    boutons=boutonsGet();
+    menu();
+    boutons_decisions=boutonsGet();
     if(true)//enCours)
     {
         if(detectionMetaux()){
@@ -87,36 +88,39 @@ bool arbreDecision(){
             distributeur(false);
             allumerDEL(METAL, false);
         }
-        
-        if(boutons.select && menuSelection == 0)
+        /*
+        if(boutons_decisions.select && menuSelection == 0)
         {
                 affichageLCD(MENU_INI_Y);
                 enCours = 0;
-        }else if(boutons.change && menuSelection == 0)
+        }else if(boutons_decisions.change && menuSelection == 0)
         {
                 affichageLCD(MENU_INI_Y);
                 menuSelection = 0;
         }
+        */
         
     }else 
     {
-        if(boutons.select && menuSelection == 0)
+        /*
+        if(boutons_decisions.select && menuSelection == 0)
         {
                 affichageLCD(MENU_INI_RECHERCHE_ARRETER);
                 enCours = 1;
-        }else if(boutons.select && menuSelection == 1)
+        }else if(boutons_decisions.select && menuSelection == 1)
         {
                 affichageLCD(MENU_INI_N);
                 enCours = 0;
-        }else if(boutons.change && menuSelection == 0)
+        }else if(boutons_decisions.change && menuSelection == 0)
         {
                 affichageLCD(MENU_INI_N);
                 menuSelection = 1;
-        }else if(boutons.change && menuSelection == 1)
+        }else if(boutons_decisions.change && menuSelection == 1)
         {
                 affichageLCD(MENU_INI_Y);
                 menuSelection = 0;
         }
+        */
     }
     return true;
 }

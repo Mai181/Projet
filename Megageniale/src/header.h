@@ -28,10 +28,10 @@
 #define PINROUGE 45
 #define PINORANGE 46
 #define PINVERT 47
-#define PIN_BOUTON_1 39
-#define PIN_BOUTON_2_CHANGE 40
-#define PIN_BOUTON_3_SELECT 41
-#define PIN_BOUTON_4 42
+#define PIN_BOUTON_1_CHANGE_GAUCHE 38
+#define PIN_BOUTON_2_CHANGE_DROITE 40
+#define PIN_BOUTON_3_SELECT 39
+#define PIN_BOUTON_4_RETOUR 41
 #define PIN_SERVO_DISTRIBUTEUR RIGHT
 #define PIN_ANALOG_DETECTEUR_METAUX_1 A4
 #define PIN_ANALOG_DETECTEUR_METAUX_2 A5
@@ -45,8 +45,10 @@
 
 struct Boutons
 {
+    bool change_gauche=0;
+    bool change_droite=0;
     bool select=0;
-    bool change=0;
+    bool retour=0;
 };
 
 /**
@@ -67,6 +69,13 @@ struct Boutons boutonsGet();
 * @return true si l'affichage est possible
 */
 bool affichageLCD(String texte);
+
+/**
+ * Fonction créant un menu navigant
+ * 
+ * @return Si changé de menu
+ */
+bool menu();
 
 /**
 * Fonction pour allumer DEL couleur
