@@ -207,9 +207,11 @@ void menuAffichage()
 bool menu()
 {
     boutons=boutonsGet();
+
     nbBoutonsEnfonce = 0;
     menu_variables.actif = 1;
     menu_variables.nbOption = 2;
+
     if(menu_commencer_variables.actif) menu_commencer();
     else if(menu_reglage_variables.actif) menu_reglage();
     else
@@ -231,12 +233,12 @@ bool menu()
             }
             else if(boutons.select)
             {
-                if(menu_variables.selection==1) 
+                if(menu_variables.selection==1) //Commencer
                 {
                     avancer();
                     menu_commencer();
                 }
-                else if(menu_variables.selection==2) menu_reglage();
+                else if(menu_variables.selection==2) menu_reglage(); //Réglage
                 return 1;
             }
             else if(boutons.retour)
@@ -287,7 +289,7 @@ bool menu_commencer()
             }
             else if(boutons.select)
             {
-                if(menu_commencer_variables.selection==1) 
+                if(menu_commencer_variables.selection==1) //Pause
                 {
                     arreter();
                     menu_commencer_pause();
@@ -311,19 +313,71 @@ bool menu_commencer()
     return 0;
 }
 
+//à voir si à faire
 bool menu_commencer_arreter()
 {
-
+    
 }
 
 bool menu_commencer_pause()
 {
+    nbBoutonsEnfonce = 0;
+    menu_commencer_pause_variables.actif = 1;
+    menu_commencer_pause_variables.nbOption = 2;
+    if(menu_commencer_pause_reglage_variables.actif) menu_commencer_pause_reglage();
+    else
+    {
+        if(boutons.change_gauche) nbBoutonsEnfonce++;
+        if(boutons.change_droite) nbBoutonsEnfonce++;
+        if(boutons.select) nbBoutonsEnfonce++;
+        if(boutons.retour) nbBoutonsEnfonce++;
 
+        if(nbBoutonsEnfonce == 1)
+        {
+            if(boutons.change_gauche)
+            {
+                menu_commencer_pause_variables.selection--;
+            }
+            else if(boutons.change_droite)
+            {
+                menu_commencer_pause_variables.selection++;
+            }
+            else if(boutons.select)
+            {
+                if(menu_commencer_pause_variables.selection==1) //Continuer
+                {
+                    avancer();
+                    menu_commencer_pause_variables.actif = 0;
+                }
+                else if(menu_commencer_pause_variables.selection==2) menu_commencer_pause_reglage(); //Réglage limité
+                return 1;
+            }
+            else if(boutons.retour)
+            {
+                avancer();
+                menu_commencer_pause_variables.actif = 0;
+                menu_commencer_pause_variables.selection = 1;
+            }
+            if(menu_commencer_pause_variables.selection>menu_commencer_pause_variables.nbOption) menu_commencer_pause_variables.selection = 1;
+            else if(menu_commencer_pause_variables.selection<1) menu_commencer_pause_variables.selection = menu_commencer_pause_variables.nbOption;
+
+            if(menu_commencer_pause_variables.selection == 1)
+            {
+                affichageLCD("Menu pause      ////>Continuer  Regl ");
+                //            1234567890123456/89/1234567890123456_
+            }
+            else if(menu_commencer_pause_variables.selection == 2)
+            {
+                affichageLCD("Menu pause      ////ntinuer >Reglage ");
+                //            1234567890123456/89/1234567890123456_
+            }
+        }
+    }
+    return 0;
 }
 
 bool menu_commencer_pause_reglage()
 {
-    menu_commencer_arreter();
 }
 
 bool menu_commencer_pause_arreter()

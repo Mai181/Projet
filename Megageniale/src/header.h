@@ -56,6 +56,9 @@ const float vitesseGauche = 0.1;
 const float vitesseDroite = 0.1;
 const float pulseCm = rouePulseCirconference/roueDiametre;
 
+const int CARTE_NB_LIGNES_MAX = 100;
+const int CARTE_NB_COLONNES_MAX = 100;
+
 struct Boutons
 {
     bool change_gauche=0;
@@ -176,3 +179,5 @@ void resetCarte(int x, int y);
  * @return true si exécuté correctement
  */
 bool arbreDecision();
+
+void enCoursSet(bool enCoursTemp);

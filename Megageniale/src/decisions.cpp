@@ -20,7 +20,7 @@ struct Boutons boutons_decisions;
 const float distanceDecalage = 40.0;  // À reprendre avec le distributeur<
 int carteNbLignes = 100;
 int carteNbColonnes = 100;
-int carte[carteNbLignes][carteNbColonnes]; 
+int carte[CARTE_NB_LIGNES_MAX][CARTE_NB_COLONNES_MAX]; 
 
 /**
 * Fonction distributeur d'objet
@@ -145,4 +145,9 @@ bool arbreDecision(){
         */
     }
     return true;
+}
+
+void enCoursSet(bool enCoursTemp)
+{
+    enCours=enCoursTemp;
 }
