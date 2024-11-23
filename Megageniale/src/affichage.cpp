@@ -378,13 +378,77 @@ bool menu_commencer_pause()
 
 bool menu_commencer_pause_reglage()
 {
+    nbBoutonsEnfonce = 0;
+    menu_reglage_variables.actif = 1;
+    menu_reglage_variables.nbOption = 4;
+
+    if(menu_reglage_sensibilite_variables.actif) menu_reglage_sensibilite(); //réutilise le menu réglage de sensibilité
+    else if(menu_reglage_mapReset_variables.actif) menu_reglage_mapReset(); //réutilise le menu réglage de resetMap
+    else{
+        if(boutons.change_gauche) nbBoutonsEnfonce++;
+        if(boutons.change_droite) nbBoutonsEnfonce++;
+        if(boutons.select) nbBoutonsEnfonce++;
+        if(boutons.retour) nbBoutonsEnfonce++;
+
+        if(nbBoutonsEnfonce == 1)
+        {
+            if(boutons.change_gauche)
+            {
+                menu_commencer_pause_reglage_variables.selection--;
+            }
+            else if(boutons.change_droite)
+            {
+                menu_commencer_pause_reglage_variables.selection++;
+            }
+            else if(boutons.select)
+            {
+                if(menu_commencer_pause_reglage_variables.selection==1) // sensibilité
+                {
+                    menu_reglage_sensibilite(); //réutilise le menu réglage de sensibilité
+                }
+                else if(menu_commencer_pause_reglage_variables.selection==2) // reset map
+                {
+                    menu_reglage_mapReset(); //réutilise le menu réglage de resetMap
+                }
+                else if(menu_commencer_pause_reglage_variables.selection==3) // retour
+                {
+                    menu_commencer_pause_reglage_variables.selection = 1;
+                }
+                return 1;
+            }
+            else if(boutons.retour)
+            {
+                menu_commencer_pause_reglage_variables.selection = 1;
+            }
+            if(menu_commencer_pause_reglage_variables.selection>menu_commencer_pause_reglage_variables.nbOption) menu_commencer_pause_reglage_variables.selection = 1;
+            else if(menu_commencer_pause_reglage_variables.selection<1) menu_commencer_pause_reglage_variables.selection = menu_commencer_pause_reglage_variables.nbOption;
+
+            if(menu_commencer_pause_reglage_variables.selection == 1)
+            {
+                affichageLCD("Menu reglage    ////>Sensibilite Res "); 
+                //            1234567890123456/89/1234567890123456_
+            }
+            else if(menu_commencer_pause_reglage_variables.selection == 2)
+            {
+                affichageLCD("Menu reglage    ////>ResetCarte Reto ");
+                //            1234567890123456/89/1234567890123456_
+            } 
+            else if(menu_commencer_pause_reglage_variables.selection == 3)
+            {
+                affichageLCD("Menu reglage    ////>Retour          ");
+                //            1234567890123456/89/1234567890123456_
+            }         
+        }
+    }
+    return 0;
 }
 
+//À voir si à faire
 bool menu_commencer_pause_arreter()
 {
-    
 }
 
+/* Réutilisation des menu utilisé par le menu réglage
 bool menu_commencer_pause_reglage_sensibilite()
 {
     menu_reglage_sensibilite();
@@ -393,6 +457,7 @@ bool menu_commencer_pause_reglage_mapReset()
 {
     menu_reglage_mapReset();
 }
+*/
 
 bool menu_reglage()
 {
@@ -511,14 +576,14 @@ bool menu_reglage_mapReset()
             {
                 resetCarte(carteNbColonneModifie, carteNbLigneModifie);
                 menu_reglage_mapReset_variables.actif = 0;
-                menu_reglage_mapReset_variables.selection==1;
+                menu_reglage_mapReset_variables.selection=1;
             } 
             return 1;
         }
         else if(boutons.retour)
         {
             menu_reglage_mapReset_variables.actif = 0;
-            menu_reglage_mapReset_variables.selection==1;
+            menu_reglage_mapReset_variables.selection=1;
         }
         if(menu_reglage_mapReset_variables.selection>menu_reglage_mapReset_variables.nbOption) menu_reglage_mapReset_variables.selection = 1;
         else if(menu_reglage_mapReset_variables.selection<1) menu_reglage_mapReset_variables.selection = menu_reglage_mapReset_variables.nbOption;
