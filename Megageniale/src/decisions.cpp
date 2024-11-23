@@ -18,7 +18,7 @@ struct Boutons boutons_decisions;
 
 // Variables globales
 const float distanceDecalage = 40.0;  // À reprendre avec le distributeur<
-int carte[20][20]; 
+int carte[100][100]; 
 
 /**
 * Fonction distributeur d'objet
@@ -68,6 +68,19 @@ void memoireCarte(int detection){
 
 }
 
+/**
+* Fonction pour reset la carte
+* @param x: (int) nombre de colonnes, déplacement horizontale
+* @param y: (int) nombre de lignes, déplacement vertical
+*/
+void resetCarte(int x, int y){
+    carte[y][x];
+    for (int i = 0; i < y; i++){
+        for (int j = 0; j < x; j++){
+            carte[i][j] = 0;
+        }
+    }
+}
 
 /**
  * Fonction d'arbre de décision
