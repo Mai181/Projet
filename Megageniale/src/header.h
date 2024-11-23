@@ -56,6 +56,9 @@ const float vitesseGauche = 0.1;
 const float vitesseDroite = 0.1;
 const float fuckyou = rouePulseCirconference/roueDiametre;
 
+const int CARTE_NB_LIGNES_MAX = 100;
+const int CARTE_NB_COLONNES_MAX = 100;
+
 struct Boutons
 {
     bool change_gauche=0;

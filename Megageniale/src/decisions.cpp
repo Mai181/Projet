@@ -20,7 +20,7 @@ struct Boutons boutons_decisions;
 const float distanceDecalage = 40.0;  // À reprendre avec le distributeur<
 int carteNbLignes = 100;
 int carteNbColonnes = 100;
-int carte[carteNbLignes][carteNbColonnes]; 
+int carte[CARTE_NB_LIGNES_MAX][CARTE_NB_COLONNES_MAX]; 
 
 /**
 * Fonction distributeur d'objet
@@ -67,8 +67,8 @@ float reperage(int action){
 * @param detection: (int) ce que le robot a détecter (1)
 */
 void memoireCarte(int detection){
-    for (int i = 0; i < y; i++){
-        for (int j = 0; j < x; j++){
+    for (int i = 0; i < carteNbLignes; i++){
+        for (int j = 0; j < carteNbColonnes; j++){
             if(detection) carte[i][j] = 1;
         }
     }
