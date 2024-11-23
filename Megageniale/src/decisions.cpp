@@ -18,7 +18,9 @@ struct Boutons boutons_decisions;
 
 // Variables globales
 const float distanceDecalage = 40.0;  // À reprendre avec le distributeur<
-int carte[20][20]; 
+int carteNbLignes = 100;
+int carteNbColonnes = 100;
+int carte[carteNbLignes][carteNbColonnes]; 
 
 /**
 * Fonction distributeur d'objet
@@ -62,12 +64,31 @@ float reperage(int action){
 
 /**
 * Fonction écris la carte  
-* @param detection: (int) ce que le robot a détecter
+* @param detection: (int) ce que le robot a détecter (1)
 */
 void memoireCarte(int detection){
-
+    for (int i = 0; i < y; i++){
+        for (int j = 0; j < x; j++){
+            if(detection) carte[i][j] = 1;
+        }
+    }
 }
 
+/**
+* Fonction pour reset la carte<
+* @param x: (int) déplacement horizontal, nb de colonne
+* @param y: (int) déplacement vertical, nb de ligne
+*/
+void resetCarte(int x, int y){
+    carteNbLignes = y;
+    carteNbColonnes = x;
+    carte[carteNbLignes][carteNbColonnes];
+    for (int i = 0; i < carteNbLignes; i++){
+        for (int j = 0; j < carteNbColonnes; j++){
+            carte[i][j] = 0;
+        }
+    }
+}
 
 /**
  * Fonction d'arbre de décision

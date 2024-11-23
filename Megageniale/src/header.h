@@ -165,6 +165,13 @@ float reperage(int action);
 void memoireCarte(int detection);
 
 /**
+* Fonction pour reset la carte
+* @param x: (int) nombre de colonnes, déplacement horizontale
+* @param y: (int) nombre de lignes, déplacement vertical
+*/
+void resetCarte(int x, int y);
+
+/**
  * Fonction d'arbre de décision
  * @return true si exécuté correctement
  */

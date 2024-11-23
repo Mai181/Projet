@@ -15,7 +15,8 @@ struct MenuVariables
 };
 struct Boutons boutons;
 int nbBoutonsEnfonce = 0;
-
+int carteNbLigneModifie = 100;
+int carteNbColonneModifie = 100;
 
 /** Menu principal */
 bool menu();
@@ -410,5 +411,44 @@ bool menu_reglage_dimension()//menu_commencer_pause_reglage_dimension
 
 bool menu_reglage_mapReset()
 {
+    nbBoutonsEnfonce = 0;
+    menu_reglage_mapReset_variables.actif = 1;
+    menu_reglage_mapReset_variables.nbOption = 2;
+    
+    if(boutons.change_gauche) nbBoutonsEnfonce++;
+    if(boutons.change_droite) nbBoutonsEnfonce++;
+    if(boutons.select) nbBoutonsEnfonce++;
+    if(boutons.retour) nbBoutonsEnfonce++;
 
+    if(nbBoutonsEnfonce == 1)
+    {
+        if(boutons.change_gauche)
+        {
+            menu_variables.selection--;
+        }
+        else if(boutons.change_droite)
+        {
+            menu_variables.selection++;
+        }
+        else if(boutons.select)
+        {
+            if(menu_reglage_mapReset_variables.selection==1) // Annuler
+            {
+                menu_reglage_mapReset_variables.actif = 0;
+            }
+            else if(menu_reglage_mapReset_variables.selection==2) // Confirmer
+            {
+                resetCarte(carteNbColonneModifie, carteNbLigneModifie);
+                menu_reglage_mapReset_variables.actif = 0;
+            } 
+            return 1;
+        }
+        else if(boutons.retour)
+        {
+            menu_reglage_mapReset_variables.actif = 0;
+        }
+        if(menu_reglage_mapReset_variables.selection>menu_reglage_mapReset_variables.nbOption) menu_reglage_mapReset_variables.selection = 1;
+        else if(menu_reglage_mapReset_variables.selection<1) menu_reglage_mapReset_variables.selection = menu_reglage_mapReset_variables.nbOption;
+    }
+    return 0;
 }
