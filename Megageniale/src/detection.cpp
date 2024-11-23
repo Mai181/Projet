@@ -9,6 +9,8 @@
 
 const int detectionMin=600;
 struct Boutons boutonsDetection;
+struct Boutons boutonsBuffer;
+struct Boutons boutonsRelease;
 
 /**
 * Fonction détection métaux
@@ -35,9 +37,20 @@ bool detectionMetaux(){
 */
 void boutonsUpdate(){
     boutonsDetection.change_gauche=digitalRead(PIN_BOUTON_1_CHANGE_GAUCHE);
+    if(boutonsBuffer.change_gauche && !boutonsDetection.change_gauche) boutonsRelease.change_gauche = true;
+    boutonsBuffer.change_gauche = boutonsDetection.change_gauche;
+
     boutonsDetection.change_droite=digitalRead(PIN_BOUTON_2_CHANGE_DROITE);
+    if(boutonsBuffer.change_droite && !boutonsDetection.change_droite) boutonsRelease.change_droite = true;
+    boutonsBuffer.change_gauche = boutonsDetection.change_gauche;
+
     boutonsDetection.select=digitalRead(PIN_BOUTON_3_SELECT);
+    if(boutonsBuffer.select && !boutonsDetection.select) boutonsRelease.select = true;
+    boutonsBuffer.change_gauche = boutonsDetection.change_gauche;
+
     boutonsDetection.retour=digitalRead(PIN_BOUTON_4_RETOUR);
+    if(boutonsBuffer.retour && !boutonsDetection.retour) boutonsRelease.retour = true;
+    boutonsBuffer.change_gauche = boutonsDetection.change_gauche;
 }
 
 /**
@@ -46,5 +59,5 @@ void boutonsUpdate(){
 * @return une structure avec l'état de tous les boutons mis à jour
 */
 struct Boutons boutonsGet(){
-    return boutonsDetection;
+    return boutonsRelease;
 }

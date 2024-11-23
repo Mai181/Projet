@@ -222,7 +222,6 @@ bool menu()
         {
             if(boutons.change_gauche)
             {
-                affichageLCD("------------------------");
                 menu_variables.selection--;
             }
             else if(boutons.change_droite)
@@ -231,7 +230,6 @@ bool menu()
             }
             else if(boutons.select)
             {
-                affichageLCD("///////////");
                 if(menu_variables.selection==1) 
                 {
                     avancer();
@@ -259,12 +257,57 @@ bool menu()
             }
         }
     }
-
+    return 0;
 }
 
 bool menu_commencer()
 {
+    nbBoutonsEnfonce = 0;
+    menu_commencer_variables.actif = 1;
+    menu_commencer_variables.nbOption = 2;
+    
+    if(menu_commencer_pause.actif) menu_commencer_pause();
+    else
+    {
+        if(boutons.change_gauche) nbBoutonsEnfonce++;
+        if(boutons.change_droite) nbBoutonsEnfonce++;
+        if(boutons.select) nbBoutonsEnfonce++;
+        if(boutons.retour) nbBoutonsEnfonce++;
 
+        if(nbBoutonsEnfonce == 1)
+        {
+            if(boutons.change_gauche)
+            {
+                menu_commencer_variables.selection--;
+            }
+            else if(boutons.change_droite)
+            {
+                menu_commencer_variables.selection++;
+            }
+            else if(boutons.select)
+            {
+                if(menu_commencer_variables.selection==1) 
+                {
+                    arreter();
+                    menu_commencer_pause();
+                }
+                return 1;
+            }
+            else if(boutons.retour)
+            {
+                menu_commencer_variables.actif = 0;
+            }
+            if(menu_commencer_variables.selection>menu_commencer_variables.nbOption) menu_commencer_variables.selection = 1;
+            else if(menu_commencer_variables.selection<1) menu_commencer_variables.selection = menu_commencer_variables.nbOption;
+
+            if(menu_commencer_variables.selection == 1)
+            {
+                affichageLCD("Menu            ////En cours: >Pause ");
+                //            1234567890123456/89/1234567890123456_
+            }
+        }
+    }
+    return 0;
 }
 
 bool menu_commencer_arreter()
