@@ -26,7 +26,7 @@
 #define DELAIS 20
 
 #define PINROUGE 45
-#define PINORANGE 46
+#define PINORANGE 44
 #define PINVERT 47
 #define PIN_BOUTON_1_CHANGE_GAUCHE 38
 #define PIN_BOUTON_2_CHANGE_DROITE 40
@@ -42,6 +42,19 @@
 #define MENU_INI_N "Commencer la    ////recherche:  Y >N "
 #define MENU_INI_RECHERCHE_ARRETER "Arreter la      ////recherche: >Y"
 
+#define ANGLE 180.0
+#define TOUR 360.0
+
+
+const float roueDiametre = 7.6;
+const float roueCirconference = 2.0*PI*(roueDiametre/2.0);
+const float rouePulseCirconference = 3200.0;
+const float roueDistance = 18.6;
+const float rotationCirconference = 2.0*PI*(roueDistance);
+const float pulse = (rotationCirconference)/((TOUR/ANGLE)*roueCirconference)*rouePulseCirconference;
+const float vitesseGauche = 0.1;
+const float vitesseDroite = 0.1;
+const float fuckyou = rouePulseCirconference/roueDiametre;
 
 struct Boutons
 {
@@ -111,6 +124,14 @@ void avancer();
 * Fonction arret
 */
 void arreter();
+
+/** Fonction pour limiter une valeur dans une plage donnée
+ *  @param valeur: valeur (float)
+ *  @param minVal: son minimum (float)
+ *  @param maxVal: son maximum (float)
+ *  @return minVal si < valeur, maxVal si > valeur ou valeur 
+*/
+float limiter(float valeur, float minVal, float maxVal);
 
 /**
 * Fonction ajustement vitesse

@@ -35,9 +35,9 @@ void setup(){
     ENCODER_Reset(RIGHT);
     INIT_servos();
     allumerDEL(RIEN, true);
-    //affichageLCD("P-19 IronMinds ");
+    affichageLCD("P-19 IronMinds ");
+    delay(DELAIS*10);
     affichageLCD("Menu principal  ////>Commencer  Regl ");
-    delay(DELAIS);
 }
 
 void loop(){
@@ -79,11 +79,27 @@ void loop(){
     }
     delay(DELAIS);
     */
-
-    //Test detecteur métaux
+    
     /*
-    Serial.print("detecteur metaux : ");
-    Serial.println(detectionMetaux());
+    int test = 3;
+    if (test == 1) {
+        allumerDEL(MARCHE, true);
+        allumerDEL(METAL, true);
+    }
+    else if(test == 2) {
+        allumerDEL(MARCHE, true);
+        allumerDEL(OBSTACLE, true);
+    }
+    else if(test == 3) {
+        allumerDEL(MARCHE, false);
+        allumerDEL(TERMINER, true);
+    }
+    */
+
+    
+
+    // Tests deplacement
+    /*ajustementVitesse();
     delay(DELAIS);
     */
 
