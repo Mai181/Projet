@@ -265,8 +265,8 @@ bool menu_commencer()
     nbBoutonsEnfonce = 0;
     menu_commencer_variables.actif = 1;
     menu_commencer_variables.nbOption = 2;
-    
-    if(menu_commencer_pause.actif) menu_commencer_pause();
+
+    if(menu_commencer_pause_variables.actif) menu_commencer_pause();
     else
     {
         if(boutons.change_gauche) nbBoutonsEnfonce++;
