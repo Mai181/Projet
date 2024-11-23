@@ -15,8 +15,8 @@ struct MenuVariables
 };
 struct Boutons boutons;
 int nbBoutonsEnfonce = 0;
-int carteNbLigneModifie = 0;
-int carteNbColonneModifie = 0;
+int carteNbLigneModifie = 100;
+int carteNbColonneModifie = 100;
 
 /** Menu principal */
 bool menu();
@@ -384,8 +384,6 @@ bool menu_reglage_mapReset()
             }
             else if(menu_reglage_mapReset_variables.selection==2) // Confirmer
             {
-                carteNbLigneModifie = 0;
-                carteNbColonneModifie = 0;
                 resetCarte(carteNbColonneModifie, carteNbLigneModifie);
                 menu_reglage_mapReset_variables.actif = 0;
             } 
@@ -395,5 +393,8 @@ bool menu_reglage_mapReset()
         {
             menu_reglage_mapReset_variables.actif = 0;
         }
+        if(menu_reglage_mapReset_variables.selection>menu_reglage_mapReset_variables.nbOption) menu_reglage_mapReset_variables.selection = 1;
+        else if(menu_reglage_mapReset_variables.selection<1) menu_reglage_mapReset_variables.selection = menu_reglage_mapReset_variables.nbOption;
     }
+    return 0;
 }
