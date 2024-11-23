@@ -15,7 +15,8 @@ struct MenuVariables
 };
 struct Boutons boutons;
 int nbBoutonsEnfonce = 0;
-
+int carteNbLigneModifie = 0;
+int carteNbColonneModifie = 0;
 
 /** Menu principal */
 bool menu();
@@ -383,7 +384,10 @@ bool menu_reglage_mapReset()
             }
             else if(menu_reglage_mapReset_variables.selection==2) // Confirmer
             {
-
+                carteNbLigneModifie = 0;
+                carteNbColonneModifie = 0;
+                resetCarte(carteNbColonneModifie, carteNbLigneModifie);
+                menu_reglage_mapReset_variables.actif = 0;
             } 
             return 1;
         }
