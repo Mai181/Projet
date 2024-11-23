@@ -54,7 +54,7 @@ const float rotationCirconference = 2.0*PI*(roueDistance);
 const float pulse = (rotationCirconference)/((TOUR/ANGLE)*roueCirconference)*rouePulseCirconference;
 const float vitesseGauche = 0.1;
 const float vitesseDroite = 0.1;
-const float fuckyou = rouePulseCirconference/roueDiametre;
+const float pulseCm = rouePulseCirconference/roueDiametre;
 
 struct Boutons
 {

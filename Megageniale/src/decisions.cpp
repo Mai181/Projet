@@ -67,8 +67,8 @@ float reperage(int action){
 * @param detection: (int) ce que le robot a détecter (1)
 */
 void memoireCarte(int detection){
-    for (int i = 0; i < y; i++){
-        for (int j = 0; j < x; j++){
+    for (int i = 0; i < carteNbLignes; i++){
+        for (int j = 0; j < carteNbColonnes; j++){
             if(detection) carte[i][j] = 1;
         }
     }
