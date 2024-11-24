@@ -101,6 +101,7 @@ bool arbreDecision(){
     boutons_decisions=boutonsGet();
     if(enCours)
     {
+        allumerDEL(true, MARCHE);
         ajustementVitesse();
         if(detectionMetaux()){
             distributeur(true);
@@ -131,6 +132,7 @@ bool arbreDecision(){
         
     }else 
     {
+        allumerDEL(false, MARCHE);
         /*
         if(boutons_decisions.select && menuSelection == 0)
         {
