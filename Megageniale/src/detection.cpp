@@ -36,21 +36,25 @@ bool detectionMetaux(){
 * Fonction mise à jour des boutons sélectionnés 
 */
 void boutonsUpdate(){
+    boutonsRelease.change_gauche = false;
     boutonsDetection.change_gauche=digitalRead(PIN_BOUTON_1_CHANGE_GAUCHE);
     if(boutonsBuffer.change_gauche && !boutonsDetection.change_gauche) boutonsRelease.change_gauche = true;
     boutonsBuffer.change_gauche = boutonsDetection.change_gauche;
 
+    boutonsRelease.change_droite = false;
     boutonsDetection.change_droite=digitalRead(PIN_BOUTON_2_CHANGE_DROITE);
     if(boutonsBuffer.change_droite && !boutonsDetection.change_droite) boutonsRelease.change_droite = true;
-    boutonsBuffer.change_gauche = boutonsDetection.change_gauche;
+    boutonsBuffer.change_droite = boutonsDetection.change_droite;
 
+    boutonsRelease.select = false;
     boutonsDetection.select=digitalRead(PIN_BOUTON_3_SELECT);
     if(boutonsBuffer.select && !boutonsDetection.select) boutonsRelease.select = true;
-    boutonsBuffer.change_gauche = boutonsDetection.change_gauche;
+    boutonsBuffer.select = boutonsDetection.select;
 
+    boutonsRelease.retour = false;
     boutonsDetection.retour=digitalRead(PIN_BOUTON_4_RETOUR);
     if(boutonsBuffer.retour && !boutonsDetection.retour) boutonsRelease.retour = true;
-    boutonsBuffer.change_gauche = boutonsDetection.change_gauche;
+    boutonsBuffer.retour = boutonsDetection.retour;
 }
 
 /**

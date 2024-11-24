@@ -79,12 +79,13 @@ void boutonsUpdate();
 */
 struct Boutons boutonsGet();
 
-/**
+/** 
 * Fonction afficheur LCD
-* @param texte: (String) message à afficher
-* @return true si l'affichage est possible
+* @param clearBefore : (bool) Efface l'écritue préalablement si true
+* @param texte : (String) texte à afficher 
+* @return true si c'est exécutable
 */
-bool affichageLCD(String texte);
+bool affichageLCD(bool clearBefore, String texte);
 
 /**
  * Fonction créant un menu navigant

@@ -97,7 +97,7 @@ void resetCarte(int x, int y){
 bool arbreDecision(){
     menu();
     boutons_decisions=boutonsGet();
-    if(true)//enCours)
+    if(enCours)
     {
         ajustementVitesse();
         if(detectionMetaux()){

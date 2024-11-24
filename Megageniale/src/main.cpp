@@ -35,9 +35,9 @@ void setup(){
     ENCODER_Reset(RIGHT);
     INIT_servos();
     allumerDEL(RIEN, true);
-    affichageLCD("P-19 IronMinds ");
-    delay(DELAIS*10);
-    affichageLCD("Menu principal  ////>Commencer  Regl ");
+    affichageLCD(true, "P-19 IronMinds ");
+    delay(DELAIS*100);
+    affichageLCD(true, "Menu principal  ////>Commencer  Regl ");
 }
 
 void loop(){
