@@ -16,13 +16,15 @@ struct MenuVariables
 struct Boutons boutons;
 int nbBoutonsEnfonce = 0;
 bool menuUpdate = true;
-char str[37];
+char str[37]; /** String temporaire*/
 
-int carteNbLigneModifie = 100;
-int carteNbColonneModifie = 100;
+const int DIMENSION_MIN = 100;
+const int DIMENSION_MAX = 200;
+int dimensionXModifie = 100;
+int dimensionYModifie = 100;
 
-const int SENSIBILITE_MAX = 1000;
 const int SENSIBILITE_MIN = 500;
+const int SENSIBILITE_MAX = 1000;
 int sensibiliteModifie = 600;
 
 /** Menu principal */
@@ -791,7 +793,105 @@ bool menu_reglage_dimension()//menu_commencer_pause_reglage_dimension
 
 bool menu_reglage_dimension_x()//menu_commencer_pause_reglage_dimension
 {
+    nbBoutonsEnfonce = 0;
+    menu_reglage_dimension_x_variables.actif = 1;
+    menu_reglage_dimension_x_variables.nbOption = 5;
 
+    if(boutons.change_gauche) nbBoutonsEnfonce++;
+    if(boutons.change_droite) nbBoutonsEnfonce++;
+    if(boutons.select) nbBoutonsEnfonce++;
+    if(boutons.retour) nbBoutonsEnfonce++;
+
+    if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && menuUpdate)) //== 0?
+    {
+        menuUpdate = false;
+        if(boutons.change_gauche)
+        {
+            menu_reglage_dimension_x_variables.selection--;
+        }
+        else if(boutons.change_droite)
+        {
+            menu_reglage_dimension_x_variables.selection++;
+        }
+        else if(boutons.select)
+        {
+            menuUpdate = true;
+            boutons.select = false;
+            if(menu_reglage_dimension_x_variables.selection==1) // Annuler
+            {
+                dimensionXModifie = xGet();
+                menuUpdate = true;
+                menu_reglage_dimension_x_variables.actif = 0;
+                menu_reglage_dimension_x_variables.selection = 1;
+            }
+            else if(menu_reglage_dimension_x_variables.selection==2) // Confirmer
+            {
+                resetCarte(dimensionXModifie/2, dimensionYModifie/2);
+                menuUpdate = true;
+                menu_reglage_dimension_x_variables.actif = 0;
+                menu_reglage_dimension_x_variables.selection = 1;
+            }
+            else if(menu_reglage_dimension_x_variables.selection==3) // +100
+            {
+                dimensionXModifie+=100;
+            }
+            else if(menu_reglage_dimension_x_variables.selection==4) // +10
+            {
+                dimensionXModifie+=10;
+            }
+            else if(menu_reglage_dimension_x_variables.selection==5) // +1
+            {
+                dimensionXModifie+=1;
+            }
+
+            if(menu_reglage_dimension_x_variables.selection > 2)
+            {
+                if(dimensionXModifie > DIMENSION_MAX) dimensionXModifie -= DIMENSION_MAX - DIMENSION_MIN; 
+                else if(dimensionXModifie < DIMENSION_MIN) dimensionXModifie = DIMENSION_MIN; 
+            }
+            return 1;
+        }
+        else if(boutons.retour)
+        {
+            menuUpdate = true;
+            boutons.retour = false;
+            menu_reglage_dimension_x_variables.actif = 0;
+            menu_reglage_dimension_x_variables.selection = 1;
+        }
+        if(menu_reglage_dimension_x_variables.selection>menu_reglage_dimension_x_variables.nbOption) menu_reglage_dimension_x_variables.selection = 1;
+        else if(menu_reglage_dimension_x_variables.selection<1) menu_reglage_dimension_x_variables.selection = menu_reglage_dimension_x_variables.nbOption;
+
+        if(menu_reglage_dimension_x_variables.selection == 1)
+        {
+            affichageLCD(true, "Dimension x     ////>Annuler Confirm "); 
+            //                  1234567890123456/89/1234567890123456_
+        }
+        else if(menu_reglage_dimension_x_variables.selection == 2)
+        {
+            sprintf(str, "Dimension x     ////>Confirmer %icm ", dimensionXModifie);
+            //            1234567890123456/89/1234567890123456_
+            affichageLCD(true, str); 
+        }    
+        else if(menu_reglage_dimension_x_variables.selection == 3)
+        {
+            sprintf(str, "Dimension xv    ////Confirmer >%icm ", dimensionXModifie);
+            //            1234567890123456/89/1234567890123456_
+            affichageLCD(true, str); 
+        }    
+        else if(menu_reglage_dimension_x_variables.selection == 4)
+        {
+            sprintf(str, "Dimension x v   ////Confirmer >%icm ", dimensionXModifie);
+            //            1234567890123456/89/1234567890123456_
+            affichageLCD(true, str); 
+        }    
+        else if(menu_reglage_dimension_x_variables.selection == 5)
+        {
+            sprintf(str, "Dimension x  v  ////Confirmer >%icm ", dimensionXModifie);
+            //            1234567890123456/89/1234567890123456_
+            affichageLCD(true, str); 
+        } 
+    }
+    return 0;
 }
 
 bool menu_reglage_dimension_y()//menu_commencer_pause_reglage_dimension
