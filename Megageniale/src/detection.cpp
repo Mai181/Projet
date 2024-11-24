@@ -66,6 +66,36 @@ struct Boutons boutonsGet(){
     return boutonsRelease;
 }
 
+/** Donne la distance avec l'obstacle/objet devant, plus grande 
+ * précision à 10cm suivi d'une imprécision grandissante en augmentant 
+ * la distance et énormément grandissante en réduisant la distance
+ * 
+ * @return Une valeur réelle correspondant à la distance entre le 
+ * capteur et l'objet
+*/
+float distanceObjet(){
+    float res=0.0;
+    int current=0;
+    int test=5;
+    int min=analogRead(A6);                // CHANGER LA PIN !!!!!!!!!!!!!!!!!!!!!!!!!
+    int max=analogRead(A6);
+    for(int i=test;i>0;i--){
+        current=analogRead(A6);
+        if(min>current){
+            min=current;
+        }else if (max<current){
+            max=current;
+        }
+        res+=current;
+        delay(0.1);
+    }
+    Serial.print("distObjet : ");
+    Serial.println(((((1/(res/(float)test))-0.0008)/0.0002)*(4.0/3.0)));
+    return ((((1/(res/(float)test))-0.0008)/0.0002)*(4.0/3.0));
+    //Calcul traduisant la valeur analog en cm, document avec les calculs disponible sur Teams
+    // return 10*(25-(sqrtf(10)*sqrtf(63*(res/((float)test))-2500)/sqrtf(res/((float)test))))-1.34445983;
+}
+
 int detectionSensibiliteGet()
 {
     return detectionSensibilite;
