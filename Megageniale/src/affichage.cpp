@@ -16,9 +16,14 @@ struct MenuVariables
 struct Boutons boutons;
 int nbBoutonsEnfonce = 0;
 bool menuUpdate = true;
+char str[37];
 
 int carteNbLigneModifie = 100;
 int carteNbColonneModifie = 100;
+
+const int SENSIBILITE_MAX = 1000;
+const int SENSIBILITE_MIN = 500;
+int sensibiliteModifie = 600;
 
 /** Menu principal */
 bool menu();
@@ -437,6 +442,7 @@ bool menu_commencer_pause_reglage()
                 boutons.select = false;
                 if(menu_commencer_pause_reglage_variables.selection==1) // sensibilité
                 {
+                    sensibiliteModifie = detectionSensibiliteGet();
                     menu_reglage_sensibilite(); //réutilise le menu réglage de sensibilité
                 }
                 else if(menu_commencer_pause_reglage_variables.selection==2) // reset map
@@ -528,6 +534,7 @@ bool menu_reglage()
                 boutons.select = false;
                 if(menu_reglage_variables.selection==1) // sensibilité
                 {
+                    sensibiliteModifie = detectionSensibiliteGet();
                     menu_reglage_sensibilite();
                 }
                 else if(menu_reglage_variables.selection==2) // dimension
@@ -583,7 +590,106 @@ bool menu_reglage()
 
 bool menu_reglage_sensibilite()//menu_commencer_pause_reglage_sensibilite
 {
-    
+    nbBoutonsEnfonce = 0;
+    menu_reglage_sensibilite_variables.actif = 1;
+    menu_reglage_sensibilite_variables.nbOption = 5;
+
+    if(boutons.change_gauche) nbBoutonsEnfonce++;
+    if(boutons.change_droite) nbBoutonsEnfonce++;
+    if(boutons.select) nbBoutonsEnfonce++;
+    if(boutons.retour) nbBoutonsEnfonce++;
+
+    if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && menuUpdate)) //== 0?
+    {
+        menuUpdate = false;
+        if(boutons.change_gauche)
+        {
+            menu_reglage_sensibilite_variables.selection--;
+        }
+        else if(boutons.change_droite)
+        {
+            menu_reglage_sensibilite_variables.selection++;
+        }
+        else if(boutons.select)
+        {
+            menuUpdate = true;
+            boutons.select = false;
+            if(menu_reglage_sensibilite_variables.selection==1) // Annuler
+            {
+                sensibiliteModifie = detectionSensibiliteGet();
+                menuUpdate = true;
+                menu_reglage_sensibilite_variables.actif = 0;
+                menu_reglage_sensibilite_variables.selection = 1;
+            }
+            else if(menu_reglage_sensibilite_variables.selection==2) // Confirmer
+            {
+                detectionSensibiliteSet(sensibiliteModifie);
+                menuUpdate = true;
+                menu_reglage_sensibilite_variables.actif = 0;
+                menu_reglage_sensibilite_variables.selection = 1;
+            }
+            else if(menu_reglage_sensibilite_variables.selection==3) // +100
+            {
+                sensibiliteModifie+=100;
+            }
+            else if(menu_reglage_sensibilite_variables.selection==4) // +10
+            {
+                sensibiliteModifie+=10;
+            }
+            else if(menu_reglage_sensibilite_variables.selection==5) // +1
+            {
+                sensibiliteModifie+=1;
+            }
+
+            if(menu_reglage_sensibilite_variables.selection > 2)
+            {
+                if(sensibiliteModifie >= SENSIBILITE_MAX) sensibiliteModifie -= SENSIBILITE_MAX - SENSIBILITE_MIN; 
+                else if(sensibiliteModifie < SENSIBILITE_MIN) sensibiliteModifie = SENSIBILITE_MIN; 
+            }
+            return 1;
+        }
+        else if(boutons.retour)
+        {
+            menuUpdate = true;
+            boutons.retour = false;
+            menu_reglage_dimension_variables.actif = 0;
+            menu_reglage_dimension_variables.selection = 1;
+        }
+        if(menu_reglage_sensibilite_variables.selection>menu_reglage_sensibilite_variables.nbOption) menu_reglage_sensibilite_variables.selection = 1;
+        else if(menu_reglage_sensibilite_variables.selection<1) menu_reglage_sensibilite_variables.selection = menu_reglage_sensibilite_variables.nbOption;
+
+        if(menu_reglage_sensibilite_variables.selection == 1)
+        {
+            sprintf(str, "Sensibilite     ////>Annuler Confirm ");
+            //            1234567890123456/89/1234567890123456_
+            affichageLCD(true, str); 
+        }
+        else if(menu_reglage_sensibilite_variables.selection == 2)
+        {
+            sprintf(str, "Sensibilite     ////>Confirmer %icm ", sensibiliteModifie);
+            //            1234567890123456/89/1234567890123456_
+            affichageLCD(true, str); 
+        }    
+        else if(menu_reglage_sensibilite_variables.selection == 3)
+        {
+            sprintf(str, "Sensibilitev    ////Confirmer >%icm ", sensibiliteModifie);
+            //            1234567890123456/89/1234567890123456_
+            affichageLCD(true, str); 
+        }    
+        else if(menu_reglage_sensibilite_variables.selection == 4)
+        {
+            sprintf(str, "Sensibilite v   ////Confirmer >%icm ", sensibiliteModifie);
+            //            1234567890123456/89/1234567890123456_
+            affichageLCD(true, str); 
+        }    
+        else if(menu_reglage_sensibilite_variables.selection == 5)
+        {
+            sprintf(str, "Sensibilite  v  ////Confirmer >%icm ", sensibiliteModifie);
+            //            1234567890123456/89/1234567890123456_
+            affichageLCD(true, str); 
+        } 
+    }
+    return 0;
 }
 
 bool menu_reglage_dimension()//menu_commencer_pause_reglage_dimension

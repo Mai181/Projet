@@ -18,8 +18,8 @@ struct Boutons boutons_decisions;
 
 // Variables globales
 const float distanceDecalage = 40.0;  // À reprendre avec le distributeur<
-int carteNbLignes = 100;
-int carteNbColonnes = 100;
+int carteNbLignes = 100; //y
+int carteNbColonnes = 100; //x
 int carte[CARTE_NB_LIGNES_MAX][CARTE_NB_COLONNES_MAX]; 
 
 /**
@@ -80,8 +80,8 @@ void memoireCarte(int detection){
 * @param y: (int) déplacement vertical, nb de ligne
 */
 void resetCarte(int x, int y){
-    carteNbLignes = y;
-    carteNbColonnes = x;
+    carteNbLignes = y/2;
+    carteNbColonnes = x/2;
     carte[carteNbLignes][carteNbColonnes];
     for (int i = 0; i < carteNbLignes; i++){
         for (int j = 0; j < carteNbColonnes; j++){
@@ -150,4 +150,14 @@ bool arbreDecision(){
 void enCoursSet(bool enCoursTemp)
 {
     enCours=enCoursTemp;
+}
+
+int yGet()
+{
+    return carteNbLignes*2;
+}
+
+int xGet()
+{
+    return carteNbColonnes*2;
 }
