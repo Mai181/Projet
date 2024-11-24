@@ -181,8 +181,6 @@ void resetCarte(int x, int y);
  */
 bool arbreDecision();
 
-void enCoursSet(bool enCoursTemp);
-
 /** Donne la distance avec l'obstacle/objet devant, plus grande 
  * précision à 10cm suivi d'une imprécision grandissante en augmentant 
  * la distance et énormément grandissante en réduisant la distance
@@ -191,3 +189,13 @@ void enCoursSet(bool enCoursTemp);
  * capteur et l'objet
 */
 float distanceObjet();
+
+void enCoursSet(bool enCoursTemp);
+
+int yGet();
+
+int xGet();
+
+int detectionSensibiliteGet();
+
+void detectionSensibiliteSet(int sensibiliteTemp);

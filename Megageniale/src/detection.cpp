@@ -7,7 +7,7 @@
 
 #include "header.h"
 
-const int detectionMin=600;
+int detectionSensibilite=600;
 struct Boutons boutonsDetection;
 struct Boutons boutonsBuffer;
 struct Boutons boutonsRelease;
@@ -28,7 +28,7 @@ bool detectionMetaux(){
     Serial.print("metaux 3 : ");
     Serial.println(analogRead(PIN_ANALOG_DETECTEUR_METAUX_3));
     */
-    if(analogRead(PIN_ANALOG_DETECTEUR_METAUX_1)>detectionMin || analogRead(PIN_ANALOG_DETECTEUR_METAUX_2)>detectionMin || analogRead(PIN_ANALOG_DETECTEUR_METAUX_3)>detectionMin)//à redéterminer la pin et tester la sensibilité (si 300 est trop élevé ou pas assez)
+    if(analogRead(PIN_ANALOG_DETECTEUR_METAUX_1)>detectionSensibilite || analogRead(PIN_ANALOG_DETECTEUR_METAUX_2)>detectionSensibilite || analogRead(PIN_ANALOG_DETECTEUR_METAUX_3)>detectionSensibilite)//à redéterminer la pin et tester la sensibilité (si 300 est trop élevé ou pas assez)
         return true;
     else
         return false;
@@ -89,4 +89,14 @@ float distanceObjet(){
     return ((((1/(moyenne))-0.0008)/0.0002)*(4.0/3.0));
     //Calcul traduisant la valeur analog en cm, document avec les calculs disponible sur Teams
     // return 10*(25-(sqrtf(10)*sqrtf(63*(res/((float)test))-2500)/sqrtf(res/((float)test))))-1.34445983;
+}
+
+int detectionSensibiliteGet()
+{
+    return detectionSensibilite;
+}
+
+void detectionSensibiliteSet(int sensibiliteTemp)
+{
+    detectionSensibilite = sensibiliteTemp;
 }
