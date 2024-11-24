@@ -796,100 +796,103 @@ bool menu_reglage_dimension_x()//menu_commencer_pause_reglage_dimension
     nbBoutonsEnfonce = 0;
     menu_reglage_dimension_x_variables.actif = 1;
     menu_reglage_dimension_x_variables.nbOption = 5;
-
-    if(boutons.change_gauche) nbBoutonsEnfonce++;
-    if(boutons.change_droite) nbBoutonsEnfonce++;
-    if(boutons.select) nbBoutonsEnfonce++;
-    if(boutons.retour) nbBoutonsEnfonce++;
-
-    if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && menuUpdate)) //== 0?
+    if(menu_reglage_dimension_x_confirmation_variables.actif) menu_reglage_dimension_x_confirmation();
+    else
     {
-        menuUpdate = false;
-        if(boutons.change_gauche)
+
+        if(boutons.change_gauche) nbBoutonsEnfonce++;
+        if(boutons.change_droite) nbBoutonsEnfonce++;
+        if(boutons.select) nbBoutonsEnfonce++;
+        if(boutons.retour) nbBoutonsEnfonce++;
+
+        if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && menuUpdate)) //== 0?
         {
-            menu_reglage_dimension_x_variables.selection--;
-        }
-        else if(boutons.change_droite)
-        {
-            menu_reglage_dimension_x_variables.selection++;
-        }
-        else if(boutons.select)
-        {
-            menuUpdate = true;
-            boutons.select = false;
-            if(menu_reglage_dimension_x_variables.selection==1) // Annuler
+            menuUpdate = false;
+            if(boutons.change_gauche)
             {
-                dimensionXModifie = xGet();
+                menu_reglage_dimension_x_variables.selection--;
+            }
+            else if(boutons.change_droite)
+            {
+                menu_reglage_dimension_x_variables.selection++;
+            }
+            else if(boutons.select)
+            {
                 menuUpdate = true;
+                boutons.select = false;
+                if(menu_reglage_dimension_x_variables.selection==1) // Annuler
+                {
+                    dimensionXModifie = xGet();
+                    menuUpdate = true;
+                    menu_reglage_dimension_x_variables.actif = 0;
+                    menu_reglage_dimension_x_variables.selection = 1;
+                }
+                else if(menu_reglage_dimension_x_variables.selection==2) // Confirmer
+                {
+                    menuUpdate = true;
+                    menuTempsAccumule = 0;
+                    menu_reglage_dimension_x_confirmation();
+                }
+                else if(menu_reglage_dimension_x_variables.selection==3) // +100
+                {
+                    dimensionXModifie+=100;
+                }
+                else if(menu_reglage_dimension_x_variables.selection==4) // +10
+                {
+                    dimensionXModifie+=10;
+                }
+                else if(menu_reglage_dimension_x_variables.selection==5) // +1
+                {
+                    dimensionXModifie+=1;
+                }
+
+                if(menu_reglage_dimension_x_variables.selection > 2)
+                {
+                    if(dimensionXModifie > DIMENSION_MAX) dimensionXModifie -= DIMENSION_MAX - DIMENSION_MIN; 
+                    else if(dimensionXModifie < DIMENSION_MIN) dimensionXModifie = DIMENSION_MIN; 
+                }
+                return 1;
+            }
+            else if(boutons.retour)
+            {
+                menuUpdate = true;
+                boutons.retour = false;
                 menu_reglage_dimension_x_variables.actif = 0;
                 menu_reglage_dimension_x_variables.selection = 1;
             }
-            else if(menu_reglage_dimension_x_variables.selection==2) // Confirmer
-            {
-                resetCarte(dimensionXModifie/2, dimensionYModifie/2);
-                menuUpdate = true;
-                menu_reglage_dimension_x_variables.actif = 0;
-                menu_reglage_dimension_x_variables.selection = 1;
-            }
-            else if(menu_reglage_dimension_x_variables.selection==3) // +100
-            {
-                dimensionXModifie+=100;
-            }
-            else if(menu_reglage_dimension_x_variables.selection==4) // +10
-            {
-                dimensionXModifie+=10;
-            }
-            else if(menu_reglage_dimension_x_variables.selection==5) // +1
-            {
-                dimensionXModifie+=1;
-            }
+            if(menu_reglage_dimension_x_variables.selection>menu_reglage_dimension_x_variables.nbOption) menu_reglage_dimension_x_variables.selection = 1;
+            else if(menu_reglage_dimension_x_variables.selection<1) menu_reglage_dimension_x_variables.selection = menu_reglage_dimension_x_variables.nbOption;
 
-            if(menu_reglage_dimension_x_variables.selection > 2)
+            if(menu_reglage_dimension_x_variables.selection == 1)
             {
-                if(dimensionXModifie > DIMENSION_MAX) dimensionXModifie -= DIMENSION_MAX - DIMENSION_MIN; 
-                else if(dimensionXModifie < DIMENSION_MIN) dimensionXModifie = DIMENSION_MIN; 
+                affichageLCD(true, "Dimension x     ////>Annuler Confirm "); 
+                //                  1234567890123456/89/1234567890123456_
             }
-            return 1;
+            else if(menu_reglage_dimension_x_variables.selection == 2)
+            {
+                sprintf(str, "Dimension x     ////>Confirmer %icm ", dimensionXModifie);
+                //            1234567890123456/89/1234567890123456_
+                affichageLCD(true, str); 
+            }    
+            else if(menu_reglage_dimension_x_variables.selection == 3)
+            {
+                sprintf(str, "Dimension xv    ////Confirmer >%icm ", dimensionXModifie);
+                //            1234567890123456/89/1234567890123456_
+                affichageLCD(true, str); 
+            }    
+            else if(menu_reglage_dimension_x_variables.selection == 4)
+            {
+                sprintf(str, "Dimension x v   ////Confirmer >%icm ", dimensionXModifie);
+                //            1234567890123456/89/1234567890123456_
+                affichageLCD(true, str); 
+            }    
+            else if(menu_reglage_dimension_x_variables.selection == 5)
+            {
+                sprintf(str, "Dimension x  v  ////Confirmer >%icm ", dimensionXModifie);
+                //            1234567890123456/89/1234567890123456_
+                affichageLCD(true, str); 
+            } 
         }
-        else if(boutons.retour)
-        {
-            menuUpdate = true;
-            boutons.retour = false;
-            menu_reglage_dimension_x_variables.actif = 0;
-            menu_reglage_dimension_x_variables.selection = 1;
-        }
-        if(menu_reglage_dimension_x_variables.selection>menu_reglage_dimension_x_variables.nbOption) menu_reglage_dimension_x_variables.selection = 1;
-        else if(menu_reglage_dimension_x_variables.selection<1) menu_reglage_dimension_x_variables.selection = menu_reglage_dimension_x_variables.nbOption;
-
-        if(menu_reglage_dimension_x_variables.selection == 1)
-        {
-            affichageLCD(true, "Dimension x     ////>Annuler Confirm "); 
-            //                  1234567890123456/89/1234567890123456_
-        }
-        else if(menu_reglage_dimension_x_variables.selection == 2)
-        {
-            sprintf(str, "Dimension x     ////>Confirmer %icm ", dimensionXModifie);
-            //            1234567890123456/89/1234567890123456_
-            affichageLCD(true, str); 
-        }    
-        else if(menu_reglage_dimension_x_variables.selection == 3)
-        {
-            sprintf(str, "Dimension xv    ////Confirmer >%icm ", dimensionXModifie);
-            //            1234567890123456/89/1234567890123456_
-            affichageLCD(true, str); 
-        }    
-        else if(menu_reglage_dimension_x_variables.selection == 4)
-        {
-            sprintf(str, "Dimension x v   ////Confirmer >%icm ", dimensionXModifie);
-            //            1234567890123456/89/1234567890123456_
-            affichageLCD(true, str); 
-        }    
-        else if(menu_reglage_dimension_x_variables.selection == 5)
-        {
-            sprintf(str, "Dimension x  v  ////Confirmer >%icm ", dimensionXModifie);
-            //            1234567890123456/89/1234567890123456_
-            affichageLCD(true, str); 
-        } 
     }
     return 0;
 }
@@ -968,7 +971,7 @@ bool menu_reglage_mapReset()
 bool menu_reglage_mapReset_confirmation() 
 {
     menu_reglage_mapReset_confirmation_variables.actif = 1;
-    resetCarte(carteNbColonneModifie, carteNbLigneModifie);
+    resetCarte(dimensionXModifie, dimensionYModifie);
 
     if(menuUpdate){
         menuUpdate = false;
@@ -1007,11 +1010,13 @@ bool menu_reglage_sensibilite_confirmation()
 bool menu_reglage_dimension_x_confirmation()
 {
     menu_reglage_dimension_x_confirmation_variables.actif = 1;
+    resetCarte(dimensionXModifie, dimensionYModifie);
 
     if(menuUpdate){
         menuUpdate = false;
-        affichageLCD(true, "Dimension x     ////nouvelle = 222cm ");
-        //                  1234567890123456/89/1234567890123456_
+        sprintf(str, "Dimension x     ////nouvelle = %icm  ", dimensionXModifie);
+        //            1234567890123456/89/1234567890123456_
+        affichageLCD(true, str); 
     }
     if(menuTempsAccumule > menuTempsRequis){
         menuUpdate = true;
@@ -1025,11 +1030,13 @@ bool menu_reglage_dimension_x_confirmation()
 bool menu_reglage_dimension_y_confirmation()
 {
     menu_reglage_dimension_y_confirmation_variables.actif = 1;
-
+    resetCarte(dimensionXModifie, dimensionYModifie);
+    
     if(menuUpdate){
         menuUpdate = false;
-        affichageLCD(true, "Dimension y     ////nouvelle = 222cm ");
-        //                  1234567890123456/89/1234567890123456_
+        sprintf(str, "Dimension y     ////nouvelle = %icm  ", dimensionYModifie);
+        //            1234567890123456/89/1234567890123456_
+        affichageLCD(true, str); 
     }
     if(menuTempsAccumule > menuTempsRequis){
         menuUpdate = true;
@@ -1039,5 +1046,4 @@ bool menu_reglage_dimension_y_confirmation()
     }
     else menuTempsAccumule += DELAIS;
 }
-// else if(menu_reglage_dimension_x_confirmation_variables.actif) menu_reglage_dimension_x_confirmation();
 // else if(menu_reglage_dimension_y_confirmation_variables.actif) menu_reglage_dimension_y_confirmation();
