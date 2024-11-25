@@ -13,9 +13,13 @@ const int SERVO_OUVERT = 4; //à redéterminer
 int distributeurTempsAction=0;
 float distObjet=0;
 
-
 bool enCours = false;
-int menuSelection = 0;
+bool enTransition = true;
+bool enAvant = true;
+bool enRotation = false;
+float distanceParcourue = 0.0;
+int dimensionX = 200;
+int dimensionY = 200;
 struct Boutons boutons_decisions;
 
 // Variables globales
@@ -82,6 +86,8 @@ void memoireCarte(int detection){
 * @param y: (int) déplacement vertical, nb de ligne
 */
 void resetCarte(int x, int y){
+    dimensionX = x;
+    dimensionY = y;
     carteNbLignes = y/2;
     carteNbColonnes = x/2;
     carte[carteNbLignes][carteNbColonnes];
@@ -102,29 +108,28 @@ bool arbreDecision(){
     if(enCours)
     {
         allumerDEL(true, MARCHE);
-        ajustementVitesse();
         if(detectionMetaux()){
             distributeur(true);
             allumerDEL(METAL, true);
         }
-
-        else{
-            
+        else
+        {
             distributeur(false);
             allumerDEL(METAL, false);
         }
-        /*
-        if(boutons_decisions.select && menuSelection == 0)
+        if(enAvant)
         {
-                affichageLCD(MENU_INI_Y);
-                enCours = 0;
-        }else if(boutons_decisions.change && menuSelection == 0)
-        {
-                affichageLCD(MENU_INI_Y);
-                menuSelection = 0;
+        distanceParcourue = ((ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2)*roueCirconference/rouePulseCirconference;
+            if(enAvant && distanceParcourue<dimensionX)
+                ajustementVitesse();
+            else
+            {
+                enAvant = false;
+                enRotation = true;
+                enTransition =true;
+            }
         }
-        */
-        
+
         if (distanceObjet()<10.0){                                // Si fonctionne pas, monte 10.0 à 15.0
             arreter();
             allumerDEL(OBSTACLE, true);
@@ -133,25 +138,6 @@ bool arbreDecision(){
     }else 
     {
         allumerDEL(false, MARCHE);
-        /*
-        if(boutons_decisions.select && menuSelection == 0)
-        {
-                affichageLCD(MENU_INI_RECHERCHE_ARRETER);
-                enCours = 1;
-        }else if(boutons_decisions.select && menuSelection == 1)
-        {
-                affichageLCD(MENU_INI_N);
-                enCours = 0;
-        }else if(boutons_decisions.change && menuSelection == 0)
-        {
-                affichageLCD(MENU_INI_N);
-                menuSelection = 1;
-        }else if(boutons_decisions.change && menuSelection == 1)
-        {
-                affichageLCD(MENU_INI_Y);
-                menuSelection = 0;
-        }
-        */
     }
     return true;
 }
