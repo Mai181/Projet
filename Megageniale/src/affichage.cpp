@@ -803,6 +803,7 @@ bool menu_reglage_dimension_x()//menu_commencer_pause_reglage_dimension
     nbBoutonsEnfonce = 0;
     menu_reglage_dimension_x_variables.actif = 1;
     menu_reglage_dimension_x_variables.nbOption = 5;
+    
     if(menu_reglage_dimension_x_confirmation_variables.actif) menu_reglage_dimension_x_confirmation();
     else
     {
@@ -812,47 +813,46 @@ bool menu_reglage_dimension_x()//menu_commencer_pause_reglage_dimension
         if(boutons.select) nbBoutonsEnfonce++;
         if(boutons.retour) nbBoutonsEnfonce++;
 
-    if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && menuUpdate)) //== 0?
-    {
-        menuUpdate = false;
-        if(boutons.change_gauche)
+        if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && menuUpdate)) //== 0?
         {
-            menu_reglage_dimension_x_variables.selection--;
-        }
-        else if(boutons.change_droite)
-        {
-            menu_reglage_dimension_x_variables.selection++;
-        }
-        else if(boutons.select)
-        {
-            menuUpdate = true;
-            boutons.select = false;
-            if(menu_reglage_dimension_x_variables.selection==1) // Annuler
+            menuUpdate = false;
+            if(boutons.change_gauche)
             {
-                dimensionXModifie = xGet();
+                menu_reglage_dimension_x_variables.selection--;
+            }
+            else if(boutons.change_droite)
+            {
+                menu_reglage_dimension_x_variables.selection++;
+            }
+            else if(boutons.select)
+            {
                 menuUpdate = true;
-                menu_reglage_dimension_x_variables.actif = 0;
-                menu_reglage_dimension_x_variables.selection = 1;
-            }
-            else if(menu_reglage_dimension_x_variables.selection==2) // Confirmer
-            {
-                resetCarte(dimensionXModifie, dimensionYModifie);
-                menuUpdate = true;
-                menu_reglage_dimension_x_variables.actif = 0;
-                menu_reglage_dimension_x_variables.selection = 1;
-            }
-            else if(menu_reglage_dimension_x_variables.selection==3) // +100
-            {
-                dimensionXModifie+=100;
-            }
-            else if(menu_reglage_dimension_x_variables.selection==4) // +10
-            {
-                dimensionXModifie+=10;
-            }
-            else if(menu_reglage_dimension_x_variables.selection==5) // +2
-            {
-                dimensionXModifie+=2;
-            }
+                boutons.select = false;
+                if(menu_reglage_dimension_x_variables.selection==1) // Annuler
+                {
+                    dimensionXModifie = xGet();
+                    menuUpdate = true;
+                    menu_reglage_dimension_x_variables.actif = 0;
+                    menu_reglage_dimension_x_variables.selection = 1;
+                }
+                else if(menu_reglage_dimension_x_variables.selection==2) // Confirmer
+                {
+                    menuUpdate = true;
+                    menuTempsAccumule = 0;
+                    menu_reglage_dimension_x_confirmation();
+                }
+                else if(menu_reglage_dimension_x_variables.selection==3) // +100
+                {
+                    dimensionXModifie+=100;
+                }
+                else if(menu_reglage_dimension_x_variables.selection==4) // +10
+                {
+                    dimensionXModifie+=10;
+                }
+                else if(menu_reglage_dimension_x_variables.selection==5) // +2
+                {
+                    dimensionXModifie+=2;
+                }
 
             if(menu_reglage_dimension_x_variables.selection > 2)
             {
@@ -913,100 +913,103 @@ bool menu_reglage_dimension_y()//menu_commencer_pause_reglage_dimension
     menu_reglage_dimension_y_variables.actif = 1;
     menu_reglage_dimension_y_variables.nbOption = 5;
 
-    if(boutons.change_gauche) nbBoutonsEnfonce++;
-    if(boutons.change_droite) nbBoutonsEnfonce++;
-    if(boutons.select) nbBoutonsEnfonce++;
-    if(boutons.retour) nbBoutonsEnfonce++;
-
-    if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && menuUpdate)) //== 0?
+    if(menu_reglage_dimension_y_confirmation_variables.actif) menu_reglage_dimension_y_confirmation();
+    else
     {
-        menuUpdate = false;
-        if(boutons.change_gauche)
+        if(boutons.change_gauche) nbBoutonsEnfonce++;
+        if(boutons.change_droite) nbBoutonsEnfonce++;
+        if(boutons.select) nbBoutonsEnfonce++;
+        if(boutons.retour) nbBoutonsEnfonce++;
+
+        if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && menuUpdate)) //== 0?
         {
-            menu_reglage_dimension_y_variables.selection--;
-        }
-        else if(boutons.change_droite)
-        {
-            menu_reglage_dimension_y_variables.selection++;
-        }
-        else if(boutons.select)
-        {
-            menuUpdate = true;
-            boutons.select = false;
-            if(menu_reglage_dimension_y_variables.selection==1) // Annuler
+            menuUpdate = false;
+            if(boutons.change_gauche)
+            {
+                menu_reglage_dimension_y_variables.selection--;
+            }
+            else if(boutons.change_droite)
+            {
+                menu_reglage_dimension_y_variables.selection++;
+            }
+            else if(boutons.select)
+            {
+                menuUpdate = true;
+                boutons.select = false;
+                if(menu_reglage_dimension_y_variables.selection==1) // Annuler
+                {
+                    dimensionYModifie = yGet();
+                    menuUpdate = true;
+                    menu_reglage_dimension_y_variables.actif = 0;
+                    menu_reglage_dimension_y_variables.selection = 1;
+                }
+                else if(menu_reglage_dimension_y_variables.selection==2) // Confirmer
+                {
+                        menuUpdate = true;
+                        menuTempsAccumule = 0;
+                        menu_reglage_dimension_y_confirmation();
+                }
+                else if(menu_reglage_dimension_y_variables.selection==3) // +100
+                {
+                    dimensionYModifie+=100;
+                }
+                else if(menu_reglage_dimension_y_variables.selection==4) // +10
+                {
+                    dimensionYModifie+=10;
+                }
+                else if(menu_reglage_dimension_y_variables.selection==5) // +2
+                {
+                    dimensionYModifie+=2;
+                }
+
+                if(menu_reglage_dimension_y_variables.selection > 2)
+                {
+                    if(dimensionYModifie > DIMENSION_MAX) dimensionYModifie = dimensionYModifie%100 - DIMENSION_MIN; 
+                    else if(dimensionYModifie <= DIMENSION_MIN) dimensionYModifie = DIMENSION_MIN; 
+                }
+                return 1;
+            }
+            else if(boutons.retour)
             {
                 dimensionYModifie = yGet();
                 menuUpdate = true;
+                boutons.retour = false;
                 menu_reglage_dimension_y_variables.actif = 0;
                 menu_reglage_dimension_y_variables.selection = 1;
             }
-            else if(menu_reglage_dimension_y_variables.selection==2) // Confirmer
-            {
-                resetCarte(dimensionXModifie, dimensionYModifie);
-                menuUpdate = true;
-                menu_reglage_dimension_y_variables.actif = 0;
-                menu_reglage_dimension_y_variables.selection = 1;
-            }
-            else if(menu_reglage_dimension_y_variables.selection==3) // +100
-            {
-                dimensionYModifie+=100;
-            }
-            else if(menu_reglage_dimension_y_variables.selection==4) // +10
-            {
-                dimensionYModifie+=10;
-            }
-            else if(menu_reglage_dimension_y_variables.selection==5) // +2
-            {
-                dimensionYModifie+=2;
-            }
+            if(menu_reglage_dimension_y_variables.selection>menu_reglage_dimension_y_variables.nbOption) menu_reglage_dimension_y_variables.selection = 1;
+            else if(menu_reglage_dimension_y_variables.selection<1) menu_reglage_dimension_y_variables.selection = menu_reglage_dimension_y_variables.nbOption;
 
-            if(menu_reglage_dimension_y_variables.selection > 2)
+            if(menu_reglage_dimension_y_variables.selection == 1)
             {
-                if(dimensionYModifie > DIMENSION_MAX) dimensionYModifie = dimensionYModifie%100 - DIMENSION_MIN; 
-                else if(dimensionYModifie <= DIMENSION_MIN) dimensionYModifie = DIMENSION_MIN; 
+                affichageLCD(true, "Dimension Y     ////>Annuler Confirm "); 
+                //                  1234567890123456/89/1234567890123456_
             }
-            return 1;
+            else if(menu_reglage_dimension_y_variables.selection == 2)
+            {
+                sprintf(str, "Dimension Y     ////>Confirmer %icm ", dimensionYModifie);
+                //            1234567890123456/89/1234567890123456_
+                affichageLCD(true, str); 
+            }    
+            else if(menu_reglage_dimension_y_variables.selection == 3)
+            {
+                sprintf(str, "Dimension Yv    ////Confirmer >%icm ", dimensionYModifie);
+                //            1234567890123456/89/1234567890123456_
+                affichageLCD(true, str); 
+            }    
+            else if(menu_reglage_dimension_y_variables.selection == 4)
+            {
+                sprintf(str, "Dimension Y v   ////Confirmer >%icm ", dimensionYModifie);
+                //            1234567890123456/89/1234567890123456_
+                affichageLCD(true, str); 
+            }    
+            else if(menu_reglage_dimension_y_variables.selection == 5)
+            {
+                sprintf(str, "Dimension Y  v  ////Confirmer >%icm ", dimensionYModifie);
+                //            1234567890123456/89/1234567890123456_
+                affichageLCD(true, str); 
+            } 
         }
-        else if(boutons.retour)
-        {
-            dimensionYModifie = yGet();
-            menuUpdate = true;
-            boutons.retour = false;
-            menu_reglage_dimension_y_variables.actif = 0;
-            menu_reglage_dimension_y_variables.selection = 1;
-        }
-        if(menu_reglage_dimension_y_variables.selection>menu_reglage_dimension_y_variables.nbOption) menu_reglage_dimension_y_variables.selection = 1;
-        else if(menu_reglage_dimension_y_variables.selection<1) menu_reglage_dimension_y_variables.selection = menu_reglage_dimension_y_variables.nbOption;
-
-        if(menu_reglage_dimension_y_variables.selection == 1)
-        {
-            affichageLCD(true, "Dimension Y     ////>Annuler Confirm "); 
-            //                  1234567890123456/89/1234567890123456_
-        }
-        else if(menu_reglage_dimension_y_variables.selection == 2)
-        {
-            sprintf(str, "Dimension Y     ////>Confirmer %icm ", dimensionYModifie);
-            //            1234567890123456/89/1234567890123456_
-            affichageLCD(true, str); 
-        }    
-        else if(menu_reglage_dimension_y_variables.selection == 3)
-        {
-            sprintf(str, "Dimension Yv    ////Confirmer >%icm ", dimensionYModifie);
-            //            1234567890123456/89/1234567890123456_
-            affichageLCD(true, str); 
-        }    
-        else if(menu_reglage_dimension_y_variables.selection == 4)
-        {
-            sprintf(str, "Dimension Y v   ////Confirmer >%icm ", dimensionYModifie);
-            //            1234567890123456/89/1234567890123456_
-            affichageLCD(true, str); 
-        }    
-        else if(menu_reglage_dimension_y_variables.selection == 5)
-        {
-            sprintf(str, "Dimension Y  v  ////Confirmer >%icm ", dimensionYModifie);
-            //            1234567890123456/89/1234567890123456_
-            affichageLCD(true, str); 
-        } 
     }
     return 0;
 }
@@ -1046,9 +1049,9 @@ bool menu_reglage_mapReset()
                 }
                 else if(menu_reglage_mapReset_variables.selection==2) // Confirmer
                 {
-                    resetCarte(dimensionXModifie, dimensionYModifie);
-                    menu_reglage_mapReset_variables.actif = 0;
-                    menu_reglage_mapReset_variables.selection=1;
+                    menuUpdate = true;
+                    menuTempsAccumule = 0;
+                    menu_reglage_mapReset_confirmation();
                 } 
                 return 1;
             }
@@ -1080,10 +1083,10 @@ bool menu_reglage_mapReset()
 bool menu_reglage_mapReset_confirmation() 
 {
     menu_reglage_mapReset_confirmation_variables.actif = 1;
-    resetCarte(dimensionXModifie, dimensionYModifie);
 
     if(menuUpdate){
         menuUpdate = false;
+        resetCarte(dimensionXModifie, dimensionYModifie);
         affichageLCD(true, "CarteReset fait ////avec succes!     ");
         //                  1234567890123456/89/1234567890123456_
     }
@@ -1119,10 +1122,10 @@ bool menu_reglage_sensibilite_confirmation()
 bool menu_reglage_dimension_x_confirmation()
 {
     menu_reglage_dimension_x_confirmation_variables.actif = 1;
-    resetCarte(dimensionXModifie, dimensionYModifie);
 
     if(menuUpdate){
         menuUpdate = false;
+        resetCarte(dimensionXModifie, dimensionYModifie);
         sprintf(str, "Dimension x     ////nouvelle = %icm  ", dimensionXModifie);
         //            1234567890123456/89/1234567890123456_
         affichageLCD(true, str); 
@@ -1139,10 +1142,10 @@ bool menu_reglage_dimension_x_confirmation()
 bool menu_reglage_dimension_y_confirmation()
 {
     menu_reglage_dimension_y_confirmation_variables.actif = 1;
-    resetCarte(dimensionXModifie, dimensionYModifie);
     
     if(menuUpdate){
         menuUpdate = false;
+        resetCarte(dimensionXModifie, dimensionYModifie);
         sprintf(str, "Dimension y     ////nouvelle = %icm  ", dimensionYModifie);
         //            1234567890123456/89/1234567890123456_
         affichageLCD(true, str); 
