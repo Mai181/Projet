@@ -11,6 +11,8 @@
 const int SERVO_FERME = 52; //à redéterminer
 const int SERVO_OUVERT = 4; //à redéterminer
 int distributeurTempsAction=0;
+float distObjet=0;
+
 
 bool enCours = false;
 int menuSelection = 0;
@@ -99,6 +101,7 @@ bool arbreDecision(){
     boutons_decisions=boutonsGet();
     if(enCours)
     {
+        allumerDEL(true, MARCHE);
         ajustementVitesse();
         if(detectionMetaux()){
             distributeur(true);
@@ -122,8 +125,14 @@ bool arbreDecision(){
         }
         */
         
+        if (distanceObjet()<10.0){                                // Si fonctionne pas, monte 10.0 à 15.0
+            arreter();
+            allumerDEL(OBSTACLE, true);
+        }
+        
     }else 
     {
+        allumerDEL(false, MARCHE);
         /*
         if(boutons_decisions.select && menuSelection == 0)
         {

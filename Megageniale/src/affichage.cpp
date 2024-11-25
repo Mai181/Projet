@@ -97,10 +97,31 @@ bool menu_reglage_mapReset();
 /** Variables de navigation du menu_reglage_mapReset */
 MenuVariables menu_reglage_mapReset_variables;
 
+/** Menu  */
+bool menu_reglage_mapReset_confirmation();
+/** Variables de navigation du menu_reglage_mapReset */
+MenuVariables menu_reglage_mapReset_confirmation_variables;
+
+/** Menu */
+bool menu_reglage_sensibilite_confirmation();
+/** Variables de navigation du menu_reglage_mapReset_confirmation */
+MenuVariables menu_reglage_sensibilite_confirmation_variables;
+
+/** Menu */
+bool menu_reglage_dimension_x_confirmation();
+/** Variables de navigation du menu_reglage_mapReset_confirmation */
+MenuVariables menu_reglage_dimension_x_confirmation_variables;
+
+/** Menu */
+bool menu_reglage_dimension_y_confirmation();
+/** Variables de navigation du menu_reglage_mapReset_confirmation */
+MenuVariables menu_reglage_dimension_y_confirmation_variables;
 
 // Variables
-float tempAccumuleAffichage = 0;
-float tempRequisAffichage = 1000;
+int tempAccumuleAffichage = 0;
+int tempRequisAffichage = 1000;
+int menuTempsAccumule = 0;
+int menuTempsRequis = 1000;
 bool rougeAllume = false;
 bool orangeAllume = false;
 bool verteAllume = false;
@@ -327,7 +348,6 @@ bool menu_commencer()
             {
                 menuUpdate = true;
                 boutons.retour = false;
-                menu_commencer_variables.actif = 0;
                 menu_commencer_variables.selection = 1;
             }
             if(menu_commencer_variables.selection>menu_commencer_variables.nbOption) menu_commencer_variables.selection = 1;
@@ -470,17 +490,17 @@ bool menu_commencer_pause_reglage()
 
             if(menu_commencer_pause_reglage_variables.selection == 1)
             {
-                affichageLCD(true, "Menu reglage    ////>Sensibilite Res "); 
+                affichageLCD(true, "Reglage reduit  ////>Sensibilite Res "); 
                 //                  1234567890123456/89/1234567890123456_
             }
             else if(menu_commencer_pause_reglage_variables.selection == 2)
             {
-                affichageLCD(true, "Menu reglage    ////e >ResetCarte Re ");
+                affichageLCD(true, "Reglage reduit  ////e >ResetCarte Re ");
                 //                  1234567890123456/89/1234567890123456_
             } 
             else if(menu_commencer_pause_reglage_variables.selection == 3)
             {
-                affichageLCD(true, "Menu reglage    ////setCarte >Retour ");
+                affichageLCD(true, "Reglage reduit  ////setCarte >Retour ");
                 //                  1234567890123456/89/1234567890123456_
             }         
         }
@@ -597,101 +617,104 @@ bool menu_reglage_sensibilite()//menu_commencer_pause_reglage_sensibilite
     nbBoutonsEnfonce = 0;
     menu_reglage_sensibilite_variables.actif = 1;
     menu_reglage_sensibilite_variables.nbOption = 5;
-
-    if(boutons.change_gauche) nbBoutonsEnfonce++;
-    if(boutons.change_droite) nbBoutonsEnfonce++;
-    if(boutons.select) nbBoutonsEnfonce++;
-    if(boutons.retour) nbBoutonsEnfonce++;
-
-    if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && menuUpdate)) //== 0?
+    if(menu_reglage_sensibilite_confirmation_variables.actif) menu_reglage_sensibilite_confirmation();
+    else
     {
-        menuUpdate = false;
-        if(boutons.change_gauche)
-        {
-            menu_reglage_sensibilite_variables.selection--;
-        }
-        else if(boutons.change_droite)
-        {
-            menu_reglage_sensibilite_variables.selection++;
-        }
-        else if(boutons.select)
-        {
-            menuUpdate = true;
-            boutons.select = false;
-            if(menu_reglage_sensibilite_variables.selection==1) // Annuler
-            {
-                sensibiliteModifie = detectionSensibiliteGet();
-                menuUpdate = true;
-                menu_reglage_sensibilite_variables.actif = 0;
-                menu_reglage_sensibilite_variables.selection = 1;
-            }
-            else if(menu_reglage_sensibilite_variables.selection==2) // Confirmer
-            {
-                detectionSensibiliteSet(sensibiliteModifie);
-                menuUpdate = true;
-                menu_reglage_sensibilite_variables.actif = 0;
-                menu_reglage_sensibilite_variables.selection = 1;
-            }
-            else if(menu_reglage_sensibilite_variables.selection==3) // +100
-            {
-                sensibiliteModifie+=100;
-            }
-            else if(menu_reglage_sensibilite_variables.selection==4) // +10
-            {
-                sensibiliteModifie+=10;
-            }
-            else if(menu_reglage_sensibilite_variables.selection==5) // +1
-            {
-                sensibiliteModifie+=1;
-            }
+        if(boutons.change_gauche) nbBoutonsEnfonce++;
+        if(boutons.change_droite) nbBoutonsEnfonce++;
+        if(boutons.select) nbBoutonsEnfonce++;
+        if(boutons.retour) nbBoutonsEnfonce++;
 
-            if(menu_reglage_sensibilite_variables.selection > 2)
-            {
-                if(sensibiliteModifie >= SENSIBILITE_MAX) sensibiliteModifie = sensibiliteModifie%100 + SENSIBILITE_MIN; 
-                else if(sensibiliteModifie < SENSIBILITE_MIN) sensibiliteModifie = SENSIBILITE_MIN; 
-            }
-            return 1;
-        }
-        else if(boutons.retour)
+        if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && menuUpdate)) //== 0?
         {
+            menuUpdate = false;
+            if(boutons.change_gauche)
+            {
+                menu_reglage_sensibilite_variables.selection--;
+            }
+            else if(boutons.change_droite)
+            {
+                menu_reglage_sensibilite_variables.selection++;
+            }
+            else if(boutons.select)
+            {
+                menuUpdate = true;
+                boutons.select = false;
+                if(menu_reglage_sensibilite_variables.selection==1) // Annuler
+                {
+                    sensibiliteModifie = detectionSensibiliteGet();
+                    menuUpdate = true;
+                    menu_reglage_sensibilite_variables.actif = 0;
+                    menu_reglage_sensibilite_variables.selection = 1;
+                }
+                else if(menu_reglage_sensibilite_variables.selection==2) // Confirmer
+                {
+                    menuUpdate = true;
+                    menuTempsAccumule = 0;
+                    menu_reglage_sensibilite_confirmation();
+                }
+                else if(menu_reglage_sensibilite_variables.selection==3) // +100
+                {
+                    sensibiliteModifie+=100;
+                }
+                else if(menu_reglage_sensibilite_variables.selection==4) // +10
+                {
+                    sensibiliteModifie+=10;
+                }
+                else if(menu_reglage_sensibilite_variables.selection==5) // +1
+                {
+                    sensibiliteModifie+=1;
+                }
+
+                if(menu_reglage_sensibilite_variables.selection > 2)
+                {
+                    if(sensibiliteModifie >= SENSIBILITE_MAX) sensibiliteModifie = sensibiliteModifie%100 + SENSIBILITE_MIN; 
+                    else if(sensibiliteModifie < SENSIBILITE_MIN) sensibiliteModifie = SENSIBILITE_MIN; 
+                }
+                return 1;
+            }
+            else if(boutons.retour)
+            {
             sensibiliteModifie = detectionSensibiliteGet();
-            menuUpdate = true;
-            boutons.retour = false;
-            menu_reglage_sensibilite_variables.actif = 0;
-            menu_reglage_sensibilite_variables.selection = 1;
-        }
-        if(menu_reglage_sensibilite_variables.selection>menu_reglage_sensibilite_variables.nbOption) menu_reglage_sensibilite_variables.selection = 1;
-        else if(menu_reglage_sensibilite_variables.selection<1) menu_reglage_sensibilite_variables.selection = menu_reglage_sensibilite_variables.nbOption;
+                menuUpdate = true;
+                boutons.retour = false;
+                menu_reglage_sensibilite_variables.actif = 0;
+                menu_reglage_sensibilite_variables.selection = 1;
+            }
+            if(menu_reglage_sensibilite_variables.selection>menu_reglage_sensibilite_variables.nbOption) menu_reglage_sensibilite_variables.selection = 1;
+            else if(menu_reglage_sensibilite_variables.selection<1) menu_reglage_sensibilite_variables.selection = menu_reglage_sensibilite_variables.nbOption;
 
-        if(menu_reglage_sensibilite_variables.selection == 1)
-        {
-            affichageLCD(true, "Sensibilite     ////>Annuler Confirm "); 
-            //                  1234567890123456/89/1234567890123456_
+            if(menu_reglage_sensibilite_variables.selection == 1)
+            {
+                sprintf(str, "Sensibilite     ////>Annuler Confirm ");
+                //            1234567890123456/89/1234567890123456_
+                affichageLCD(true, str); 
+            }
+            else if(menu_reglage_sensibilite_variables.selection == 2)
+            {
+                sprintf(str, "Sensibilite     ////>Confirmer %icm ", sensibiliteModifie);
+                //            1234567890123456/89/1234567890123456_
+                affichageLCD(true, str); 
+            }    
+            else if(menu_reglage_sensibilite_variables.selection == 3)
+            {
+                sprintf(str, "Sensibilitev    ////Confirmer >%icm ", sensibiliteModifie);
+                //            1234567890123456/89/1234567890123456_
+                affichageLCD(true, str); 
+            }    
+            else if(menu_reglage_sensibilite_variables.selection == 4)
+            {
+                sprintf(str, "Sensibilite v   ////Confirmer >%icm ", sensibiliteModifie);
+                //            1234567890123456/89/1234567890123456_
+                affichageLCD(true, str); 
+            }    
+            else if(menu_reglage_sensibilite_variables.selection == 5)
+            {
+                sprintf(str, "Sensibilite  v  ////Confirmer >%icm ", sensibiliteModifie);
+                //            1234567890123456/89/1234567890123456_
+                affichageLCD(true, str); 
+            } 
         }
-        else if(menu_reglage_sensibilite_variables.selection == 2)
-        {
-            sprintf(str, "Sensibilite     ////>Confirmer %icm ", sensibiliteModifie);
-            //            1234567890123456/89/1234567890123456_
-            affichageLCD(true, str); 
-        }    
-        else if(menu_reglage_sensibilite_variables.selection == 3)
-        {
-            sprintf(str, "Sensibilitev    ////Confirmer >%icm ", sensibiliteModifie);
-            //            1234567890123456/89/1234567890123456_
-            affichageLCD(true, str); 
-        }    
-        else if(menu_reglage_sensibilite_variables.selection == 4)
-        {
-            sprintf(str, "Sensibilite v   ////Confirmer >%icm ", sensibiliteModifie);
-            //            1234567890123456/89/1234567890123456_
-            affichageLCD(true, str); 
-        }    
-        else if(menu_reglage_sensibilite_variables.selection == 5)
-        {
-            sprintf(str, "Sensibilite  v  ////Confirmer >%icm ", sensibiliteModifie);
-            //            1234567890123456/89/1234567890123456_
-            affichageLCD(true, str); 
-        } 
     }
     return 0;
 }
@@ -780,11 +803,14 @@ bool menu_reglage_dimension_x()//menu_commencer_pause_reglage_dimension
     nbBoutonsEnfonce = 0;
     menu_reglage_dimension_x_variables.actif = 1;
     menu_reglage_dimension_x_variables.nbOption = 5;
+    if(menu_reglage_dimension_x_confirmation_variables.actif) menu_reglage_dimension_x_confirmation();
+    else
+    {
 
-    if(boutons.change_gauche) nbBoutonsEnfonce++;
-    if(boutons.change_droite) nbBoutonsEnfonce++;
-    if(boutons.select) nbBoutonsEnfonce++;
-    if(boutons.retour) nbBoutonsEnfonce++;
+        if(boutons.change_gauche) nbBoutonsEnfonce++;
+        if(boutons.change_droite) nbBoutonsEnfonce++;
+        if(boutons.select) nbBoutonsEnfonce++;
+        if(boutons.retour) nbBoutonsEnfonce++;
 
     if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && menuUpdate)) //== 0?
     {
@@ -846,35 +872,36 @@ bool menu_reglage_dimension_x()//menu_commencer_pause_reglage_dimension
         if(menu_reglage_dimension_x_variables.selection>menu_reglage_dimension_x_variables.nbOption) menu_reglage_dimension_x_variables.selection = 1;
         else if(menu_reglage_dimension_x_variables.selection<1) menu_reglage_dimension_x_variables.selection = menu_reglage_dimension_x_variables.nbOption;
 
-        if(menu_reglage_dimension_x_variables.selection == 1)
-        {
-            affichageLCD(true, "Dimension X     ////>Annuler Confirm "); 
-            //                  1234567890123456/89/1234567890123456_
+            if(menu_reglage_dimension_x_variables.selection == 1)
+            {
+                affichageLCD(true, "Dimension X     ////>Annuler Confirm "); 
+                //                  1234567890123456/89/1234567890123456_
+            }
+            else if(menu_reglage_dimension_x_variables.selection == 2)
+            {
+                sprintf(str, "Dimension X     ////>Confirmer %icm ", dimensionXModifie);
+                //            1234567890123456/89/1234567890123456_
+                affichageLCD(true, str); 
+            }    
+            else if(menu_reglage_dimension_x_variables.selection == 3)
+            {
+                sprintf(str, "Dimension Xv    ////Confirmer >%icm ", dimensionXModifie);
+                //            1234567890123456/89/1234567890123456_
+                affichageLCD(true, str); 
+            }    
+            else if(menu_reglage_dimension_x_variables.selection == 4)
+            {
+                sprintf(str, "Dimension X v   ////Confirmer >%icm ", dimensionXModifie);
+                //            1234567890123456/89/1234567890123456_
+                affichageLCD(true, str); 
+            }    
+            else if(menu_reglage_dimension_x_variables.selection == 5)
+            {
+                sprintf(str, "Dimension X  v  ////Confirmer >%icm ", dimensionXModifie);
+                //            1234567890123456/89/1234567890123456_
+                affichageLCD(true, str); 
+            } 
         }
-        else if(menu_reglage_dimension_x_variables.selection == 2)
-        {
-            sprintf(str, "Dimension X     ////>Confirmer %icm ", dimensionXModifie);
-            //            1234567890123456/89/1234567890123456_
-            affichageLCD(true, str); 
-        }    
-        else if(menu_reglage_dimension_x_variables.selection == 3)
-        {
-            sprintf(str, "Dimension Xv    ////Confirmer >%icm ", dimensionXModifie);
-            //            1234567890123456/89/1234567890123456_
-            affichageLCD(true, str); 
-        }    
-        else if(menu_reglage_dimension_x_variables.selection == 4)
-        {
-            sprintf(str, "Dimension X v   ////Confirmer >%icm ", dimensionXModifie);
-            //            1234567890123456/89/1234567890123456_
-            affichageLCD(true, str); 
-        }    
-        else if(menu_reglage_dimension_x_variables.selection == 5)
-        {
-            sprintf(str, "Dimension X  v  ////Confirmer >%icm ", dimensionXModifie);
-            //            1234567890123456/89/1234567890123456_
-            affichageLCD(true, str); 
-        } 
     }
     return 0;
 }
@@ -989,59 +1016,143 @@ bool menu_reglage_mapReset()
     nbBoutonsEnfonce = 0;
     menu_reglage_mapReset_variables.actif = 1;
     menu_reglage_mapReset_variables.nbOption = 2;
-    
-    if(boutons.change_gauche) nbBoutonsEnfonce++;
-    if(boutons.change_droite) nbBoutonsEnfonce++;
-    if(boutons.select) nbBoutonsEnfonce++;
-    if(boutons.retour) nbBoutonsEnfonce++;
-
-    if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && menuUpdate))
+    if(menu_reglage_mapReset_confirmation_variables.actif) menu_reglage_mapReset_confirmation();
+    else
     {
-        menuUpdate = false;
-        if(boutons.change_gauche)
+
+        if(boutons.change_gauche) nbBoutonsEnfonce++;
+        if(boutons.change_droite) nbBoutonsEnfonce++;
+        if(boutons.select) nbBoutonsEnfonce++;
+        if(boutons.retour) nbBoutonsEnfonce++;
+
+        if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && menuUpdate))
         {
-            menu_reglage_mapReset_variables.selection--;
-        }
-        else if(boutons.change_droite)
-        {
-            menu_reglage_mapReset_variables.selection++;
-        }
-        else if(boutons.select)
-        {
-            menuUpdate = true;
-            boutons.select = false;
-            if(menu_reglage_mapReset_variables.selection==1) // Annuler
+            menuUpdate = false;
+            if(boutons.change_gauche)
             {
-                menu_reglage_mapReset_variables.actif = 0;
+                menu_reglage_mapReset_variables.selection--;
             }
-            else if(menu_reglage_mapReset_variables.selection==2) // Confirmer
+            else if(boutons.change_droite)
             {
-                resetCarte(dimensionXModifie, dimensionYModifie);
+                menu_reglage_mapReset_variables.selection++;
+            }
+            else if(boutons.select)
+            {
+                menuUpdate = true;
+                boutons.select = false;
+                if(menu_reglage_mapReset_variables.selection==1) // Annuler
+                {
+                    menu_reglage_mapReset_variables.actif = 0;
+                }
+                else if(menu_reglage_mapReset_variables.selection==2) // Confirmer
+                {
+                    resetCarte(dimensionXModifie, dimensionYModifie);
+                    menu_reglage_mapReset_variables.actif = 0;
+                    menu_reglage_mapReset_variables.selection=1;
+                } 
+                return 1;
+            }
+            else if(boutons.retour)
+            {
+                menuUpdate = true;
+                boutons.retour = false;
                 menu_reglage_mapReset_variables.actif = 0;
-                menu_reglage_mapReset_variables.selection=1;
-            } 
-            return 1;
-        }
-        else if(boutons.retour)
-        {
-            menuUpdate = true;
-            boutons.retour = false;
-            menu_reglage_mapReset_variables.actif = 0;
-            menu_reglage_mapReset_variables.selection = 1;
-        }
-        if(menu_reglage_mapReset_variables.selection>menu_reglage_mapReset_variables.nbOption) menu_reglage_mapReset_variables.selection = 1;
-        else if(menu_reglage_mapReset_variables.selection<1) menu_reglage_mapReset_variables.selection = menu_reglage_mapReset_variables.nbOption;
-        
-        if(menu_reglage_mapReset_variables.selection == 1)
-        {
-            affichageLCD(true, "Effacer la carte////>Annuler Confirm ");
-            //                  1234567890123456/89/1234567890123456_
-        }
-        else if(menu_reglage_mapReset_variables.selection == 2)
-        {
-            affichageLCD(true, "Effacer la carte////nuler >Confirmer ");
-            //                  1234567890123456/89/1234567890123456_
+                menu_reglage_mapReset_variables.selection = 1;
+            }
+            if(menu_reglage_mapReset_variables.selection>menu_reglage_mapReset_variables.nbOption) menu_reglage_mapReset_variables.selection = 1;
+            else if(menu_reglage_mapReset_variables.selection<1) menu_reglage_mapReset_variables.selection = menu_reglage_mapReset_variables.nbOption;
+            
+            if(menu_reglage_mapReset_variables.selection == 1)
+            {
+                affichageLCD(true, "Effacer la carte////>Annuler Confirm ");
+                //                  1234567890123456/89/1234567890123456_
+            }
+            else if(menu_reglage_mapReset_variables.selection == 2)
+            {
+                affichageLCD(true, "Effacer la carte////nuler >Confirmer ");
+                //                  1234567890123456/89/1234567890123456_
+            }
         }
     }
     return 0;
 }
+
+bool menu_reglage_mapReset_confirmation() 
+{
+    menu_reglage_mapReset_confirmation_variables.actif = 1;
+    resetCarte(dimensionXModifie, dimensionYModifie);
+
+    if(menuUpdate){
+        menuUpdate = false;
+        affichageLCD(true, "CarteReset fait ////avec succes!     ");
+        //                  1234567890123456/89/1234567890123456_
+    }
+    if(menuTempsAccumule > menuTempsRequis){
+        menuUpdate = true;
+        tempAccumuleAffichage -= tempRequisAffichage;
+        menu_reglage_mapReset_confirmation_variables.actif = 0;
+        menu_reglage_mapReset_variables.actif = 0;
+    }
+    else menuTempsAccumule += DELAIS;
+}
+
+bool menu_reglage_sensibilite_confirmation()
+{
+    menu_reglage_sensibilite_confirmation_variables.actif = 1;
+    detectionSensibiliteSet(sensibiliteModifie);
+
+    if(menuUpdate){
+        menuUpdate = false;
+        sprintf(str, "Sensibilite     ////nouvelle = %icm", sensibiliteModifie);
+                //            1234567890123456/89/1234567890123456_
+        affichageLCD(true, str); 
+    }
+    if(menuTempsAccumule > menuTempsRequis){
+        menuUpdate = true;
+        tempAccumuleAffichage -= tempRequisAffichage;
+        menu_reglage_sensibilite_confirmation_variables.actif = 0;
+        menu_reglage_sensibilite_variables.actif = 0;
+    }
+    else menuTempsAccumule += DELAIS;
+}
+
+bool menu_reglage_dimension_x_confirmation()
+{
+    menu_reglage_dimension_x_confirmation_variables.actif = 1;
+    resetCarte(dimensionXModifie, dimensionYModifie);
+
+    if(menuUpdate){
+        menuUpdate = false;
+        sprintf(str, "Dimension x     ////nouvelle = %icm  ", dimensionXModifie);
+        //            1234567890123456/89/1234567890123456_
+        affichageLCD(true, str); 
+    }
+    if(menuTempsAccumule > menuTempsRequis){
+        menuUpdate = true;
+        tempAccumuleAffichage -= tempRequisAffichage;
+        menu_reglage_dimension_x_confirmation_variables.actif = 0;
+        menu_reglage_dimension_x_variables.actif = 0;
+    }
+    else menuTempsAccumule += DELAIS;
+}
+
+bool menu_reglage_dimension_y_confirmation()
+{
+    menu_reglage_dimension_y_confirmation_variables.actif = 1;
+    resetCarte(dimensionXModifie, dimensionYModifie);
+    
+    if(menuUpdate){
+        menuUpdate = false;
+        sprintf(str, "Dimension y     ////nouvelle = %icm  ", dimensionYModifie);
+        //            1234567890123456/89/1234567890123456_
+        affichageLCD(true, str); 
+    }
+    if(menuTempsAccumule > menuTempsRequis){
+        menuUpdate = true;
+        tempAccumuleAffichage -= tempRequisAffichage;
+        menu_reglage_dimension_y_confirmation_variables.actif = 0;
+        menu_reglage_dimension_y_variables.actif = 0;
+    }
+    else menuTempsAccumule += DELAIS;
+}
+// else if(menu_reglage_dimension_y_confirmation_variables.actif) menu_reglage_dimension_y_confirmation();
