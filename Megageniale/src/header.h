@@ -154,6 +154,10 @@ void rotation(int direction);
 * @return 
 */
 
+/**
+ * Fonction reset encodeur
+ */
+void resetEncodeur();
 
 /**
 * Fonction repérage dans l'espace

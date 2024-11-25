@@ -126,8 +126,6 @@ bool rougeAllume = false;
 bool orangeAllume = false;
 bool verteAllume = false;
 
-
-
 /** 
 * Fonction afficheur LCD
 * @param clearBefore : (bool) Efface l'écritue préalablement si true
@@ -147,7 +145,6 @@ bool affichageLCD(bool clearBefore, String texte){
 
     // Écriture du message
     DISPLAY_Printf(texte);
-
 
     return true;
 }
@@ -190,6 +187,7 @@ bool allumerDEL(int etat, bool actif){
         return true;
     }
     if (etat == TERMINER && actif == true) {
+        digitalWrite(PINVERT, HIGH);
         if(tempAccumuleAffichage > tempRequisAffichage){
             if(!verteAllume){
                 digitalWrite(PINVERT, LOW);
@@ -1158,4 +1156,3 @@ bool menu_reglage_dimension_y_confirmation()
     }
     else menuTempsAccumule += DELAIS;
 }
-// else if(menu_reglage_dimension_y_confirmation_variables.actif) menu_reglage_dimension_y_confirmation();

@@ -27,6 +27,8 @@ const float distanceDecalage = 40.0;  // À reprendre avec le distributeur<
 int carteNbLignes = 100; //y
 int carteNbColonnes = 100; //x
 int carte[CARTE_NB_LIGNES_MAX][CARTE_NB_COLONNES_MAX]; 
+int directionRotation = 1; // 1=droite, 0=gauche
+int rangeeParcourue = 0;
 
 /**
 * Fonction distributeur d'objet
@@ -107,6 +109,11 @@ bool arbreDecision(){
     boutons_decisions=boutonsGet();
     if(enCours)
     {
+        if(rangeeParcourue>=dimensionY) {
+            enCours = false;
+            allumerDEL(true, TERMINER);
+        }
+        
         allumerDEL(true, MARCHE);
         if(detectionMetaux()){
             distributeur(true);
@@ -117,17 +124,33 @@ bool arbreDecision(){
             distributeur(false);
             allumerDEL(METAL, false);
         }
+
         if(enAvant)
         {
         distanceParcourue = ((ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2)*roueCirconference/rouePulseCirconference;
-            if(enAvant && distanceParcourue<dimensionX)
+            if(enAvant && directionRotation == 1 && distanceParcourue<dimensionX)
                 ajustementVitesse();
             else
             {
                 enAvant = false;
                 enRotation = true;
-                enTransition =true;
+                resetEncodeur();
+                rangeeParcourue++;
             }
+        }
+        if(enRotation)
+        {
+            if (directionRotation) {
+                rotation(DROITE);
+                directionRotation--;
+            }
+            else {
+                rotation(GAUCHE);
+                directionRotation++;
+            }
+            resetEncodeur();
+            enAvant = true;
+            enRotation = false;
         }
 
         if (distanceObjet()<10.0){                                // Si fonctionne pas, monte 10.0 à 15.0

@@ -16,8 +16,6 @@ const float kp = 0.001525; // 0.0012
 * Fonction avancement
 */
 void avancer(){
-    ENCODER_Reset(RIGHT);
-    ENCODER_Reset(LEFT);
     MOTOR_SetSpeed(LEFT, vitesseGauche);
     MOTOR_SetSpeed(RIGHT, vitesseDroite);
 }
@@ -26,8 +24,6 @@ void avancer(){
 * Fonction arret
 */
 void arreter(){
-    ENCODER_Reset(RIGHT);
-    ENCODER_Reset(LEFT);
     MOTOR_SetSpeed(LEFT, 0);
     MOTOR_SetSpeed(RIGHT, 0);
 }
@@ -90,8 +86,6 @@ void ajustementVitesse(){
 * @param direction: (int) tourner à gauche ou à droite
 */
 void rotation(int direction){
-    ENCODER_Reset(RIGHT);
-    ENCODER_Reset(LEFT);
     if(direction){
         MOTOR_SetSpeed(RIGHT, 0);
         MOTOR_SetSpeed(LEFT, vitesseGauche);
@@ -106,3 +100,10 @@ void rotation(int direction){
     }
 }
 
+/**
+ * Fonction reset encodeur
+ */
+void resetEncodeur(){
+    ENCODER_Reset(1);
+    ENCODER_Reset(0);
+}
