@@ -89,13 +89,13 @@ void rotation(int direction){
     if(direction){
         MOTOR_SetSpeed(RIGHT, 0);
         MOTOR_SetSpeed(LEFT, vitesseGauche);
-        while (ENCODER_Read(LEFT) <= pulseCm*29.202*0.66){}
+        while (ENCODER_Read(LEFT) <= pulseCm*29.202*0.64){}
         arreter();
     }
     else{
         MOTOR_SetSpeed(LEFT, 0);
         MOTOR_SetSpeed(RIGHT, vitesseDroite);
-        while (ENCODER_Read(RIGHT) <= pulseCm*29.202*0.66){}
+        while (ENCODER_Read(RIGHT) <= pulseCm*29.202*0.635){}
         arreter();
     }
 }

@@ -7,6 +7,7 @@
 
 #include "header.h"
 
+// Variables
 struct MenuVariables
 {
     bool actif=0;
@@ -27,97 +28,6 @@ const int SENSIBILITE_MIN = 500;
 const int SENSIBILITE_MAX = 1000;
 int sensibiliteModifie = 600;
 
-/** Menu principal */
-bool menu();
-/** Variables de navigation du menu principal */
-MenuVariables menu_variables;
-
-/** Menu  */
-bool menu_commencer();
-/** Variables de navigation du menu principal */
-MenuVariables menu_commencer_variables;
-
-/** Menu  */
-bool menu_commencer_arreter();
-/** Variables de navigation du menu principal */
-MenuVariables menu_commencer_arreter_variables;
-
-/** Menu  */
-bool menu_commencer_pause();
-/** Variables de navigation du menu principal */
-MenuVariables menu_commencer_pause_variables;
-
-/** Menu  */
-bool menu_commencer_pause_reglage();
-/** Variables de navigation du menu principal */
-MenuVariables menu_commencer_pause_reglage_variables;
-
-/** Menu  */
-bool menu_commencer_pause_arreter();
-/** Variables de navigation du menu principal */
-MenuVariables menu_commencer_pause_arreter_variables;
-
-/** Menu  */
-bool menu_commencer_pause_reglage_sensibilite();
-/** Variables de navigation du menu principal */
-MenuVariables menu_commencer_pause_reglage_sensibilite_variables;
-
-/** Menu  */
-bool menu_commencer_pause_reglage_mapReset();
-/** Variables de navigation du menu principal */
-MenuVariables menu_commencer_pause_reglage_mapReset_variables;
-
-/** Menu  */
-bool menu_reglage();
-/** Variables de navigation du menu principal */
-MenuVariables menu_reglage_variables;
-
-/** Menu  */
-bool menu_reglage_sensibilite();//menu_commencer_pause_reglage_sensibilite
-/** Variables de navigation du menu principal */
-MenuVariables menu_reglage_sensibilite_variables;
-
-/** Menu  */
-bool menu_reglage_dimension();//menu_commencer_pause_reglage_dimension
-/** Variables de navigation du menu principal */
-MenuVariables menu_reglage_dimension_variables;
-
-/** Menu  */
-bool menu_reglage_dimension_x();//menu_commencer_pause_reglage_dimension
-/** Variables de navigation du menu principal */
-MenuVariables menu_reglage_dimension_x_variables;
-
-/** Menu  */
-bool menu_reglage_dimension_y();//menu_commencer_pause_reglage_dimension
-/** Variables de navigation du menu principal */
-MenuVariables menu_reglage_dimension_y_variables;
-
-/** Menu  */
-bool menu_reglage_mapReset();
-/** Variables de navigation du menu_reglage_mapReset */
-MenuVariables menu_reglage_mapReset_variables;
-
-/** Menu  */
-bool menu_reglage_mapReset_confirmation();
-/** Variables de navigation du menu_reglage_mapReset */
-MenuVariables menu_reglage_mapReset_confirmation_variables;
-
-/** Menu */
-bool menu_reglage_sensibilite_confirmation();
-/** Variables de navigation du menu_reglage_mapReset_confirmation */
-MenuVariables menu_reglage_sensibilite_confirmation_variables;
-
-/** Menu */
-bool menu_reglage_dimension_x_confirmation();
-/** Variables de navigation du menu_reglage_mapReset_confirmation */
-MenuVariables menu_reglage_dimension_x_confirmation_variables;
-
-/** Menu */
-bool menu_reglage_dimension_y_confirmation();
-/** Variables de navigation du menu_reglage_mapReset_confirmation */
-MenuVariables menu_reglage_dimension_y_confirmation_variables;
-
-// Variables
 int tempAccumuleAffichage = 0;
 int tempRequisAffichage = 1000;
 int menuTempsAccumule = 0;
@@ -125,6 +35,77 @@ int menuTempsRequis = 1000;
 bool rougeAllume = false;
 bool orangeAllume = false;
 bool verteAllume = false;
+
+// Header Menus
+/** Menu principal */
+bool menu();
+/** Variables de navigation du menu principal */
+MenuVariables menu_variables;
+
+/** Menu commencer*/
+bool menu_commencer();
+/** Variables de navigation du menu principal */
+MenuVariables menu_commencer_variables;
+
+/** Menu commencer pause*/
+bool menu_commencer_pause();
+/** Variables de navigation du menu principal */
+MenuVariables menu_commencer_pause_variables;
+
+/** Menu commencer pause réglage*/
+bool menu_commencer_pause_reglage();
+/** Variables de navigation du menu principal */
+MenuVariables menu_commencer_pause_reglage_variables;
+
+/** Menu réglage*/
+bool menu_reglage();
+/** Variables de navigation du menu principal */
+MenuVariables menu_reglage_variables;
+
+/** Menu réglage sensibilité*/
+bool menu_reglage_sensibilite();//menu_commencer_pause_reglage_sensibilite
+/** Variables de navigation du menu principal */
+MenuVariables menu_reglage_sensibilite_variables;
+
+/** Menu réglage dimension*/
+bool menu_reglage_dimension();//menu_commencer_pause_reglage_dimension
+/** Variables de navigation du menu principal */
+MenuVariables menu_reglage_dimension_variables;
+
+/** Menu réglage dimension x*/
+bool menu_reglage_dimension_x();//menu_commencer_pause_reglage_dimension
+/** Variables de navigation du menu principal */
+MenuVariables menu_reglage_dimension_x_variables;
+
+/** Menu réglage dimension y*/
+bool menu_reglage_dimension_y();//menu_commencer_pause_reglage_dimension
+/** Variables de navigation du menu principal */
+MenuVariables menu_reglage_dimension_y_variables;
+
+/** Menu réglage mapReset*/
+bool menu_reglage_mapReset();
+/** Variables de navigation du menu_reglage_mapReset */
+MenuVariables menu_reglage_mapReset_variables;
+
+/** Menu réglage mapReset confirmation*/
+bool menu_reglage_mapReset_confirmation();
+/** Variables de navigation du menu_reglage_mapReset */
+MenuVariables menu_reglage_mapReset_confirmation_variables;
+
+/** Menu réglage sensibilité confirmation*/
+bool menu_reglage_sensibilite_confirmation();
+/** Variables de navigation du menu_reglage_mapReset_confirmation */
+MenuVariables menu_reglage_sensibilite_confirmation_variables;
+
+/** Menu réglage dimension x confirmation */
+bool menu_reglage_dimension_x_confirmation();
+/** Variables de navigation du menu_reglage_mapReset_confirmation */
+MenuVariables menu_reglage_dimension_x_confirmation_variables;
+
+/** Menu réglage dimension y confirmation*/
+bool menu_reglage_dimension_y_confirmation();
+/** Variables de navigation du menu_reglage_mapReset_confirmation */
+MenuVariables menu_reglage_dimension_y_confirmation_variables;
 
 /** 
 * Fonction afficheur LCD
@@ -236,10 +217,6 @@ bool allumerDEL(int etat, bool actif){
         return true;
     }
     return false;
-}
-
-void menuAffichage()
-{
 }
 
 bool menu()
@@ -361,13 +338,6 @@ bool menu_commencer()
     return 0;
 }
 
-/*à voir si à faire
-bool menu_commencer_arreter()
-{
-    
-}
-*/
-
 bool menu_commencer_pause()
 {
     nbBoutonsEnfonce = 0;
@@ -408,6 +378,7 @@ bool menu_commencer_pause()
             else if(boutons.retour)
             {
                 avancer();
+                enCoursSet(true);
                 menuUpdate = true;
                 boutons.retour = false;
                 menu_commencer_pause_variables.actif = 0;
@@ -506,23 +477,6 @@ bool menu_commencer_pause_reglage()
     return 0;
 }
 
-/*à voir si à faire
-bool menu_commencer_pause_arreter()
-{
-}
-*/
-
-/* Réutilisation des menu utilisé par le menu réglage
-bool menu_commencer_pause_reglage_sensibilite()
-{
-    menu_reglage_sensibilite();
-}
-bool menu_commencer_pause_reglage_mapReset()
-{
-    menu_reglage_mapReset();
-}
-*/
-
 bool menu_reglage()
 {
     nbBoutonsEnfonce = 0;
@@ -610,7 +564,7 @@ bool menu_reglage()
     return 0;
 }
 
-bool menu_reglage_sensibilite()//menu_commencer_pause_reglage_sensibilite
+bool menu_reglage_sensibilite()
 {
     nbBoutonsEnfonce = 0;
     menu_reglage_sensibilite_variables.actif = 1;
@@ -717,7 +671,7 @@ bool menu_reglage_sensibilite()//menu_commencer_pause_reglage_sensibilite
     return 0;
 }
 
-bool menu_reglage_dimension()//menu_commencer_pause_reglage_dimension
+bool menu_reglage_dimension()
 {
     nbBoutonsEnfonce = 0;
     menu_reglage_dimension_variables.actif = 1;
@@ -796,7 +750,7 @@ bool menu_reglage_dimension()//menu_commencer_pause_reglage_dimension
     return 0;
 }
 
-bool menu_reglage_dimension_x()//menu_commencer_pause_reglage_dimension
+bool menu_reglage_dimension_x()
 {
     nbBoutonsEnfonce = 0;
     menu_reglage_dimension_x_variables.actif = 1;
@@ -904,7 +858,7 @@ bool menu_reglage_dimension_x()//menu_commencer_pause_reglage_dimension
     return 0;
 }
 
-bool menu_reglage_dimension_y()//menu_commencer_pause_reglage_dimension
+bool menu_reglage_dimension_y()
 {
     
     nbBoutonsEnfonce = 0;
@@ -1084,6 +1038,8 @@ bool menu_reglage_mapReset_confirmation()
 
     if(menuUpdate){
         menuUpdate = false;
+        dimensionXModifie = xGet();
+        dimensionYModifie = yGet();
         resetCarte(dimensionXModifie, dimensionYModifie);
         affichageLCD(true, "CarteReset fait ////avec succes!     ");
         //                  1234567890123456/89/1234567890123456_

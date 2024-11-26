@@ -37,7 +37,6 @@
 #define PIN_ANALOG_DETECTEUR_METAUX_2 A5
 #define PIN_ANALOG_DETECTEUR_METAUX_3 A6
 
-
 #define MENU_INI_Y "Commencer la    ////recherche: >Y  N "
 #define MENU_INI_N "Commencer la    ////recherche:  Y >N "
 #define MENU_INI_RECHERCHE_ARRETER "Arreter la      ////recherche: >Y"
@@ -52,8 +51,8 @@ const float rouePulseCirconference = 3200.0;
 const float roueDistance = 18.6;
 const float rotationCirconference = 2.0*PI*(roueDistance);
 const float pulse = (rotationCirconference)/((TOUR/ANGLE)*roueCirconference)*rouePulseCirconference;
-const float vitesseGauche = 0.1;
-const float vitesseDroite = 0.1;
+const float vitesseGauche = 0.15;
+const float vitesseDroite = 0.15;
 const float pulseCm = rouePulseCirconference/roueDiametre;
 
 const int CARTE_NB_LIGNES_MAX = 100;
@@ -74,7 +73,6 @@ void boutonsUpdate();
 
 /**
 * Fonction retourne l'état des boutons
-*
 * @return une structure avec l'état de tous les boutons mis à jour
 */
 struct Boutons boutonsGet();
@@ -89,7 +87,6 @@ bool affichageLCD(bool clearBefore, String texte);
 
 /**
  * Fonction créant un menu navigant
- * 
  * @return Si changé de menu
  */
 bool menu();
@@ -149,12 +146,6 @@ void ajustementVitesse();
 void rotation(int direction);
 
 /**
-* Fonction détection obstacle (facultatif)
-* @param 
-* @return 
-*/
-
-/**
  * Fonction reset encodeur
  */
 void resetEncodeur();
@@ -194,12 +185,29 @@ bool arbreDecision();
 */
 float distanceObjet();
 
+/**
+ * Fonction pour attribuer la mise en marche du robot
+ * @param enCoursTemp: (bool)
+ */
 void enCoursSet(bool enCoursTemp);
 
+/**
+ * Fonction pour avoir le nombre de lignes de la carte
+ */
 int yGet();
 
+/**
+ * Fonction pour avoir le nombre de colonnes de la carte
+ */
 int xGet();
 
+/**
+ * Fonction pour avoir la sensibilité
+ */
 int detectionSensibiliteGet();
 
+/**
+ * Fonction pour attribué la sensibilité
+ * @param sensibiliteTemp: (int) 
+ */
 void detectionSensibiliteSet(int sensibiliteTemp);

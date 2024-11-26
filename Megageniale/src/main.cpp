@@ -41,70 +41,7 @@ void setup(){
 }
 
 void loop(){
-
-    // Test LCD
-    // Convertion String en char
-    /*
-    affichageLCD("P-19 IronMinds ");
-    delay(DELAIS*100);
-    */
-
-    // Tests DEL couleurs
-    /*
-    int test = 2;
-    allumerDEL(MARCHE, true);
-    if (test == 1) allumerDEL(METAL, true);
-    else if (test == 2) allumerDEL(OBSTACLE, true);
-    else if (test == 3) allumerDEL(TERMINER, true);
-    delay(DELAIS);
-    */
-
-    // Tests détecteurs métaux
-    /*bool verif;
-    verif = detectionMetaux();
-    if (verif) Serial.println("Metal detecte!");
-    else Serial.println("Aucun metal detecte!");
-    */
-
-    // Tests distributeur
-    /*
-    if(distributeurTempsAccumule>distributeurTempsRequis)
-    {
-        distributeur(true);
-        distributeurTempsAccumule-=distributeurTempsRequis;
-    }else
-    {
-        distributeur(false);
-        distributeurTempsAccumule+=DELAIS;
-    }
-    delay(DELAIS);
-    */
     
-    /*
-    int test = 3;
-    if (test == 1) {
-        allumerDEL(MARCHE, true);
-        allumerDEL(METAL, true);
-    }
-    else if(test == 2) {
-        allumerDEL(MARCHE, true);
-        allumerDEL(OBSTACLE, true);
-    }
-    else if(test == 3) {
-        allumerDEL(MARCHE, false);
-        allumerDEL(TERMINER, true);
-    }
-    */
-
-    
-
-    // Tests deplacement
-    /*ajustementVitesse();
-    delay(DELAIS);
-    */
-
-    /*
-    */
     boutonsUpdate();
     arbreDecision();
     delay(DELAIS);

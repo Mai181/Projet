@@ -17,7 +17,9 @@ bool enCours = false;
 bool enTransition = true;
 bool enAvant = true;
 bool enRotation = false;
+bool premiereLigne = true;
 float distanceParcourue = 0.0;
+float distanceAReduire = roueDistance;
 int dimensionX = 200;
 int dimensionY = 200;
 struct Boutons boutons_decisions;
@@ -37,7 +39,7 @@ int rangeeParcourue = 0;
 */
 bool distributeur(bool actif){
     if(actif)
-        distributeurTempsAction=11000; 
+        distributeurTempsAction=11000;                             // À CHANGER PEUT-ÊTRE ????????????
     if(distributeurTempsAction>0)
     {
     Serial.println("servo distributeur ouvert");
@@ -127,11 +129,18 @@ bool arbreDecision(){
 
         if(enAvant)
         {
-        distanceParcourue = ((ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2)*roueCirconference/rouePulseCirconference;
-            if(enAvant && directionRotation == 1 && distanceParcourue<dimensionX)
+            if(premiereLigne)
+                distanceAReduire = roueDistance + 5;
+            else
+                distanceAReduire = 2 * roueDistance + 10;
+
+            distanceParcourue = ((ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2)*roueCirconference/rouePulseCirconference;
+            
+            if(distanceParcourue<dimensionX - distanceAReduire)
                 ajustementVitesse();
             else
             {
+                premiereLigne = false;
                 enAvant = false;
                 enRotation = true;
                 resetEncodeur();
@@ -151,6 +160,8 @@ bool arbreDecision(){
             resetEncodeur();
             enAvant = true;
             enRotation = false;
+            arreter();
+            delay(DELAIS*20);
         }
 
         if (distanceObjet()<10.0){                                // Si fonctionne pas, monte 10.0 à 15.0
