@@ -108,19 +108,18 @@ void resetCarte(int x, int y){
  */
 bool arbreDecision(){
     boutons_decisions=boutonsGet();
-        if(rangeeParcourue >= dimensionY - 2 * roueDistance) 
-        {
-            menu_terminer();
-            enCours = false;
-            allumerDEL(false, MARCHE);
-            allumerDEL(true, TERMINER);
-            arreter();
-        }
-        else
-            menu();
+    if(rangeeParcourue >= dimensionY - 2 * roueDistance) 
+    {
+        menu_terminer();
+        enCours = false;
+        allumerDEL(false, MARCHE);
+        allumerDEL(true, TERMINER);
+        arreter();
+    }
+    else
+        enCours=true;//menu();
     if(enCours)
     {
-        
         allumerDEL(true, MARCHE);
         if(detectionMetaux()){
             distributeur(true);

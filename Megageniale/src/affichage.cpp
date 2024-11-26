@@ -42,57 +42,57 @@ bool menu();
 /** Variables de navigation du menu principal */
 MenuVariables menu_variables;
 
-/** Menu commencer*/
+/** Menu commencer */
 bool menu_commencer();
 /** Variables de navigation du menu principal */
 MenuVariables menu_commencer_variables;
 
-/** Menu commencer pause*/
+/** Menu commencer pause */
 bool menu_commencer_pause();
 /** Variables de navigation du menu principal */
 MenuVariables menu_commencer_pause_variables;
 
-/** Menu commencer pause réglage*/
+/** Menu commencer pause réglage */
 bool menu_commencer_pause_reglage();
 /** Variables de navigation du menu principal */
 MenuVariables menu_commencer_pause_reglage_variables;
 
-/** Menu réglage*/
+/** Menu réglage */
 bool menu_reglage();
 /** Variables de navigation du menu principal */
 MenuVariables menu_reglage_variables;
 
-/** Menu réglage sensibilité*/
+/** Menu réglage sensibilité */
 bool menu_reglage_sensibilite();//menu_commencer_pause_reglage_sensibilite
 /** Variables de navigation du menu principal */
 MenuVariables menu_reglage_sensibilite_variables;
 
-/** Menu réglage dimension*/
+/** Menu réglage dimension */
 bool menu_reglage_dimension();//menu_commencer_pause_reglage_dimension
 /** Variables de navigation du menu principal */
 MenuVariables menu_reglage_dimension_variables;
 
-/** Menu réglage dimension x*/
+/** Menu réglage dimension x */
 bool menu_reglage_dimension_x();//menu_commencer_pause_reglage_dimension
 /** Variables de navigation du menu principal */
 MenuVariables menu_reglage_dimension_x_variables;
 
-/** Menu réglage dimension y*/
+/** Menu réglage dimension y */
 bool menu_reglage_dimension_y();//menu_commencer_pause_reglage_dimension
 /** Variables de navigation du menu principal */
 MenuVariables menu_reglage_dimension_y_variables;
 
-/** Menu réglage mapReset*/
+/** Menu réglage mapReset */
 bool menu_reglage_mapReset();
 /** Variables de navigation du menu_reglage_mapReset */
 MenuVariables menu_reglage_mapReset_variables;
 
-/** Menu réglage mapReset confirmation*/
+/** Menu réglage mapReset confirmation */
 bool menu_reglage_mapReset_confirmation();
 /** Variables de navigation du menu_reglage_mapReset */
 MenuVariables menu_reglage_mapReset_confirmation_variables;
 
-/** Menu réglage sensibilité confirmation*/
+/** Menu réglage sensibilité confirmation */
 bool menu_reglage_sensibilite_confirmation();
 /** Variables de navigation du menu_reglage_mapReset_confirmation */
 MenuVariables menu_reglage_sensibilite_confirmation_variables;
@@ -102,20 +102,25 @@ bool menu_reglage_dimension_x_confirmation();
 /** Variables de navigation du menu_reglage_mapReset_confirmation */
 MenuVariables menu_reglage_dimension_x_confirmation_variables;
 
-/** Menu réglage dimension y confirmation*/
+/** Menu réglage dimension y confirmation */
 bool menu_reglage_dimension_y_confirmation();
 /** Variables de navigation du menu_reglage_mapReset_confirmation */
 MenuVariables menu_reglage_dimension_y_confirmation_variables;
 
-/** Menu de fin de tache*/
+/** Menu de fin de tache */
 bool menu_terminer();
-/** Variables de navigation du menu_reglage_mapReset_confirmation */
-MenuVariables V_variables;
+/** Variables de navigation du menu_terminer */
+MenuVariables menu_terminer_variables;
 bool premierTerminer = true;
+
+/**Menu de fin confirmation */
+bool menu_terminer_confirmation();
+/** Variables de navigation du menu_terminer_confirmation */
+MenuVariables menu_terminer_confirmation_variables;
 
 /** 
 * Fonction afficheur LCD
-* @param clearBefore : (bool) Efface l'écritue préalablement si true
+* @param clearBefore : (bool) Efface l'écriture préalablement si true
 * @param texte : (String) texte à afficher 
 * @return true si c'est exécutable
 */
@@ -1138,49 +1143,81 @@ bool menu_terminer()
     menu_reglage_dimension_variables.actif = 0;
     menu_reglage_mapReset_variables.actif = 0;
 
+    /*
     if(premierTerminer){
         affichageLCD(true, "Fin de tache    ////>Reinitialiser   "); 
         //                  1234567890123456/89/1234567890123456_
     }
+    */
     
     nbBoutonsEnfonce = 0;
-    menu_reglage_dimension_x_variables.actif = 1;
-    menu_reglage_dimension_x_variables.nbOption = 1;
+    menu_terminer_variables.actif = 1;
+    menu_terminer_variables.nbOption = 1;
 
-    if(boutons.change_gauche) nbBoutonsEnfonce++;
-    if(boutons.change_droite) nbBoutonsEnfonce++;
-    if(boutons.select) nbBoutonsEnfonce++;
-    if(boutons.retour) nbBoutonsEnfonce++;
-
-    if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && menuUpdate)) //== 0?
+    if(menu_terminer_confirmation_variables.actif) menu_terminer_confirmation();
+    else
     {
-        menuUpdate = false;
-        if(boutons.change_gauche)
+        if(boutons.change_gauche) nbBoutonsEnfonce++;
+        if(boutons.change_droite) nbBoutonsEnfonce++;
+        if(boutons.select) nbBoutonsEnfonce++;
+        if(boutons.retour) nbBoutonsEnfonce++;
+
+        if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && menuUpdate)) //== 0?
         {
-            menu_reglage_dimension_x_variables.selection--;
-        }
-        else if(boutons.change_droite)
-        {
-            menu_reglage_dimension_x_variables.selection++;
-        }
-        else if(boutons.select)
-        {
-            menuUpdate = true;
-            boutons.select = false;
-            if(menu_reglage_dimension_x_variables.selection==1) // Annuler
+            menuUpdate = false;
+            if(boutons.change_gauche)                       // Ça sert pas à rien ????????
+            {
+                menu_terminer_variables.selection--;
+            }
+            else if(boutons.change_droite)
+            {
+                menu_terminer_variables.selection++;
+            }
+            else if(boutons.select)
+            {
+                menuUpdate = true;
+                boutons.select = false;
+                if(menu_terminer_variables.selection==1) // Réinitialiser
+                {
+                    menu_terminer_confirmation();
+                }
+
+                return 1;
+            }
+            else if(boutons.retour)
             {
                 digitalWrite(PIN_RESET, HIGH);
             }
+            if(menu_terminer_variables.selection>menu_terminer_variables.nbOption) menu_terminer_variables.selection = 1;
+            else if(menu_terminer_variables.selection<1) menu_terminer_variables.selection = menu_terminer_variables.nbOption;
 
-            return 1;
+            if(menu_terminer_variables.selection == 1){
+                affichageLCD(true, "Fin de tache    ////>Reinitialiser   "); 
+                //                  1234567890123456/89/1234567890123456_
+            }
         }
-        else if(boutons.retour)
-        {
-            digitalWrite(PIN_RESET, HIGH);
-        }
-        if(menu_reglage_dimension_x_variables.selection>menu_reglage_dimension_x_variables.nbOption) menu_reglage_dimension_x_variables.selection = 1;
-        else if(menu_reglage_dimension_x_variables.selection<1) menu_reglage_dimension_x_variables.selection = menu_reglage_dimension_x_variables.nbOption;
     }
+
+    return 0;
+}
+
+bool menu_terminer_confirmation()
+{
+    menu_terminer_variables.actif = 1;
+    
+    if(menuUpdate){
+        menuUpdate = false;
+        digitalWrite(PIN_RESET, HIGH);
+        affichageLCD(true, "Reinitialisation////Reussi!          "); 
+        //                  1234567890123456/89/1234567890123456_
+    }
+    if(menuTempsAccumule > menuTempsRequis){
+        menuUpdate = true;
+        tempAccumuleAffichage -= tempRequisAffichage;
+        menu_terminer_confirmation_variables.actif = 0;
+        menu_terminer_variables.actif = 0;
+    }
+    else menuTempsAccumule += DELAIS;
 
     return 0;
 }

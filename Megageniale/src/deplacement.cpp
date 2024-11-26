@@ -51,12 +51,12 @@ void ajustementVitesse(){
     float ecartDroit;
     float correctionDroit;
 
-    if(vitesseDroite > 0){
+    if(vitesseDroite < 0){
         // Calcul des écarts entre la consigne et la mesure
-        ecartDroit = totalpulseGauche - totalpulseDroit;
+        ecartDroit = totalpulseGauche + totalpulseDroit;
     }
     else{
-        ecartDroit = totalpulseDroit - totalpulseGauche;
+        ecartDroit = totalpulseDroit + totalpulseGauche;
     }
 
     // Calcul des termes proportionnels
@@ -67,13 +67,13 @@ void ajustementVitesse(){
 
     // Calcul des termes intégrals
     float termeIntDroit = erreurAccumuleeDroite * ki;
-    if(vitesseDroite > 0){
+    if(vitesseDroite < 0){
         // Calcul des corrections finales en limitant la vitesse pour éviter des valeurs trop élevées
-        correctionDroit = limiter(vitesseDroite + termePropDroit + termeIntDroit, -1.0, 1.0);
+        correctionDroit = limiter(vitesseDroite - termePropDroit - termeIntDroit, -1.0, 1.0);
     }
     else{
         // Calcul des corrections finales en limitant la vitesse pour éviter des valeurs trop élevées
-        correctionDroit = limiter(vitesseDroite - termePropDroit - termeIntDroit, -1.0, 1.0);
+        correctionDroit = limiter(vitesseDroite + termePropDroit + termeIntDroit, -1.0, 1.0);
     }
 
     // Application des corrections aux moteurs
