@@ -9,15 +9,15 @@
 
 // Variables 
 float erreurAccumuleeDroite = 0.0;
-const float ki = 0.000525; // 0.0005
-const float kp = 0.001525; // 0.0012
+const float ki = 0.000425; // 0.000525
+const float kp = 0.001525; // 0.0015253
 
 /**
 * Fonction avancement
 */
 void avancer(){
-    MOTOR_SetSpeed(LEFT, vitesseGauche);
-    MOTOR_SetSpeed(RIGHT, vitesseDroite);
+    MOTOR_SetSpeed(LEFT, -vitesseGauche);
+    MOTOR_SetSpeed(RIGHT, -vitesseDroite);
 }
 
 /**
@@ -46,17 +46,17 @@ float limiter(float valeur, float minVal, float maxVal) {
 * Fonction ajustement vitesse
 */
 void ajustementVitesse(){
-    float totalpulseDroit = ENCODER_Read(RIGHT);
-    float totalpulseGauche = ENCODER_Read(LEFT);
+    float totalpulseDroit = -ENCODER_Read(RIGHT);
+    float totalpulseGauche = -ENCODER_Read(LEFT);
     float ecartDroit;
     float correctionDroit;
 
-    if(vitesseDroite < 0){
+    if(vitesseDroite > 0){
         // Calcul des écarts entre la consigne et la mesure
-        ecartDroit = totalpulseGauche + totalpulseDroit;
+        ecartDroit = totalpulseGauche - totalpulseDroit;
     }
     else{
-        ecartDroit = totalpulseDroit + totalpulseGauche;
+        ecartDroit = totalpulseDroit - totalpulseGauche;
     }
 
     // Calcul des termes proportionnels
@@ -67,18 +67,18 @@ void ajustementVitesse(){
 
     // Calcul des termes intégrals
     float termeIntDroit = erreurAccumuleeDroite * ki;
-    if(vitesseDroite < 0){
-        // Calcul des corrections finales en limitant la vitesse pour éviter des valeurs trop élevées
-        correctionDroit = limiter(vitesseDroite - termePropDroit - termeIntDroit, -1.0, 1.0);
-    }
-    else{
+    if(vitesseDroite > 0){
         // Calcul des corrections finales en limitant la vitesse pour éviter des valeurs trop élevées
         correctionDroit = limiter(vitesseDroite + termePropDroit + termeIntDroit, -1.0, 1.0);
     }
+    else{
+        // Calcul des corrections finales en limitant la vitesse pour éviter des valeurs trop élevées
+        correctionDroit = limiter(vitesseDroite - termePropDroit - termeIntDroit, -1.0, 1.0);
+    }
 
     // Application des corrections aux moteurs
-    MOTOR_SetSpeed(RIGHT, correctionDroit);
-    MOTOR_SetSpeed(LEFT, vitesseGauche);
+    MOTOR_SetSpeed(RIGHT, -correctionDroit);
+    MOTOR_SetSpeed(LEFT, -vitesseGauche);
 }
 
 /**
@@ -86,16 +86,16 @@ void ajustementVitesse(){
 * @param direction: (int) tourner à gauche ou à droite
 */
 void rotation(int direction){
-    if(direction){
+    if(!direction){
         MOTOR_SetSpeed(RIGHT, 0);
-        MOTOR_SetSpeed(LEFT, vitesseGauche);
-        while (ENCODER_Read(LEFT) <= pulseCm*29.202*0.64){}
+        MOTOR_SetSpeed(LEFT, -vitesseGauche);
+        while (-ENCODER_Read(LEFT) <= pulseCm*29.202*0.66){}
         arreter();
     }
     else{
         MOTOR_SetSpeed(LEFT, 0);
-        MOTOR_SetSpeed(RIGHT, vitesseDroite);
-        while (ENCODER_Read(RIGHT) <= pulseCm*29.202*0.635){}
+        MOTOR_SetSpeed(RIGHT, -vitesseDroite);
+        while (-ENCODER_Read(RIGHT) <= pulseCm*29.202*0.66){}
         arreter();
     }
 }

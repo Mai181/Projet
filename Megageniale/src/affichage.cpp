@@ -1162,9 +1162,9 @@ bool menu_terminer()
         if(boutons.select) nbBoutonsEnfonce++;
         if(boutons.retour) nbBoutonsEnfonce++;
 
-        if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && menuUpdate)) //== 0?
+        if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && premierTerminer)) //== 0?
         {
-            menuUpdate = false;
+            premierTerminer = false;
             if(boutons.change_gauche)                       // Ça sert pas à rien ????????
             {
                 menu_terminer_variables.selection--;
@@ -1207,11 +1207,11 @@ bool menu_terminer_confirmation()
     
     if(menuUpdate){
         menuUpdate = false;
-        digitalWrite(PIN_RESET, HIGH);
         affichageLCD(true, "Reinitialisation////Reussi!          "); 
         //                  1234567890123456/89/1234567890123456_
     }
     if(menuTempsAccumule > menuTempsRequis){
+        digitalWrite(PIN_RESET, HIGH);
         menuUpdate = true;
         tempAccumuleAffichage -= tempRequisAffichage;
         menu_terminer_confirmation_variables.actif = 0;

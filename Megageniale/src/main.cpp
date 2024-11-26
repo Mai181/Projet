@@ -37,7 +37,7 @@ void setup(){
     INIT_servos();
     digitalWrite(PIN_RESET, LOW);
     allumerDEL(RIEN, true);
-    affichageLCD(true, "P-19 IronMinds ");
+    affichageLCD(true, "P-19 IronMinds  ////                 ");
     delay(DELAIS*100);
     affichageLCD(true, "Menu principal  ////>Commencer  Regl ");
 }
@@ -46,5 +46,5 @@ void loop(){
     
     boutonsUpdate();
     arbreDecision();
-    delay(DELAIS*100);
+    delay(DELAIS);
 }
