@@ -28,6 +28,7 @@
 #define PINROUGE 45
 #define PINORANGE 44
 #define PINVERT 47
+#define PIN_RESET 46
 #define PIN_BOUTON_1_CHANGE_GAUCHE 38
 #define PIN_BOUTON_2_CHANGE_DROITE 40
 #define PIN_BOUTON_3_SELECT 39
@@ -90,6 +91,12 @@ bool affichageLCD(bool clearBefore, String texte);
  * @return Si changé de menu
  */
 bool menu();
+
+/**
+ * Fonction créant un menu affichant la fin de tache
+ * @return Si changé de menu
+ */
+bool menu_terminer();
 
 /**
 * Fonction pour allumer DEL couleur

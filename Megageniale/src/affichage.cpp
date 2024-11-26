@@ -107,6 +107,12 @@ bool menu_reglage_dimension_y_confirmation();
 /** Variables de navigation du menu_reglage_mapReset_confirmation */
 MenuVariables menu_reglage_dimension_y_confirmation_variables;
 
+/** Menu de fin de tache*/
+bool menu_terminer();
+/** Variables de navigation du menu_reglage_mapReset_confirmation */
+MenuVariables V_variables;
+bool premierTerminer = true;
+
 /** 
 * Fonction afficheur LCD
 * @param clearBefore : (bool) Efface l'écritue préalablement si true
@@ -168,7 +174,6 @@ bool allumerDEL(int etat, bool actif){
         return true;
     }
     if (etat == TERMINER && actif == true) {
-        digitalWrite(PINVERT, HIGH);
         if(tempAccumuleAffichage > tempRequisAffichage){
             if(!verteAllume){
                 digitalWrite(PINVERT, LOW);
@@ -916,7 +921,7 @@ bool menu_reglage_dimension_y()
 
                 if(menu_reglage_dimension_y_variables.selection > 2)
                 {
-                    if(dimensionYModifie > DIMENSION_MAX) dimensionYModifie = dimensionYModifie%100 - DIMENSION_MIN; 
+                    if(dimensionYModifie > DIMENSION_MAX) dimensionYModifie = dimensionYModifie%100 + DIMENSION_MIN; 
                     else if(dimensionYModifie <= DIMENSION_MIN) dimensionYModifie = DIMENSION_MIN; 
                 }
                 return 1;
@@ -1029,6 +1034,7 @@ bool menu_reglage_mapReset()
             }
         }
     }
+    
     return 0;
 }
 
@@ -1051,6 +1057,8 @@ bool menu_reglage_mapReset_confirmation()
         menu_reglage_mapReset_variables.actif = 0;
     }
     else menuTempsAccumule += DELAIS;
+
+    return 0;
 }
 
 bool menu_reglage_sensibilite_confirmation()
@@ -1060,8 +1068,8 @@ bool menu_reglage_sensibilite_confirmation()
 
     if(menuUpdate){
         menuUpdate = false;
-        sprintf(str, "Sensibilite     ////nouvelle = %icm", sensibiliteModifie);
-                //            1234567890123456/89/1234567890123456_
+        sprintf(str, "Sensibilite     ////nouvelle = %icm  ", sensibiliteModifie);
+        //            1234567890123456/89/1234567890123456_
         affichageLCD(true, str); 
     }
     if(menuTempsAccumule > menuTempsRequis){
@@ -1071,6 +1079,8 @@ bool menu_reglage_sensibilite_confirmation()
         menu_reglage_sensibilite_variables.actif = 0;
     }
     else menuTempsAccumule += DELAIS;
+
+    return 0;
 }
 
 bool menu_reglage_dimension_x_confirmation()
@@ -1091,6 +1101,8 @@ bool menu_reglage_dimension_x_confirmation()
         menu_reglage_dimension_x_variables.actif = 0;
     }
     else menuTempsAccumule += DELAIS;
+
+    return 0;
 }
 
 bool menu_reglage_dimension_y_confirmation()
@@ -1111,4 +1123,64 @@ bool menu_reglage_dimension_y_confirmation()
         menu_reglage_dimension_y_variables.actif = 0;
     }
     else menuTempsAccumule += DELAIS;
+
+    return 0;
+}
+
+bool menu_terminer()
+{
+    menu_variables.actif = 0;
+    menu_commencer_variables.actif = 0;
+    menu_commencer_pause_variables.actif = 0;
+    menu_commencer_pause_reglage_variables.actif = 0;
+    menu_reglage_variables.actif = 0;
+    menu_reglage_sensibilite_variables.actif = 0;
+    menu_reglage_dimension_variables.actif = 0;
+    menu_reglage_mapReset_variables.actif = 0;
+
+    if(premierTerminer){
+        affichageLCD(true, "Fin de tache    ////>Reinitialiser   "); 
+        //                  1234567890123456/89/1234567890123456_
+    }
+    
+    nbBoutonsEnfonce = 0;
+    menu_reglage_dimension_x_variables.actif = 1;
+    menu_reglage_dimension_x_variables.nbOption = 1;
+
+    if(boutons.change_gauche) nbBoutonsEnfonce++;
+    if(boutons.change_droite) nbBoutonsEnfonce++;
+    if(boutons.select) nbBoutonsEnfonce++;
+    if(boutons.retour) nbBoutonsEnfonce++;
+
+    if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && menuUpdate)) //== 0?
+    {
+        menuUpdate = false;
+        if(boutons.change_gauche)
+        {
+            menu_reglage_dimension_x_variables.selection--;
+        }
+        else if(boutons.change_droite)
+        {
+            menu_reglage_dimension_x_variables.selection++;
+        }
+        else if(boutons.select)
+        {
+            menuUpdate = true;
+            boutons.select = false;
+            if(menu_reglage_dimension_x_variables.selection==1) // Annuler
+            {
+                digitalWrite(PIN_RESET, HIGH);
+            }
+
+            return 1;
+        }
+        else if(boutons.retour)
+        {
+            digitalWrite(PIN_RESET, HIGH);
+        }
+        if(menu_reglage_dimension_x_variables.selection>menu_reglage_dimension_x_variables.nbOption) menu_reglage_dimension_x_variables.selection = 1;
+        else if(menu_reglage_dimension_x_variables.selection<1) menu_reglage_dimension_x_variables.selection = menu_reglage_dimension_x_variables.nbOption;
+    }
+
+    return 0;
 }

@@ -107,14 +107,19 @@ void resetCarte(int x, int y){
  * @return true si exécuté correctement
  */
 bool arbreDecision(){
-    menu();
     boutons_decisions=boutonsGet();
+        if(rangeeParcourue >= dimensionY - 2 * roueDistance) 
+        {
+            menu_terminer();
+            enCours = false;
+            allumerDEL(false, MARCHE);
+            allumerDEL(true, TERMINER);
+            arreter();
+        }
+        else
+            menu();
     if(enCours)
     {
-        if(rangeeParcourue>=dimensionY) {
-            enCours = false;
-            allumerDEL(true, TERMINER);
-        }
         
         allumerDEL(true, MARCHE);
         if(detectionMetaux()){
@@ -144,7 +149,7 @@ bool arbreDecision(){
                 enAvant = false;
                 enRotation = true;
                 resetEncodeur();
-                rangeeParcourue++;
+                rangeeParcourue += roueDistance;
             }
         }
         if(enRotation)
