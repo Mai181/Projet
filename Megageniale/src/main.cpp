@@ -7,11 +7,6 @@
 
 #include "header.h"
 
-// Variables globales
-
-int distributeurTempsAccumule=0;
-int distributeurTempsRequis=3000;
-
 void setup(){
 
     BoardInit();

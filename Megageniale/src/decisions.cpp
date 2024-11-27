@@ -38,17 +38,13 @@ int rangeeParcourue = 0;
 * @param actif: (bool) met en action si égale à TRUE
 * @return true si l'objet est déposé
 */
-bool distributeur(bool actif){
+bool distributeur(bool actif){                           
     if(actif)
-        distributeurTempsAction=11000;                             // À CHANGER PEUT-ÊTRE ????????????
-    if(distributeurTempsAccumule>distributeurTempsAction)
     {
         SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_OUVERT);
-        distributeurTempsAccumule-=distributeurTempsAction;
     }else
     {
         SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_FERME);
-        distributeurTempsAccumule+=DELAIS;
     }
     return true;
 }
@@ -121,7 +117,6 @@ bool arbreDecision(){
     {
         allumerDEL(true, MARCHE);
         if(detectionMetaux()){
-            arreter();
             distributeur(true);
             allumerDEL(METAL, true);
         }

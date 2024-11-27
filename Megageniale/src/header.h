@@ -51,8 +51,8 @@ const float rouePulseCirconference = 3200.0;
 const float roueDistance = 18.6;
 const float rotationCirconference = 2.0*PI*(roueDistance);
 const float pulse = (rotationCirconference)/((TOUR/ANGLE)*roueCirconference)*rouePulseCirconference;
-const float vitesseGauche = 0.25;
-const float vitesseDroite = 0.25;
+const float vitesseGauche = 0.2;
+const float vitesseDroite = 0.2;
 const float pulseCm = rouePulseCirconference/roueDiametre;
 
 const int CARTE_NB_LIGNES_MAX = 100;

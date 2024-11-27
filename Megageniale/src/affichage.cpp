@@ -1134,7 +1134,6 @@ bool menu_reglage_dimension_y_confirmation()
 
 bool menu_terminer()
 {
-    boutonsUpdate();
     menu_variables.actif = 0;
     menu_commencer_variables.actif = 0;
     menu_commencer_pause_variables.actif = 0;
@@ -1170,11 +1169,11 @@ bool menu_terminer()
             {
                 menuUpdate = true;
                 boutons.select = false;
-                if(menu_terminer_variables.selection==1) // Réinitialiser
+                /*if(menu_terminer_variables.selection==1) // Réinitialiser
                 {
                     //
                 }
-
+                */
                 return 1;
             }
             else if(boutons.retour)

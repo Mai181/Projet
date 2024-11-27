@@ -9,8 +9,8 @@
 
 // Variables 
 float erreurAccumuleeDroite = 0.0;
-const float ki = 0.000425; // 0.000525
-const float kp = 0.001525; // 0.0015253
+const float ki = 0.000525; // 0.000525
+const float kp = 0.001525; // 0.0015255
 
 /**
 * Fonction avancement
@@ -89,13 +89,13 @@ void rotation(int direction){
     if(!direction){
         MOTOR_SetSpeed(RIGHT, 0);
         MOTOR_SetSpeed(LEFT, -vitesseGauche);
-        while (-ENCODER_Read(LEFT) <= pulseCm*29.202*0.66){}
+        while (-ENCODER_Read(LEFT) <= pulseCm*29.202*0.64){}
         arreter();
     }
     else{
         MOTOR_SetSpeed(LEFT, 0);
         MOTOR_SetSpeed(RIGHT, -vitesseDroite);
-        while (-ENCODER_Read(RIGHT) <= pulseCm*29.202*0.66){}
+        while (-ENCODER_Read(RIGHT) <= pulseCm*29.202*0.635){}
         arreter();
     }
 }
