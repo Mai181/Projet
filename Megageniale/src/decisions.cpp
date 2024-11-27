@@ -21,6 +21,9 @@ bool enTransition = true;
 bool enAvant = true;
 bool enRotation = false;
 bool premiereLigne = true;
+float accelerationTempsAction = 300;
+float accelerationTemps = accelerationTempsAction;
+int accelerationPhase = 1;
 float distanceParcourue = 0.0;
 float distanceAReduire = roueDistance;
 int dimensionX = 200;
@@ -51,7 +54,7 @@ bool distributeur(bool actif){
     {
         distributeurTempsAction-=DELAIS;
         SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_OUVERT);
-        if(distObjet > (ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/-2.0 - positionObjet || distributeurTempsAction < 0)
+        if(distObjet < (ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/-2.0 - positionObjet || distributeurTempsAction < 0)
         {
             distribution = false;
         }
@@ -118,7 +121,7 @@ void resetCarte(int x, int y){
  */
 bool arbreDecision(){
     boutons_decisions=boutonsGet();
-    if(rangeeParcourue >= dimensionY - 2 * roueDistance) 
+    if(rangeeParcourue >= dimensionY - 1 * roueDistance) 
     {
         menu_terminer();
         enCours = false;
@@ -143,6 +146,7 @@ bool arbreDecision(){
 
         if(enAvant)
         {
+
             if(premiereLigne)
                 distanceAReduire = roueDistance + 5;
             else
@@ -151,7 +155,41 @@ bool arbreDecision(){
             distanceParcourue = (-(ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2)*roueCirconference/rouePulseCirconference;
             
             if(distanceParcourue<dimensionX - distanceAReduire)
-                ajustementVitesse();
+            {
+                if(enTransition)
+                {
+                    if(accelerationTemps < 0 )
+                    {
+                        accelerationTemps += accelerationTempsAction;
+                        accelerationPhase++;
+
+                        if(accelerationPhase==5)
+                            enTransition = false;
+                        
+                    }
+                    else
+                        accelerationTemps -= DELAIS;
+                }
+
+                switch(accelerationPhase)
+                {
+                    case 0 || 1:
+                        ajustementVitesse(vitesseIntermediaireDiviseur1);
+                        break;
+                    case 2:
+                        ajustementVitesse(vitesseIntermediaireDiviseur2);
+                        break;
+                    case 3:
+                        ajustementVitesse(vitesseIntermediaireDiviseur3);
+                        break;
+                    case 4:
+                        ajustementVitesse(vitesseIntermediaireDiviseur4);
+                        break;
+                    case 5:
+                        ajustementVitesse(1);
+                        break;
+                }
+            }
             else
             {
                 premiereLigne = false;
@@ -174,6 +212,9 @@ bool arbreDecision(){
             resetEncodeur();
             enAvant = true;
             enRotation = false;
+            enTransition = true;
+            accelerationPhase = 0;
+            accelerationTemps = accelerationTempsAction;
             arreter();
             delay(DELAIS*20);
         }
@@ -194,6 +235,9 @@ bool arbreDecision(){
 void enCoursSet(bool enCoursTemp)
 {
     enCours=enCoursTemp;
+    accelerationTemps = accelerationTempsAction;
+    accelerationPhase = 0;
+    enTransition = true;
 }
 
 int yGet()

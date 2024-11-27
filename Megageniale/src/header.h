@@ -53,6 +53,10 @@ const float rotationCirconference = 2.0*PI*(roueDistance);
 const float pulse = (rotationCirconference)/((TOUR/ANGLE)*roueCirconference)*rouePulseCirconference;
 const float vitesseGauche = 0.2;
 const float vitesseDroite = 0.2;
+const float vitesseIntermediaireDiviseur1 = 1.8;
+const float vitesseIntermediaireDiviseur2 = 1.6;
+const float vitesseIntermediaireDiviseur3 = 1.4;
+const float vitesseIntermediaireDiviseur4 = 1.2;
 const float pulseCm = rouePulseCirconference/roueDiametre;
 
 const int CARTE_NB_LIGNES_MAX = 100;
@@ -124,8 +128,9 @@ void INIT_servos();
 
 /**
 * Fonction avancement
+* @param vitesseDiviseur: (float) divise la vitesse par cette valeur
 */
-void avancer();
+void avancer(float vitesseDiviseur);
 
 /**
 * Fonction arret
@@ -142,8 +147,9 @@ float limiter(float valeur, float minVal, float maxVal);
 
 /**
 * Fonction ajustement vitesse
+* @param vitesseDiviseur: (float) divise la vitesse par cette valeur
 */
-void ajustementVitesse();
+void ajustementVitesse(float vitesseDiviseur);
 
 /**
 * Fonction rotation

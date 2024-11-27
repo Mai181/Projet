@@ -15,9 +15,9 @@ const float kp = 0.001525; // 0.0015255
 /**
 * Fonction avancement
 */
-void avancer(){
-    MOTOR_SetSpeed(LEFT, -vitesseGauche);
-    MOTOR_SetSpeed(RIGHT, -vitesseDroite);
+void avancer(float vitesseDiviseur){
+    MOTOR_SetSpeed(LEFT, -vitesseGauche/vitesseDiviseur);
+    MOTOR_SetSpeed(RIGHT, -vitesseDroite/vitesseDiviseur);
 }
 
 /**
@@ -45,7 +45,7 @@ float limiter(float valeur, float minVal, float maxVal) {
 /**
 * Fonction ajustement vitesse
 */
-void ajustementVitesse(){
+void ajustementVitesse(float vitesseDiviseur){
     float totalpulseDroit = -ENCODER_Read(RIGHT);
     float totalpulseGauche = -ENCODER_Read(LEFT);
     float ecartDroit;
@@ -78,7 +78,7 @@ void ajustementVitesse(){
 
     // Application des corrections aux moteurs
     MOTOR_SetSpeed(RIGHT, -correctionDroit);
-    MOTOR_SetSpeed(LEFT, -vitesseGauche);
+    MOTOR_SetSpeed(LEFT, -vitesseGauche / vitesseDiviseur);
 }
 
 /**

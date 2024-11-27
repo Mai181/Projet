@@ -32,6 +32,8 @@ int tempAccumuleAffichage = 0;
 int tempRequisAffichage = 1000;
 int menuTempsAccumule = 0;
 int menuTempsRequis = 1000;
+int menuTerminerTempsAccumule = 0;
+int menuTerminerTempsRequis = 15000;
 bool rougeAllume = false;
 bool orangeAllume = false;
 bool verteAllume = false;
@@ -112,11 +114,6 @@ bool menu_terminer();
 /** Variables de navigation du menu_terminer */
 MenuVariables menu_terminer_variables;
 bool premierTerminer = true;
-
-/**Menu de fin confirmation */
-bool menu_terminer_confirmation();
-/** Variables de navigation du menu_terminer_confirmation */
-MenuVariables menu_terminer_confirmation_variables;
 
 /** 
 * Fonction afficheur LCD
@@ -264,7 +261,7 @@ bool menu()
                 if(menu_variables.selection==1) //Commencer
                 {
                     enCoursSet(true);
-                    avancer();
+                    avancer(vitesseIntermediaireDiviseur1);
                     menu_commencer();
                 }
                 else if(menu_variables.selection==2) menu_reglage(); //Réglage
@@ -378,7 +375,7 @@ bool menu_commencer_pause()
                 boutons.select = false;
                 if(menu_commencer_pause_variables.selection==1) //Continuer
                 {
-                    avancer();
+                    avancer(vitesseIntermediaireDiviseur1);
                     enCoursSet(true);
                     menu_commencer_pause_variables.actif = 0;
                 }
@@ -387,7 +384,7 @@ bool menu_commencer_pause()
             }
             else if(boutons.retour)
             {
-                avancer();
+                avancer(vitesseIntermediaireDiviseur1);
                 enCoursSet(true);
                 menuUpdate = true;
                 boutons.retour = false;
@@ -1147,106 +1144,103 @@ bool menu_terminer()
     menu_terminer_variables.actif = 1;
     menu_terminer_variables.nbOption = 1;
 
-    if(menu_terminer_confirmation_variables.actif) menu_terminer_confirmation();
-    else
+    if(menuTerminerTempsAccumule > menuTerminerTempsRequis) //== 0?
     {
-
-        if(menuTempsAccumule > menuTempsRequis) //== 0?
+        switch(menu_terminer_variables.selection)
         {
-            switch(menu_terminer_variables.selection)
-            {
-                case 1 :
-                    affichageLCD(true, "Fin de tache    ////Appuyer sur le b "); 
-                    //                  1234567890123456/89/1234567890123456_
-                    menu_terminer_variables.selection++;
-                    tempAccumuleAffichage -= tempRequisAffichage;
-                    break;
-                case 2 :
-                    affichageLCD(true, "Fin de tache    ////puyer sur le bouton de reanitialisation "); 
-                    //                  1234567890123456/89/1234567890123456_
-                    menu_terminer_variables.selection++;
-                    tempAccumuleAffichage -= tempRequisAffichage;
-                    break;
-                case 3 :
-                    affichageLCD(true, "Fin de tache    ////yer sur le bouton de reanitialisation "); 
-                    //                  1234567890123456/89/1234567890123456_
-                    menu_terminer_variables.selection++;
-                    tempAccumuleAffichage -= tempRequisAffichage;
-                    break;
-                case 4 :
-                    affichageLCD(true, "Fin de tache    ////r sur le bouton de reanitialisation "); 
-                    //                  1234567890123456/89/1234567890123456_
-                    menu_terminer_variables.selection++;
-                    tempAccumuleAffichage -= tempRequisAffichage;
-                    break;
-                case 5 :
-                    affichageLCD(true, "Fin de tache    ////sur le bouton de reanitialisation "); 
-                    //                  1234567890123456/89/1234567890123456_
-                    menu_terminer_variables.selection++;
-                    tempAccumuleAffichage -= tempRequisAffichage;
-                    break;
-                case 6 :
-                    affichageLCD(true, "Fin de tache    ////r le bouton de reanitialisation "); 
-                    //                  1234567890123456/89/1234567890123456_
-                    menu_terminer_variables.selection++;
-                    tempAccumuleAffichage -= tempRequisAffichage;
-                    break;
-                case 7 :
-                    affichageLCD(true, "Fin de tache    ////le bouton de reanitialisation "); 
-                    //                  1234567890123456/89/1234567890123456_
-                    menu_terminer_variables.selection++;
-                    tempAccumuleAffichage -= tempRequisAffichage;
-                    break;
-                case 8 :
-                    affichageLCD(true, "Fin de tache    //// bouton de reanitialisation "); 
-                    //                  1234567890123456/89/1234567890123456_
-                    menu_terminer_variables.selection++;
-                    tempAccumuleAffichage -= tempRequisAffichage;
-                    break;
-                case 9 :
-                    affichageLCD(true, "Fin de tache    ////outon de reanitialisation "); 
-                    //                  1234567890123456/89/1234567890123456_
-                    menu_terminer_variables.selection++;
-                    tempAccumuleAffichage -= tempRequisAffichage;
-                    break;
-                case 10 :
-                    affichageLCD(true, "Fin de tache    ////ton de reanitialisation "); 
-                    //                  1234567890123456/89/1234567890123456_
-                    menu_terminer_variables.selection++;
-                    tempAccumuleAffichage -= tempRequisAffichage;
-                    break;
-                case 11 :
-                    affichageLCD(true, "Fin de tache    ////n de reanitialisation "); 
-                    //                  1234567890123456/89/1234567890123456_
-                    menu_terminer_variables.selection++;
-                    tempAccumuleAffichage -= tempRequisAffichage;
-                    break;
-                case 12 :
-                    affichageLCD(true, "Fin de tache    ////de reanitialisation "); 
-                    //                  1234567890123456/89/1234567890123456_
-                    menu_terminer_variables.selection++;
-                    tempAccumuleAffichage -= tempRequisAffichage;
-                    break;
-                case 13 :
-                    affichageLCD(true, "Fin de tache    //// reanitialisation "); 
-                    //                  1234567890123456/89/1234567890123456_
-                    menu_terminer_variables.selection++;
-                    tempAccumuleAffichage -= tempRequisAffichage;
-                    break;
-                case 14 :
-                    affichageLCD(true, "Fin de tache    ////reanitialisation  "); 
-                    //                  1234567890123456/89/1234567890123456_
-                    menu_terminer_variables.selection++;
-                    tempAccumuleAffichage -= tempRequisAffichage;
-                    break;
-                case 15 :
-                    menu_terminer_variables.selection = 1;
-                    tempAccumuleAffichage -= tempRequisAffichage;
-                    break;
-            }
-            menuTempsAccumule += DELAIS;
+            case 1 :
+                affichageLCD(true, "Fin de tache    ////Appuyer sur le b "); //Appuyer sur le bouton de reanitialisation "
+                //                  1234567890123456/89/1234567890123456_
+                menu_terminer_variables.selection++;
+                menuTerminerTempsAccumule -= DELAIS/1.5;
+                menuTerminerTempsAccumule -= menuTerminerTempsRequis;
+                break;
+            case 2 :
+                affichageLCD(true, "Fin de tache    ////puyer sur le bou "); 
+                //                  1234567890123456/89/1234567890123456_
+                menu_terminer_variables.selection++;
+                menuTerminerTempsAccumule -= menuTerminerTempsRequis;
+                break;
+            case 3 :
+                affichageLCD(true, "Fin de tache    ////yer sur le bouto "); 
+                //                  1234567890123456/89/1234567890123456_
+                menu_terminer_variables.selection++;
+                menuTerminerTempsAccumule -= menuTerminerTempsRequis;
+                break;
+            case 4 :
+                affichageLCD(true, "Fin de tache    ////r sur le bouton  "); 
+                //                  1234567890123456/89/1234567890123456_
+                menu_terminer_variables.selection++;
+                menuTerminerTempsAccumule -= menuTerminerTempsRequis;
+                break;
+            case 5 :
+                affichageLCD(true, "Fin de tache    ////sur le bouton de "); 
+                //                  1234567890123456/89/1234567890123456_
+                menu_terminer_variables.selection++;
+                menuTerminerTempsAccumule -= menuTerminerTempsRequis;
+                break;
+            case 6 :
+                affichageLCD(true, "Fin de tache    ////r le bouton de r "); 
+                //                  1234567890123456/89/1234567890123456_
+                menu_terminer_variables.selection++;
+                menuTerminerTempsAccumule -= menuTerminerTempsRequis;
+                break;
+            case 7 :
+                affichageLCD(true, "Fin de tache    ////le bouton de rea "); 
+                //                  1234567890123456/89/1234567890123456_
+                menu_terminer_variables.selection++;
+                menuTerminerTempsAccumule -= menuTerminerTempsRequis;
+                break;
+            case 8 :
+                affichageLCD(true, "Fin de tache    //// bouton de reani "); 
+                //                  1234567890123456/89/1234567890123456_
+                menu_terminer_variables.selection++;
+                menuTerminerTempsAccumule -= menuTerminerTempsRequis;
+                break;
+            case 9 :
+                affichageLCD(true, "Fin de tache    ////outon de reaniti "); 
+                //                  1234567890123456/89/1234567890123456_
+                menu_terminer_variables.selection++;
+                menuTerminerTempsAccumule -= menuTerminerTempsRequis;
+                break;
+            case 10 :
+                affichageLCD(true, "Fin de tache    ////ton de reanitial "); 
+                //                  1234567890123456/89/1234567890123456_
+                menu_terminer_variables.selection++;
+                menuTerminerTempsAccumule -= menuTerminerTempsRequis;
+                break;
+            case 11 :
+                affichageLCD(true, "Fin de tache    ////n de reanitialis "); 
+                //                  1234567890123456/89/1234567890123456_
+                menu_terminer_variables.selection++;
+                menuTerminerTempsAccumule -= menuTerminerTempsRequis;
+                break;
+            case 12 :
+                affichageLCD(true, "Fin de tache    ////de reanitialisat "); 
+                //                  1234567890123456/89/1234567890123456_
+                menu_terminer_variables.selection++;
+                menuTerminerTempsAccumule -= menuTerminerTempsRequis;
+                break;
+            case 13 :
+                affichageLCD(true, "Fin de tache    //// reanitialisatio "); 
+                //                  1234567890123456/89/1234567890123456_
+                menu_terminer_variables.selection++;
+                menuTerminerTempsAccumule -= menuTerminerTempsRequis;
+                break;
+            case 14 :
+                affichageLCD(true, "Fin de tache    ////reanitialisation  "); 
+                //                  1234567890123456/89/1234567890123456_
+                menu_terminer_variables.selection++;
+                menuTerminerTempsAccumule -= menuTerminerTempsRequis;
+                break;
+            case 15 :
+                menu_terminer_variables.selection = 1;
+                menuTerminerTempsAccumule -= menuTerminerTempsRequis;
+                break;
         }
     }
+    menuTerminerTempsAccumule += DELAIS;
+    
 
     return 0;
 }
