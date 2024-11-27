@@ -244,7 +244,6 @@ bool arbreDecision(){
     }
     else if(enArret)
     {
-        avancer(vitesseIntermediaireDiviseur1);
         allumerDEL(OBSTACLE, false);
         enArret = false;
         enCoursSet(true);

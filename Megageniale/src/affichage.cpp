@@ -1150,61 +1150,61 @@ bool menu_terminer()
         {
             case 1 :
                 affichageLCD(true, "Fin de tache    ////Appuyer sur le b "); //Appuyer sur le bouton de reanitialisation "
-                //                  1234567890123456/89/1234567890123456_
+                //                  1234567890123456/89/1234567890123456_      1234/6789/1234/6789/1234/6789012345678901
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= DELAIS/1.5;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 2 :
-                affichageLCD(true, "Fin de tache    ////puyer sur le bou "); 
+                affichageLCD(true, "Fin de tache    ////uyer sur le bouton de reanitialisation "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 3 :
-                affichageLCD(true, "Fin de tache    ////yer sur le bouto "); 
+                affichageLCD(true, "Fin de tache    ////r sur le bouton de reanitialisation "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 4 :
-                affichageLCD(true, "Fin de tache    ////r sur le bouton  "); 
+                affichageLCD(true, "Fin de tache    ////ur le bouton de reanitialisation "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 5 :
-                affichageLCD(true, "Fin de tache    ////sur le bouton de "); 
+                affichageLCD(true, "Fin de tache    ////le bouton de reanitialisation "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 6 :
-                affichageLCD(true, "Fin de tache    ////r le bouton de r "); 
+                affichageLCD(true, "Fin de tache    ////bouton de reanitialisation "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 7 :
-                affichageLCD(true, "Fin de tache    ////le bouton de rea "); 
+                affichageLCD(true, "Fin de tache    ////ton de reanitialisation "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 8 :
-                affichageLCD(true, "Fin de tache    //// bouton de reani "); 
+                affichageLCD(true, "Fin de tache    //// de reanitialisation "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 9 :
-                affichageLCD(true, "Fin de tache    ////outon de reaniti "); 
+                affichageLCD(true, "Fin de tache    //// reanitialisation "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 10 :
-                affichageLCD(true, "Fin de tache    ////ton de reanitial "); 
+                affichageLCD(true, "Fin de tache    ////reanitialisation "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
@@ -1216,19 +1216,19 @@ bool menu_terminer()
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 12 :
-                affichageLCD(true, "Fin de tache    ////de reanitialisat "); 
+                affichageLCD(true, "Fin de tache    ////bouton de reanit "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 13 :
-                affichageLCD(true, "Fin de tache    //// reanitialisatio "); 
+                affichageLCD(true, "Fin de tache    ////r le bouton de r "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 14 :
-                affichageLCD(true, "Fin de tache    ////reanitialisation  "); 
+                affichageLCD(true, "Fin de tache    ////er sur le bouton "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
