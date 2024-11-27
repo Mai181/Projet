@@ -21,15 +21,18 @@ float moyenne = 0.0;
 */
 bool detectionMetaux(){
     /*
+    */
     Serial.print("metaux 1 : ");
     Serial.println(analogRead(PIN_ANALOG_DETECTEUR_METAUX_1));
     Serial.print("metaux 2 : ");
     Serial.println(analogRead(PIN_ANALOG_DETECTEUR_METAUX_2));
     Serial.print("metaux 3 : ");
     Serial.println(analogRead(PIN_ANALOG_DETECTEUR_METAUX_3));
-    */
     if(analogRead(PIN_ANALOG_DETECTEUR_METAUX_1)>detectionSensibilite || analogRead(PIN_ANALOG_DETECTEUR_METAUX_2)>detectionSensibilite || analogRead(PIN_ANALOG_DETECTEUR_METAUX_3)>detectionSensibilite)//à redéterminer la pin et tester la sensibilité (si 300 est trop élevé ou pas assez)
+    {
+        Serial.println("Metaux detecte");
         return true;
+    }
     else
         return false;
 }

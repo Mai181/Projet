@@ -8,8 +8,8 @@
 #include "header.h"
 #include "LibRobus.h"
 
-const int SERVO_FERME = 10; //à redéterminer
-const int SERVO_OUVERT = 73; //à redéterminer
+const int SERVO_FERME = 73; //à redéterminer
+const int SERVO_OUVERT = 10; //à redéterminer
 int distributeurTempsAction=0;
 int distributeurTempsAccumule=0;
 float distObjet = 21;
@@ -40,7 +40,7 @@ int rangeeParcourue = 0;
 * @param actif: (bool) met en action si égale à TRUE
 * @return true si l'objet est déposé
 */
-bool distributeur(bool actif){        
+bool distributeur(bool actif){
     if(actif)
     {
         distribution = true;
@@ -56,10 +56,11 @@ bool distributeur(bool actif){
             distribution = false;
         }
     }
+    else
     {
         SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_FERME);
         distributeurTempsAction = 0;
-    } 
+    }  
     return true;
 }
 
@@ -147,7 +148,7 @@ bool arbreDecision(){
             else
                 distanceAReduire = 2 * roueDistance + 10;
 
-            distanceParcourue = ((ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2)*roueCirconference/rouePulseCirconference;
+            distanceParcourue = (-(ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2)*roueCirconference/rouePulseCirconference;
             
             if(distanceParcourue<dimensionX - distanceAReduire)
                 ajustementVitesse();
