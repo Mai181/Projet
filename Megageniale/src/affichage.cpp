@@ -1134,6 +1134,7 @@ bool menu_reglage_dimension_y_confirmation()
 
 bool menu_terminer()
 {
+    boutonsUpdate();
     menu_variables.actif = 0;
     menu_commencer_variables.actif = 0;
     menu_commencer_pause_variables.actif = 0;
@@ -1142,13 +1143,6 @@ bool menu_terminer()
     menu_reglage_sensibilite_variables.actif = 0;
     menu_reglage_dimension_variables.actif = 0;
     menu_reglage_mapReset_variables.actif = 0;
-
-    /*
-    if(premierTerminer){
-        affichageLCD(true, "Fin de tache    ////>Reinitialiser   "); 
-        //                  1234567890123456/89/1234567890123456_
-    }
-    */
     
     nbBoutonsEnfonce = 0;
     menu_terminer_variables.actif = 1;
@@ -1164,8 +1158,7 @@ bool menu_terminer()
 
         if(nbBoutonsEnfonce == 1 || (nbBoutonsEnfonce < 2 && premierTerminer)) //== 0?
         {
-            premierTerminer = false;
-            if(boutons.change_gauche)                       // Ça sert pas à rien ????????
+            if(boutons.change_gauche)                       
             {
                 menu_terminer_variables.selection--;
             }
@@ -1179,20 +1172,20 @@ bool menu_terminer()
                 boutons.select = false;
                 if(menu_terminer_variables.selection==1) // Réinitialiser
                 {
-                    menu_terminer_confirmation();
+                    //
                 }
 
                 return 1;
             }
             else if(boutons.retour)
             {
-                digitalWrite(PIN_RESET, HIGH);
+                boutons.retour = false;
             }
             if(menu_terminer_variables.selection>menu_terminer_variables.nbOption) menu_terminer_variables.selection = 1;
             else if(menu_terminer_variables.selection<1) menu_terminer_variables.selection = menu_terminer_variables.nbOption;
 
             if(menu_terminer_variables.selection == 1){
-                affichageLCD(true, "Fin de tache    ////>Reinitialiser   "); 
+                affichageLCD(true, "Terminer !!!    ////Youpi !!!        "); 
                 //                  1234567890123456/89/1234567890123456_
             }
         }
@@ -1201,6 +1194,7 @@ bool menu_terminer()
     return 0;
 }
 
+/*
 bool menu_terminer_confirmation()
 {
     menu_terminer_variables.actif = 1;
@@ -1211,7 +1205,6 @@ bool menu_terminer_confirmation()
         //                  1234567890123456/89/1234567890123456_
     }
     if(menuTempsAccumule > menuTempsRequis){
-        digitalWrite(PIN_RESET, HIGH);
         menuUpdate = true;
         tempAccumuleAffichage -= tempRequisAffichage;
         menu_terminer_confirmation_variables.actif = 0;
@@ -1221,3 +1214,4 @@ bool menu_terminer_confirmation()
 
     return 0;
 }
+*/

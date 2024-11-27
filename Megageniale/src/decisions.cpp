@@ -8,9 +8,10 @@
 #include "header.h"
 #include "LibRobus.h"
 
-const int SERVO_FERME = 52; //à redéterminer
-const int SERVO_OUVERT = 4; //à redéterminer
+const int SERVO_FERME = 10; //à redéterminer
+const int SERVO_OUVERT = 73; //à redéterminer
 int distributeurTempsAction=0;
+int distributeurTempsAccumule=0;
 float distObjet=0;
 
 bool enCours = false;
@@ -40,15 +41,14 @@ int rangeeParcourue = 0;
 bool distributeur(bool actif){
     if(actif)
         distributeurTempsAction=11000;                             // À CHANGER PEUT-ÊTRE ????????????
-    if(distributeurTempsAction>0)
+    if(distributeurTempsAccumule>distributeurTempsAction)
     {
-    Serial.println("servo distributeur ouvert");
-        SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_OUVERT);//pin à redéterminer
-        distributeurTempsAction-=DELAIS;
+        SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_OUVERT);
+        distributeurTempsAccumule-=distributeurTempsAction;
     }else
     {
-    Serial.println("servo distributeur fermer");
-        SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_FERME);//pin à redéterminer
+        SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_FERME);
+        distributeurTempsAccumule+=DELAIS;
     }
     return true;
 }
@@ -58,7 +58,6 @@ bool distributeur(bool actif){
 void INIT_servos(){
     Serial.println("servo initialisation");
     SERVO_Enable(PIN_SERVO_DISTRIBUTEUR);
-    SERVO_Enable(1);
     delay(100);
     SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_FERME);
 }
@@ -169,10 +168,11 @@ bool arbreDecision(){
             delay(DELAIS*20);
         }
 
-        if (distanceObjet()<10.0){                                // Si fonctionne pas, monte 10.0 à 15.0
+        /*if (distanceObjet()<10.0){                                // Si fonctionne pas, monte 10.0 à 15.0
             arreter();
             allumerDEL(OBSTACLE, true);
         }
+        */
         
     }else 
     {
