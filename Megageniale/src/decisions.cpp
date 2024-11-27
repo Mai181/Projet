@@ -139,7 +139,7 @@ bool arbreDecision(){
             else
                 distanceAReduire = 2 * roueDistance + 10;
 
-            distanceParcourue = (-(ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2)*roueCirconference/rouePulseCirconference;
+            distanceParcourue = ((ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2)*roueCirconference/rouePulseCirconference;
             
             if(distanceParcourue<dimensionX - distanceAReduire)
                 ajustementVitesse();
