@@ -8,9 +8,10 @@
 #include "header.h"
 #include "LibRobus.h"
 
-const int SERVO_FERME = 52; //à redéterminer
-const int SERVO_OUVERT = 4; //à redéterminer
+const int SERVO_FERME = 10; //à redéterminer
+const int SERVO_OUVERT = 73; //à redéterminer
 int distributeurTempsAction=0;
+int distributeurTempsAccumule=0;
 float distObjet=0;
 
 bool enCours = false;
@@ -37,18 +38,13 @@ int rangeeParcourue = 0;
 * @param actif: (bool) met en action si égale à TRUE
 * @return true si l'objet est déposé
 */
-bool distributeur(bool actif){
+bool distributeur(bool actif){                           
     if(actif)
-        distributeurTempsAction=11000;                             // À CHANGER PEUT-ÊTRE ????????????
-    if(distributeurTempsAction>0)
     {
-    Serial.println("servo distributeur ouvert");
-        SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_OUVERT);//pin à redéterminer
-        distributeurTempsAction-=DELAIS;
+        SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_OUVERT);
     }else
     {
-    Serial.println("servo distributeur fermer");
-        SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_FERME);//pin à redéterminer
+        SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_FERME);
     }
     return true;
 }
@@ -58,7 +54,6 @@ bool distributeur(bool actif){
 void INIT_servos(){
     Serial.println("servo initialisation");
     SERVO_Enable(PIN_SERVO_DISTRIBUTEUR);
-    SERVO_Enable(1);
     delay(100);
     SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_FERME);
 }
@@ -122,7 +117,6 @@ bool arbreDecision(){
     {
         allumerDEL(true, MARCHE);
         if(detectionMetaux()){
-            arreter();
             distributeur(true);
             allumerDEL(METAL, true);
         }
@@ -169,10 +163,11 @@ bool arbreDecision(){
             delay(DELAIS*20);
         }
 
-        if (distanceObjet()<10.0){                                // Si fonctionne pas, monte 10.0 à 15.0
+        /*if (distanceObjet()<10.0){                                // Si fonctionne pas, monte 10.0 à 15.0
             arreter();
             allumerDEL(OBSTACLE, true);
         }
+        */
         
     }else 
     {

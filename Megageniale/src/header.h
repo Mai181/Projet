@@ -28,12 +28,11 @@
 #define PINROUGE 45
 #define PINORANGE 44
 #define PINVERT 47
-#define PIN_RESET 22
 #define PIN_BOUTON_1_CHANGE_GAUCHE 38
 #define PIN_BOUTON_2_CHANGE_DROITE 40
 #define PIN_BOUTON_3_SELECT 39
 #define PIN_BOUTON_4_RETOUR 41
-#define PIN_SERVO_DISTRIBUTEUR RIGHT
+#define PIN_SERVO_DISTRIBUTEUR 1
 #define PIN_ANALOG_DETECTEUR_METAUX_1 A4
 #define PIN_ANALOG_DETECTEUR_METAUX_2 A5
 #define PIN_ANALOG_DETECTEUR_METAUX_3 A6
@@ -52,8 +51,8 @@ const float rouePulseCirconference = 3200.0;
 const float roueDistance = 18.6;
 const float rotationCirconference = 2.0*PI*(roueDistance);
 const float pulse = (rotationCirconference)/((TOUR/ANGLE)*roueCirconference)*rouePulseCirconference;
-const float vitesseGauche = 0.25;
-const float vitesseDroite = 0.25;
+const float vitesseGauche = 0.2;
+const float vitesseDroite = 0.2;
 const float pulseCm = rouePulseCirconference/roueDiametre;
 
 const int CARTE_NB_LIGNES_MAX = 100;

@@ -7,11 +7,6 @@
 
 #include "header.h"
 
-// Variables globales
-
-int distributeurTempsAccumule=0;
-int distributeurTempsRequis=3000;
-
 void setup(){
 
     BoardInit();
@@ -20,8 +15,7 @@ void setup(){
     Wire.begin();
     pinMode(PINROUGE, OUTPUT);  
     pinMode(PINVERT, OUTPUT);  
-    pinMode(PINORANGE, OUTPUT);  
-    pinMode(PIN_RESET, OUTPUT);  
+    pinMode(PINORANGE, OUTPUT);    
     pinMode(PIN_BOUTON_1_CHANGE_GAUCHE, INPUT);  
     pinMode(PIN_BOUTON_2_CHANGE_DROITE, INPUT);  
     pinMode(PIN_BOUTON_3_SELECT, INPUT);  
@@ -35,7 +29,6 @@ void setup(){
     ENCODER_Reset(LEFT);
     ENCODER_Reset(RIGHT);
     INIT_servos();
-    digitalWrite(PIN_RESET, LOW);
     allumerDEL(RIEN, true);
     affichageLCD(true, "P-19 IronMinds  ////                 ");
     delay(DELAIS*100);
@@ -43,7 +36,7 @@ void setup(){
 }
 
 void loop(){
-    
+
     boutonsUpdate();
     arbreDecision();
     delay(DELAIS);

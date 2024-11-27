@@ -7,7 +7,7 @@
 
 #include "header.h"
 
-int detectionSensibilite=600;
+int detectionSensibilite=500;
 struct Boutons boutonsDetection;
 struct Boutons boutonsBuffer;
 struct Boutons boutonsRelease;

@@ -1251,6 +1251,7 @@ bool menu_terminer()
     return 0;
 }
 
+/*
 bool menu_terminer_confirmation()
 {
     menu_terminer_variables.actif = 1;
@@ -1261,7 +1262,6 @@ bool menu_terminer_confirmation()
         //                  1234567890123456/89/1234567890123456_
     }
     if(menuTempsAccumule > menuTempsRequis){
-        digitalWrite(PIN_RESET, HIGH);
         menuUpdate = true;
         tempAccumuleAffichage -= tempRequisAffichage;
         menu_terminer_confirmation_variables.actif = 0;
@@ -1271,3 +1271,4 @@ bool menu_terminer_confirmation()
 
     return 0;
 }
+*/
