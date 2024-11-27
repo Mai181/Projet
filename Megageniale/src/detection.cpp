@@ -21,13 +21,13 @@ float moyenne = 0.0;
 */
 bool detectionMetaux(){
     /*
-    */
     Serial.print("metaux 1 : ");
     Serial.println(analogRead(PIN_ANALOG_DETECTEUR_METAUX_1));
     Serial.print("metaux 2 : ");
     Serial.println(analogRead(PIN_ANALOG_DETECTEUR_METAUX_2));
     Serial.print("metaux 3 : ");
     Serial.println(analogRead(PIN_ANALOG_DETECTEUR_METAUX_3));
+    */
     if(analogRead(PIN_ANALOG_DETECTEUR_METAUX_1)>detectionSensibilite || analogRead(PIN_ANALOG_DETECTEUR_METAUX_2)>detectionSensibilite || analogRead(PIN_ANALOG_DETECTEUR_METAUX_3)>detectionSensibilite)//à redéterminer la pin et tester la sensibilité (si 300 est trop élevé ou pas assez)
     {
         Serial.println("Metaux detecte");
@@ -80,7 +80,7 @@ struct Boutons boutonsGet(){
  * capteur et l'objet
 */
 float distanceObjet(){ 
-    distances[compteur] = analogRead(A6);                      // CHANGER LA PIN !!!!!!!!!!!!!!!!!!!!!!!!!
+    distances[compteur] = analogRead(PIN_ANALOG_CAPTEUR_DISTANCE);                      // CHANGER LA PIN !!!!!!!!!!!!!!!!!!!!!!!!!
     compteur++;
     if (compteur > 4){
         compteur = 0;
@@ -89,9 +89,17 @@ float distanceObjet(){
         moyenne+=distances[i]; 
     }
     moyenne/=5.0;
+    Serial.println(((((1/(moyenne))-0.0008)/0.0002)*(4.0/3.0)));
+    Serial.print("avec une seule valeur : ");
+    /*
+    */
+    Serial.println(((((1/(analogRead(PIN_ANALOG_CAPTEUR_DISTANCE)))-0.0008)/0.0002)*(4.0/3.0)));
     return ((((1/(moyenne))-0.0008)/0.0002)*(4.0/3.0));
     //Calcul traduisant la valeur analog en cm, document avec les calculs disponible sur Teams
-    // return 10*(25-(sqrtf(10)*sqrtf(63*(res/((float)test))-2500)/sqrtf(res/((float)test))))-1.34445983;
+    /*
+    Serial.println(10*(25-(sqrtf(10)*sqrtf(63*(analogRead(PIN_ANALOG_CAPTEUR_DISTANCE)))-2500)/sqrtf(analogRead(PIN_ANALOG_CAPTEUR_DISTANCE)))-1.34445983);
+    return 10*(25-(sqrtf(10)*sqrtf(63*(analogRead(PIN_ANALOG_CAPTEUR_DISTANCE)))-2500)/sqrtf(analogRead(PIN_ANALOG_CAPTEUR_DISTANCE)))-1.34445983;
+    */
 }
 
 int detectionSensibiliteGet()

@@ -20,6 +20,7 @@ bool enCours = false;
 bool enTransition = true;
 bool enAvant = true;
 bool enRotation = false;
+bool enArret = false;
 bool premiereLigne = true;
 float accelerationTempsAction = 300;
 float accelerationTemps = accelerationTempsAction;
@@ -125,8 +126,8 @@ bool arbreDecision(){
     {
         menu_terminer();
         enCours = false;
-        allumerDEL(false, MARCHE);
-        allumerDEL(true, TERMINER);
+        allumerDEL(MARCHE, false);
+        allumerDEL(TERMINER, true);
         arreter();
     }
     else
@@ -144,7 +145,15 @@ bool arbreDecision(){
             allumerDEL(METAL, false);
         }
 
-        if(enAvant)
+
+        
+        if(distanceObjet()<=35.0)             // Si fonctionne pas, monte 10.0 à 15.0
+        {                   
+            arreter();
+            allumerDEL(OBSTACLE, true);
+            enArret = true;
+        }
+        else if(enAvant)
         {
 
             if(premiereLigne)
@@ -199,8 +208,10 @@ bool arbreDecision(){
                 rangeeParcourue += roueDistance;
             }
         }
-        if(enRotation)
+        else if(enRotation)
         {
+            allumerDEL(OBSTACLE, false);
+
             if (directionRotation) {
                 rotation(DROITE);
                 directionRotation--;
@@ -218,17 +229,27 @@ bool arbreDecision(){
             arreter();
             delay(DELAIS*20);
         }
-
-        /*if (distanceObjet()<10.0){                                // Si fonctionne pas, monte 10.0 à 15.0
-            arreter();
-            allumerDEL(OBSTACLE, true);
-        }
-        */
         
     }else 
     {
         allumerDEL(false, MARCHE);
     }
+
+    if(distanceObjet()<=35.0)             // Si fonctionne pas, monte 10.0 à 15.0
+    {                   
+        arreter();
+        allumerDEL(OBSTACLE, true);
+        enArret = true;
+        enCours = false;
+    }
+    else if(enArret)
+    {
+        avancer(vitesseIntermediaireDiviseur1);
+        allumerDEL(OBSTACLE, false);
+        enArret = false;
+        enCoursSet(true);
+    }
+
     return true;
 }
 

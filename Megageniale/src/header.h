@@ -36,6 +36,7 @@
 #define PIN_ANALOG_DETECTEUR_METAUX_1 A4
 #define PIN_ANALOG_DETECTEUR_METAUX_2 A5
 #define PIN_ANALOG_DETECTEUR_METAUX_3 A6
+#define PIN_ANALOG_CAPTEUR_DISTANCE A9
 
 #define MENU_INI_Y "Commencer la    ////recherche: >Y  N "
 #define MENU_INI_N "Commencer la    ////recherche:  Y >N "
