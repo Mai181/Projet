@@ -12,7 +12,9 @@ const int SERVO_FERME = 10; //à redéterminer
 const int SERVO_OUVERT = 73; //à redéterminer
 int distributeurTempsAction=0;
 int distributeurTempsAccumule=0;
-float distObjet=0;
+float distObjet = 21;
+float positionObjet = 0.0;
+bool distribution = false;
 
 bool enCours = false;
 bool enTransition = true;
@@ -38,14 +40,26 @@ int rangeeParcourue = 0;
 * @param actif: (bool) met en action si égale à TRUE
 * @return true si l'objet est déposé
 */
-bool distributeur(bool actif){                           
+bool distributeur(bool actif){        
     if(actif)
     {
+        distribution = true;
+        distributeurTempsAction=10000;
+        positionObjet = (ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/-2.0;
+    }
+    if(distribution)
+    {
+        distributeurTempsAction-=DELAIS;
         SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_OUVERT);
-    }else
+        if(distObjet > (ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/-2.0 - positionObjet || distributeurTempsAction < 0)
+        {
+            distribution = false;
+        }
+    }
     {
         SERVO_SetAngle(PIN_SERVO_DISTRIBUTEUR, SERVO_FERME);
-    }
+        distributeurTempsAction = 0;
+    } 
     return true;
 }
 
