@@ -23,7 +23,8 @@
 #define RESET 0
 #define AVANCER 1
 #define TOURNER 2
-#define DELAIS 20
+
+#define DELAIS 50
 
 #define PINROUGE 45
 #define PINORANGE 44
@@ -49,7 +50,7 @@
 const float roueDiametre = 7.6;
 const float roueCirconference = 2.0*PI*(roueDiametre/2.0);
 const float rouePulseCirconference = 3200.0;
-const float roueDistance = 18.6;
+const float roueDistance = 19;
 const float rotationCirconference = 2.0*PI*(roueDistance);
 const float pulse = (rotationCirconference)/((TOUR/ANGLE)*roueCirconference)*rouePulseCirconference;
 const float vitesseGauche = 0.2;

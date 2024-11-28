@@ -12,7 +12,7 @@ const int SERVO_FERME = 73; //à redéterminer
 const int SERVO_OUVERT = 10; //à redéterminer
 int distributeurTempsAction=0;
 int distributeurTempsAccumule=0;
-float distObjet = 21;
+float distObjet = 50*rouePulseCirconference/roueCirconference;
 float positionObjet = 0.0;
 bool distribution = false;
 
@@ -22,6 +22,7 @@ bool enAvant = true;
 bool enRotation = false;
 bool enArret = false;
 bool premiereLigne = true;
+bool premiereFin = true;
 float accelerationTempsAction = 300;
 float accelerationTemps = accelerationTempsAction;
 int accelerationPhase = 1;
@@ -124,9 +125,13 @@ bool arbreDecision(){
     boutons_decisions=boutonsGet();
     if(rangeeParcourue >= dimensionY - 1 * roueDistance) 
     {
+        if(premiereFin)
+        {
+            premiereFin = false;
+        }
+            allumerDEL(MARCHE, false);
         menu_terminer();
         enCours = false;
-        allumerDEL(MARCHE, false);
         allumerDEL(TERMINER, true);
         arreter();
     }
@@ -135,77 +140,51 @@ bool arbreDecision(){
     if(enCours)
     {
         allumerDEL(true, MARCHE);
-        if(detectionMetaux()){
-            distributeur(true);
-            allumerDEL(METAL, true);
-        }
-        else
+
+        if(enAvant)
         {
-            distributeur(false);
-            allumerDEL(METAL, false);
-        }
-
-
-        
-        if(distanceObjet()<=35.0)             // Si fonctionne pas, monte 10.0 à 15.0
-        {                   
-            arreter();
-            allumerDEL(OBSTACLE, true);
-            enArret = true;
-        }
-        else if(enAvant)
-        {
-
-            if(premiereLigne)
-                distanceAReduire = roueDistance + 5;
-            else
-                distanceAReduire = 2 * roueDistance + 10;
-
-            distanceParcourue = (-(ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2)*roueCirconference/rouePulseCirconference;
-            
-            if(distanceParcourue<dimensionX - distanceAReduire)
-            {
-                if(enTransition)
-                {
-                    if(accelerationTemps < 0 )
-                    {
-                        accelerationTemps += accelerationTempsAction;
-                        accelerationPhase++;
-
-                        if(accelerationPhase==5)
-                            enTransition = false;
-                        
-                    }
-                    else
-                        accelerationTemps -= DELAIS;
-                }
-
-                switch(accelerationPhase)
-                {
-                    case 0 || 1:
-                        ajustementVitesse(vitesseIntermediaireDiviseur1);
-                        break;
-                    case 2:
-                        ajustementVitesse(vitesseIntermediaireDiviseur2);
-                        break;
-                    case 3:
-                        ajustementVitesse(vitesseIntermediaireDiviseur3);
-                        break;
-                    case 4:
-                        ajustementVitesse(vitesseIntermediaireDiviseur4);
-                        break;
-                    case 5:
-                        ajustementVitesse(1);
-                        break;
-                }
+            if(distanceObjet()<=35.0)             // Si fonctionne pas, monte 10.0 à 15.0
+            {                   
+                arreter();
+                allumerDEL(OBSTACLE, true);
+                enArret = true;
             }
             else
             {
-                premiereLigne = false;
-                enAvant = false;
-                enRotation = true;
-                resetEncodeur();
-                rangeeParcourue += roueDistance;
+                allumerDEL(OBSTACLE, false);
+                enArret = false;
+
+                if(premiereLigne)
+                    distanceAReduire = roueDistance + 5;
+                else
+                    distanceAReduire = 2 * roueDistance + 10;
+
+                distanceParcourue = (-(ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2)*roueCirconference/rouePulseCirconference;
+                
+                if(distanceParcourue<dimensionX - distanceAReduire)
+                {
+                    ajustementVitesse(1);
+                }
+                else
+                {
+                    premiereLigne = false;
+                    enAvant = false;
+                    enRotation = true;
+                    resetEncodeur();
+                    rangeeParcourue += roueDistance;
+                    arreter();
+                    delay(750);
+                }
+                
+                if(detectionMetaux()){
+                    distributeur(true);
+                    allumerDEL(METAL, true);
+                }
+                else
+                {
+                    distributeur(false);
+                    allumerDEL(METAL, false);
+                }
             }
         }
         else if(enRotation)
@@ -227,7 +206,7 @@ bool arbreDecision(){
             accelerationPhase = 0;
             accelerationTemps = accelerationTempsAction;
             arreter();
-            delay(DELAIS*20);
+            delay(750);
         }
         
     }else 
@@ -235,6 +214,7 @@ bool arbreDecision(){
         allumerDEL(false, MARCHE);
     }
 
+/*
     if(distanceObjet()<=35.0)             // Si fonctionne pas, monte 10.0 à 15.0
     {                   
         arreter();
@@ -248,6 +228,7 @@ bool arbreDecision(){
         enArret = false;
         enCoursSet(true);
     }
+*/
 
     return true;
 }
@@ -258,6 +239,10 @@ void enCoursSet(bool enCoursTemp)
     accelerationTemps = accelerationTempsAction;
     accelerationPhase = 0;
     enTransition = true;
+    if(enCours)
+        allumerDEL(MARCHE, true);
+    else   
+        allumerDEL(MARCHE, false);
 }
 
 int yGet()

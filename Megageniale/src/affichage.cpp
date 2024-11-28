@@ -155,20 +155,8 @@ bool allumerDEL(int etat, bool actif){
         return true;
     }
     if(etat == METAL && actif == true) {
-        if(tempAccumuleAffichage > tempRequisAffichage){
-            if(!rougeAllume){
-                digitalWrite(PINROUGE, LOW);
-                rougeAllume = true;
-            }
-            else{
-                digitalWrite(PINROUGE, HIGH);
-                rougeAllume = false;
-            }
-            tempAccumuleAffichage -= tempRequisAffichage;
-        }
-        else {
-            tempAccumuleAffichage += DELAIS;
-        }
+        digitalWrite(PINROUGE, LOW);
+        rougeAllume = true;
         return true;
     } else if (etat == METAL){
         digitalWrite(PINROUGE, HIGH);
@@ -180,6 +168,7 @@ bool allumerDEL(int etat, bool actif){
             if(!verteAllume){
                 digitalWrite(PINVERT, LOW);
                 verteAllume = true;
+                tempAccumuleAffichage -= DELAIS/1.5;
             }
             else{
                 digitalWrite(PINVERT, HIGH);
@@ -197,20 +186,8 @@ bool allumerDEL(int etat, bool actif){
         return true;
     }
     if (etat == OBSTACLE && actif == true) {
-        if(tempAccumuleAffichage > tempRequisAffichage){
-            if(!orangeAllume){
-                digitalWrite(PINORANGE, LOW);
-                orangeAllume = true;
-            }
-            else{
-                digitalWrite(PINORANGE, HIGH);
-                orangeAllume = false;
-            }
-            tempAccumuleAffichage -= tempRequisAffichage;
-        }
-        else {
-            tempAccumuleAffichage += DELAIS;
-        }
+        digitalWrite(PINORANGE, LOW);
+        orangeAllume = true;
         return true;
     } else if (etat == OBSTACLE){
         digitalWrite(PINORANGE, HIGH);
@@ -261,7 +238,7 @@ bool menu()
                 if(menu_variables.selection==1) //Commencer
                 {
                     enCoursSet(true);
-                    avancer(vitesseIntermediaireDiviseur1);
+                    ajustementVitesse(1);
                     menu_commencer();
                 }
                 else if(menu_variables.selection==2) menu_reglage(); //Réglage
@@ -375,7 +352,7 @@ bool menu_commencer_pause()
                 boutons.select = false;
                 if(menu_commencer_pause_variables.selection==1) //Continuer
                 {
-                    avancer(vitesseIntermediaireDiviseur1);
+                    ajustementVitesse(1);
                     enCoursSet(true);
                     menu_commencer_pause_variables.actif = 0;
                 }
@@ -384,7 +361,7 @@ bool menu_commencer_pause()
             }
             else if(boutons.retour)
             {
-                avancer(vitesseIntermediaireDiviseur1);
+                ajustementVitesse(1);
                 enCoursSet(true);
                 menuUpdate = true;
                 boutons.retour = false;
@@ -1156,49 +1133,49 @@ bool menu_terminer()
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 2 :
-                affichageLCD(true, "Fin de tache    ////uyer sur le bouton de reanitialisation "); 
+                affichageLCD(true, "Fin de tache    ////uyer sur le bout "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 3 :
-                affichageLCD(true, "Fin de tache    ////r sur le bouton de reanitialisation "); 
+                affichageLCD(true, "Fin de tache    ////r sur le bouton  "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 4 :
-                affichageLCD(true, "Fin de tache    ////ur le bouton de reanitialisation "); 
+                affichageLCD(true, "Fin de tache    ////ur le bouton de  "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 5 :
-                affichageLCD(true, "Fin de tache    ////le bouton de reanitialisation "); 
+                affichageLCD(true, "Fin de tache    ////le bouton de rea "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 6 :
-                affichageLCD(true, "Fin de tache    ////bouton de reanitialisation "); 
+                affichageLCD(true, "Fin de tache    ////bouton de reanit "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 7 :
-                affichageLCD(true, "Fin de tache    ////ton de reanitialisation "); 
+                affichageLCD(true, "Fin de tache    ////ton de reanitial "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 8 :
-                affichageLCD(true, "Fin de tache    //// de reanitialisation "); 
+                affichageLCD(true, "Fin de tache    //// de reanitialisa "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 9 :
-                affichageLCD(true, "Fin de tache    //// reanitialisation "); 
+                affichageLCD(true, "Fin de tache    //// reanitialisatio "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
@@ -1207,6 +1184,7 @@ bool menu_terminer()
                 affichageLCD(true, "Fin de tache    ////reanitialisation "); 
                 //                  1234567890123456/89/1234567890123456_
                 menu_terminer_variables.selection++;
+                menuTerminerTempsAccumule -= DELAIS/1.5;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 11 :
@@ -1234,6 +1212,8 @@ bool menu_terminer()
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;
             case 15 :
+                affichageLCD(true, "Fin de tache    ////Appuyer sur le b "); //Appuyer sur le bouton de reanitialisation "
+                //                  1234567890123456/89/1234567890123456_      1234/6789/1234/6789/1234/6789012345678901
                 menu_terminer_variables.selection = 1;
                 menuTerminerTempsAccumule -= menuTerminerTempsRequis;
                 break;

@@ -31,8 +31,64 @@ void setup(){
     INIT_servos();
     allumerDEL(RIEN, true);
     affichageLCD(true, "P-19 IronMinds  ////                 ");
-    delay(DELAIS*100);
+    delay(DELAIS*50);
     affichageLCD(true, "Menu principal  ////>Commencer  Regl ");
+
+    /*
+avancer(1);
+
+int dimensionXTemp = 50;
+bool enTransitionTemp = true;
+float accelerationTempsActionTemp = 300;
+float accelerationTempsTemp = accelerationTempsActionTemp;
+int accelerationPhaseTemp = 1;
+
+float distanceAReduireTemp = roueDistance + 5;
+
+avancer(vitesseIntermediaireDiviseur1);
+    while((-(ENCODER_Read(LEFT)+ENCODER_Read(RIGHT))/2)*roueCirconference/rouePulseCirconference<dimensionXTemp - distanceAReduireTemp)
+    {
+                if(enTransitionTemp)
+                {
+                    if(accelerationTempsTemp < 0 )
+                    {
+                        accelerationTempsTemp += accelerationTempsActionTemp;
+                        accelerationPhaseTemp++;
+
+                        if(accelerationPhaseTemp==5)
+                            enTransitionTemp = false;
+                        
+                    }
+                    else
+                        accelerationTempsTemp -= DELAIS;
+                }
+
+                switch(accelerationPhaseTemp)
+                {
+                    case 0 || 1:
+                        ajustementVitesse(vitesseIntermediaireDiviseur1);
+                        break;
+                    case 2:
+                        ajustementVitesse(vitesseIntermediaireDiviseur2);
+                        break;
+                    case 3:
+                        ajustementVitesse(vitesseIntermediaireDiviseur3);
+                        break;
+                    case 4:
+                        ajustementVitesse(vitesseIntermediaireDiviseur4);
+                        break;
+                    case 5:
+                        ajustementVitesse(1);
+                        break;
+                }
+                delay(DELAIS);
+    }
+delay(DELAIS*10);
+rotation(GAUCHE);
+resetEncodeur();
+delay(DELAIS*10);
+rotation(GAUCHE);
+    */
 }
 
 void loop(){
@@ -46,6 +102,18 @@ void loop(){
             distributeur(false);
             allumerDEL(METAL, false);
         }
+*/
+/*
+rotation(DROITE);
+delay(DELAIS*10);
+rotation(DROITE);
+delay(DELAIS*10);
+ajustementVitesse(1);
+delay(DELAIS);
+*/
+//^^^^^^^^^^test^^^^^^^^
+
+/*
 */
     boutonsUpdate();
     arbreDecision();
