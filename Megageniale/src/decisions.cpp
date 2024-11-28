@@ -214,21 +214,6 @@ bool arbreDecision(){
         allumerDEL(false, MARCHE);
     }
 
-/*
-    if(distanceObjet()<=35.0)             // Si fonctionne pas, monte 10.0 à 15.0
-    {                   
-        arreter();
-        allumerDEL(OBSTACLE, true);
-        enArret = true;
-        enCours = false;
-    }
-    else if(enArret)
-    {
-        allumerDEL(OBSTACLE, false);
-        enArret = false;
-        enCoursSet(true);
-    }
-*/
 
     return true;
 }
