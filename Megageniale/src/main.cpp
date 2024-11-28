@@ -36,17 +36,7 @@ void setup(){
 }
 
 void loop(){
-/*
-        if(detectionMetaux()){
-            distributeur(true);
-            allumerDEL(METAL, true);
-        }
-        else
-        {
-            distributeur(false);
-            allumerDEL(METAL, false);
-        }
-*/
+    
     boutonsUpdate();
     arbreDecision();
     delay(DELAIS);
