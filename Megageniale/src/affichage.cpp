@@ -272,7 +272,7 @@ bool menu_commencer()
 {
     nbBoutonsEnfonce = 0;
     menu_commencer_variables.actif = 1;
-    menu_commencer_variables.nbOption = 2;
+    menu_commencer_variables.nbOption = 1;
 
     if(menu_commencer_pause_variables.actif) menu_commencer_pause();
     else
