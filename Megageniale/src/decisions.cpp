@@ -29,12 +29,12 @@ int accelerationPhase = 1;
 float distanceParcourue = 0.0;
 float distanceAReduire = roueDistance;
 int dimensionX = 200;
-int dimensionY = 200;
+int dimensionY = 100;
 struct Boutons boutons_decisions;
 
 // Variables globales
 const float distanceDecalage = 40.0;  // À reprendre avec le distributeur<
-int carteNbLignes = 100; //y
+int carteNbLignes = 50; //y
 int carteNbColonnes = 100; //x
 int carte[CARTE_NB_LIGNES_MAX][CARTE_NB_COLONNES_MAX]; 
 int directionRotation = 1; // 1=droite, 0=gauche
@@ -232,10 +232,10 @@ void enCoursSet(bool enCoursTemp)
 
 int yGet()
 {
-    return carteNbLignes*2;
+    return dimensionY;
 }
 
 int xGet()
 {
-    return carteNbColonnes*2;
+    return dimensionX;
 }

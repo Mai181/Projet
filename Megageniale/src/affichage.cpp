@@ -19,8 +19,10 @@ int nbBoutonsEnfonce = 0;
 bool menuUpdate = true;
 char str[37]; /** String temporaire*/
 
-const int DIMENSION_MIN = 100;
-const int DIMENSION_MAX = 200;
+const int DIMENSION_X_MIN = 100;
+const int DIMENSION_X_MAX = 200;             //limite du champ à analyzer
+const int DIMENSION_Y_MIN = 30;
+const int DIMENSION_Y_MAX = 180;
 int dimensionXModifie = 100;
 int dimensionYModifie = 100;
 
@@ -792,8 +794,8 @@ bool menu_reglage_dimension_x()
 
             if(menu_reglage_dimension_x_variables.selection > 2)
             {
-                if(dimensionXModifie > DIMENSION_MAX) dimensionXModifie = dimensionXModifie%100 + DIMENSION_MIN; 
-                else if(dimensionXModifie <= DIMENSION_MIN) dimensionXModifie = DIMENSION_MIN; 
+                if(dimensionXModifie > DIMENSION_X_MAX) dimensionXModifie = dimensionXModifie%100 + DIMENSION_X_MIN; 
+                else if(dimensionXModifie <= DIMENSION_X_MIN) dimensionXModifie = DIMENSION_X_MIN; 
             }
             return 1;
         }
@@ -900,8 +902,8 @@ bool menu_reglage_dimension_y()
 
                 if(menu_reglage_dimension_y_variables.selection > 2)
                 {
-                    if(dimensionYModifie > DIMENSION_MAX) dimensionYModifie = dimensionYModifie%100 + DIMENSION_MIN; 
-                    else if(dimensionYModifie <= DIMENSION_MIN) dimensionYModifie = DIMENSION_MIN; 
+                    if(dimensionYModifie > DIMENSION_Y_MAX) dimensionYModifie = dimensionYModifie%100 + DIMENSION_Y_MIN; 
+                    else if(dimensionYModifie <= DIMENSION_Y_MIN) dimensionYModifie = DIMENSION_Y_MIN; 
                 }
                 return 1;
             }
